@@ -1,7 +1,7 @@
-import "./App.css";
-import { useState, useEffect } from "react";
+import './App.css';
+import { useState, useEffect } from 'react';
 
-const App = () => {
+const App = (): JSX.Element => {
   const [data, setData] = useState<
     {
       nombreDeUsuario: string;
@@ -24,16 +24,16 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/usuarios"); // Ajusta la URL según tu configuración
+        const response = await fetch('http://localhost:3000/api/usuarios'); // Ajusta la URL según tu configuración
         const result = await response.json();
 
         if (result && Array.isArray(result.data)) {
           setData(result.data);
         } else {
-          console.error("Se esperaba un arreglo", result);
+          console.error('Se esperaba un arreglo', result);
         }
       } catch (error) {
-        console.error("Error al hacer el fetching de datos:", error);
+        console.error('Error al hacer el fetching de datos:', error);
       }
     };
 
