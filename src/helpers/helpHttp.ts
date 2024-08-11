@@ -1,5 +1,19 @@
+type RequestOptions = {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: any;
+  signal?: AbortSignal;
+};
+
+type ErrorResponse = {
+  err: boolean;
+  status: number | string;
+  statusText: string;
+};
+
+
 export const helpHttp = () => {
-  const customFetch = (endpoint, options) => {
+  const customFetch = async (endpoint: string, options: RequestOptions): Promise<any> => {
     const defaultHeader = {
       accept: 'application/json',
     };
@@ -18,34 +32,34 @@ export const helpHttp = () => {
 
     //console.log(options);
 
-    setTimeout(() => controller.abort(), 10000); //abortamos la peticion despues de 3 segundos
+    setTimeout(() => controller.abort(), 10000); //abortamos la peticion despues de 10 segundos
 
     return fetch(endpoint, options)
       .then((res) =>
         res.ok
           ? res.json()
-          : Promise.reject({
-              err: true,
-              status: res.status || '00',
-              statusText: res.statusText || 'Ocurrió un error',
-            })
+          : Promise.reject<ErrorResponse>({
+            err: true,
+            status: res.status || '00',
+            statusText: res.statusText || 'Ocurrió un error',
+          })
       )
       .catch((err) => err);
   };
 
-  const get = (url, options = {}) => customFetch(url, options);
+  const get = (url: string, options: RequestOptions = {}) => customFetch(url, options);
 
-  const post = (url, options) => {
+  const post = (url: string, options: RequestOptions) => {
     options.method = 'POST';
     return customFetch(url, options);
   };
 
-  const put = (url, options) => {
+  const put = (url: string, options: RequestOptions) => {
     options.method = 'PUT';
     return customFetch(url, options);
   };
 
-  const del = (url, options) => {
+  const del = (url: string, options: RequestOptions) => {
     options.method = 'DELETE';
     return customFetch(url, options);
   };
