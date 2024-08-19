@@ -1,17 +1,19 @@
-import "./App.css";
-import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RegisterPage from "./pages/RegisterPage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
+import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import RegisterPage from './pages/RegisterPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
+import { Menu } from './components/Menu.tsx'
+
 function App() {
   return (
     <BrowserRouter>
+      <Menu />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
 //   const [data, setData] = useState<
@@ -90,4 +92,4 @@ function App() {
 //   );
 // };
 
-export default App;
+export default App
