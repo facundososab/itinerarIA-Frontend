@@ -1,9 +1,12 @@
 import { RegisterForm } from '../components/RegisterForm.tsx'
+import { AuthProvider } from '../context/AuthContext.tsx'
 
 function RegisterPage() {
   return (
     <div>
-      <RegisterForm />
+      <AuthProvider>
+        <RegisterForm />
+      </AuthProvider>
     </div>
   )
 }

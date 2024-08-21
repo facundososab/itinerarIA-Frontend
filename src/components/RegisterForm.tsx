@@ -1,7 +1,10 @@
 import { useForm } from 'react-hook-form'
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext.tsx'
 
 export function RegisterForm(): JSX.Element {
   const { register, handleSubmit } = useForm()
+  const { user, isAuthenticated, signup } = useContext(AuthContext)
   return (
     <form
       onSubmit={handleSubmit((values) => {
@@ -10,7 +13,7 @@ export function RegisterForm(): JSX.Element {
     >
       <input
         type="text"
-        {...register('nombreDeUsuario')}
+        {...register('username')}
         placeholder="Nombre de usuario"
       />
       <input
@@ -25,6 +28,11 @@ export function RegisterForm(): JSX.Element {
         type="number"
         {...register('nroTelefono')}
         placeholder="Número de teléfono"
+      />
+      <input
+        type="date"
+        {...register('fechaDeNacimiento')}
+        placeholder="Fecha de nacimiento"
       />
       <button type="submit">Registrarse</button>
     </form>
