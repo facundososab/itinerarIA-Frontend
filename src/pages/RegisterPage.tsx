@@ -1,5 +1,5 @@
-import { RegisterForm } from '../components/RegisterForm.tsx'
-import { AuthProvider } from '../context/AuthContext.tsx'
+import RegisterForm from "../components/RegisterForm.tsx";
+import { AuthProvider } from "../context/AuthContext.tsx";
 
 function RegisterPage() {
   return (
@@ -8,7 +8,7 @@ function RegisterPage() {
         <RegisterForm />
       </AuthProvider>
     </div>
-  )
+  );
 }
 
-export default RegisterPage
+export default RegisterPage;

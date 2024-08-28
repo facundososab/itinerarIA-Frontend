@@ -1,10 +1,11 @@
-import LoginForm from '../components/LoginForm'
+import LoginForm from "../components/LoginForm";
 
 function LoginPage(): JSX.Element {
-  return
-  ;<div>
-    <LoginForm />;
-  </div>
+  return (
+    <div>
+      <LoginForm />;
+    </div>
+  );
 }
 
-export default LoginPage
+export default LoginPage;

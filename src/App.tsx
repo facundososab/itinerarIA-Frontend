@@ -1,20 +1,28 @@
-import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import RegisterPage from './pages/RegisterPage.tsx'
-import LoginPage from './pages/LoginPage.tsx'
-import { Menu } from './components/Menu.tsx'
+import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import RegisterPage from "./pages/RegisterPage.tsx";
+import LoginPage from "./pages/LoginPage.tsx";
+import Menu from "./components/Menu.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Menu />
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-      </Routes>
-    </BrowserRouter>
-  )
+    <div className="container">
+      <AuthProvider>
+        <BrowserRouter>
+          <Menu />
+          <Routes>
+            <Route path="/" element={<h1>Home</h1>} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </div>
+  );
 }
+
+export default App;
 
 //   const [data, setData] = useState<
 //     {
@@ -91,5 +99,3 @@ function App() {
 //     </div>
 //   );
 // };
-
-export default App
