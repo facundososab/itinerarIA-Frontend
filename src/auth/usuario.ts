@@ -10,5 +10,5 @@ export const loginRequest = async (user:User) => {
   return axios.post(`${API}/login`, user);
 }
 export const verifyTokenRequest = async () => { 
-  return axios.post(`${API}/verify`, {}, { withCredentials: true });
+  return axios.get(`${API}/verify`);
 }

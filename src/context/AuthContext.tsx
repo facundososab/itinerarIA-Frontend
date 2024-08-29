@@ -5,7 +5,7 @@ import {
   verifyTokenRequest,
 } from "../auth/usuario.ts";
 import User from "../interfaces/User.ts";
-//import Cookies from "js-cookie";
+import Cookies from "js-cookie";
 export const AuthContext = createContext({
   user: null as User | null,
   isAuthenticated: true || false,
@@ -35,6 +35,7 @@ export const AuthProvider = ({ children }: any) => {
       setUser(res.data);
       setIsAuthenticated(true);
       setAuthErrors({ data: [] });
+      console.log(isAuthenticated, "isAuthenticated");
     } catch (err: any) {
       const errorData = err.response?.data?.message || "Error";
       console.log(errorData, "errorData");
@@ -48,6 +49,7 @@ export const AuthProvider = ({ children }: any) => {
       setUser(res.data);
       setIsAuthenticated(true);
       setAuthErrors({ data: [] });
+      console.log(isAuthenticated, "isAuthenticated");
     } catch (err: any) {
       const errorData = err.response?.data?.message || "Error";
       setAuthErrors({ data: errorData });
@@ -63,27 +65,29 @@ export const AuthProvider = ({ children }: any) => {
     }
   }, [authError]);
   // useEffect(() => {
-  //   async function checkUser() {
+  //   const checkUser = async () => {
   //     const cookies = Cookies.get();
+  //     console.log(cookies, "cookies");
+  //     console.log(cookies.token, "cookies.token");
   //     if (!cookies.token) {
-  //       setIsAuthenticated(false);
+  //       //setIsAuthenticated(false);
   //       setLoading(false);
-  //       return setUser(null);
+  //       return;
   //     }
   //     try {
   //       const res = await verifyTokenRequest();
+  //       console.log(res.data, "res.data");
   //       if (!res.data) {
-  //         setIsAuthenticated(false);
-  //         setLoading(false);
-  //         return;
+  //         return setIsAuthenticated(false);
   //       }
-  //       setUser(res.data);
   //       setIsAuthenticated(true);
+  //       setUser(res.data);
   //       setLoading(false);
   //     } catch (err) {
-  //       console.log(err, "aa");
+  //       setIsAuthenticated(false);
+  //       setLoading(false);
   //     }
-  //   }
+  //   };
   //   checkUser();
   // }, []);
   //Esto es para que el usuario no se desloguee al recargar la página, y para las rutas privadas

@@ -1,9 +1,9 @@
 import LoginForm from "../components/LoginForm";
 
-function LoginPage(): JSX.Element {
+function LoginPage() {
   return (
     <div>
-      <LoginForm />;
+      <LoginForm />
     </div>
   );
 }

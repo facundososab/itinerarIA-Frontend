@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext.tsx";
+import { useEffect } from "react";
 import "../RegisterForm.css";
 import { useNavigate } from "react-router-dom";
 import User from "../interfaces/User.ts";
+import { useAuth } from "../context/AuthContext.tsx";
 
 function RegisterForm() {
   const {
@@ -15,7 +15,7 @@ function RegisterForm() {
   const onSubmit = handleSubmit(async (values) => {
     signup(values as User);
   });
-  const { isAuthenticated, signup } = useContext(AuthContext);
+  const { isAuthenticated, signup } = useAuth();
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
