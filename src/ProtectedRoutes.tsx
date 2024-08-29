@@ -6,7 +6,7 @@ function ProtectedRoute() {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (!isAuthenticated && !isLoading) {
+  if (!isAuthenticated && isLoading) {
     return <Navigate to="/login" replace />;
   }
 

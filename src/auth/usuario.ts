@@ -1,14 +1,14 @@
-import axios from 'axios';
+import axios from './axios';
 import User  from '../interfaces/User.js';
-const API = 'http://localhost:3000/api/auth';
+
 
 
 export const registerRequest = (user:User) => {
-  return axios.post(`${API}/register`, user);
+  return axios.post(`/auth/register`, user);
 }
 export const loginRequest = async (user:User) => {
-  return axios.post(`${API}/login`, user);
+  return axios.post(`/auth/login`, user);
 }
 export const verifyTokenRequest = async () => { 
-  return axios.get(`${API}/verify`);
+  return axios.get(`/auth/verify`);
 }
