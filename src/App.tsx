@@ -6,7 +6,6 @@ import Menu from "./components/Menu.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import ProtectedRoute from "./ProtectedRoutes.tsx";
 import ItineraryPage from "./pages/ItineraryPage.tsx";
-
 function App() {
   return (
     <div className="container">

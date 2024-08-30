@@ -12,3 +12,6 @@ export const loginRequest = async (user:User) => {
 export const verifyTokenRequest = async () => { 
   return axios.get(`/auth/verify`);
 }
+export const logoutRequest = async () => {
+  return axios.post(`/auth/logout`);
+}

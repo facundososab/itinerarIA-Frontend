@@ -3,7 +3,6 @@ import User from "../interfaces/User.js";
 import { useAuth } from "../context/AuthContext.js";
 import { useNavigate, Link } from "react-router-dom";
 import { useEffect } from "react";
-import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline";
 
 function LoginPage() {
   const {
@@ -13,7 +12,6 @@ function LoginPage() {
   } = useForm();
   const { signIn, isAuthenticated, authError } = useAuth();
   const navigate = useNavigate();
-  
 
   const onSubmit = handleSubmit(async (values) => {
     signIn(values as User);
@@ -32,19 +30,6 @@ function LoginPage() {
           Login to itinerarIA
         </h1>
 
-        {authError.data.length > 0 && (
-          <div
-            className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-            role="alert"
-          >
-            {authError.data.map((error, index) => (
-              <p key={index} className="text-sm">
-                {error}
-              </p>
-            ))}
-          </div>
-        )}
-
         <form onSubmit={onSubmit} className="space-y-6">
           <div>
             <label
@@ -54,12 +39,7 @@ function LoginPage() {
               Username
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <UserIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </div>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"></div>
               <input
                 id="username"
                 type="text"
@@ -83,12 +63,7 @@ function LoginPage() {
               Password
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <LockClosedIcon
-                  className="h-5 w-5 text-gray-400"
-                  aria-hidden="true"
-                />
-              </div>
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"></div>
               <input
                 id="password"
                 type="password"

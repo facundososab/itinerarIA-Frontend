@@ -15,7 +15,7 @@ function RegisterForm() {
   const onSubmit = handleSubmit(async (values) => {
     signup(values as User);
   });
-  const { isAuthenticated, signup } = useAuth();
+  const { isAuthenticated, signup, authError } = useAuth();
   useEffect(() => {
     if (isAuthenticated) {
       navigate("/");
@@ -23,59 +23,63 @@ function RegisterForm() {
   }, [isAuthenticated]);
 
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        type="text"
-        {...register("username", {
-          required: "El nombre de usuario es requerido",
-        })}
-        placeholder="Nombre de usuario"
-      />
-      {errors.username && <p>{errors.username.message}</p>}
-      <input
-        type="password"
-        id="password"
-        {...register("password", { required: "La contraseña es requerida" })}
-        placeholder="Contraseña"
-      />
+    <>
+      <form onSubmit={onSubmit}>
+        <input
+          type="text"
+          {...register("username", {
+            required: "El nombre de usuario es requerido",
+          })}
+          placeholder="Nombre de usuario"
+        />
+        {errors.username && <p>{errors.username.message as string}</p>}
+        <input
+          type="password"
+          id="password"
+          {...register("password", { required: "La contraseña es requerida" })}
+          placeholder="Contraseña"
+        />
 
-      {errors.password && <p>{errors.password.message}</p>}
-      <input
-        type="text"
-        {...register("nombres", { required: "El nombre es requerido" })}
-        placeholder="Nombres"
-      />
-      {errors.nombres && <p>{errors.nombres.message}</p>}
-      <input
-        type="text"
-        {...register("apellidos", { required: "El apellido es requerido" })}
-        placeholder="Apellidos"
-      />
-      {errors.apellidos && <p>{errors.apellidos.message}</p>}
-      <input
-        type="email"
-        {...register("mail", { required: "El mail es requerido" })}
-        placeholder="Mail"
-      />
-      {errors.mail && <p>{errors.mail.message}</p>}
-      <input
-        type="number"
-        {...register("nroTelefono", {
-          required: "El número de teléfono es requerido",
-        })}
-        placeholder="Número de teléfono"
-      />
-      {errors.nroTelefono && <p>{errors.nroTelefono.message}</p>}
-      <input
-        type="date"
-        {...register("fechaNacimiento", {
-          required: "La fecha de nacimiento es requerida",
-        })}
-        placeholder="Fecha de nacimiento"
-      />
-      {errors.fechaDeNacimiento && <p>{errors.fechaDeNacimiento.message}</p>}
-      <button type="submit">Registrarse</button>
-    </form>
+        {errors.password && <p>{errors.password.message as string}</p>}
+        <input
+          type="text"
+          {...register("nombres", { required: "El nombre es requerido" })}
+          placeholder="Nombres"
+        />
+        {errors.nombres && <p>{errors.nombres.message as string}</p>}
+        <input
+          type="text"
+          {...register("apellidos", { required: "El apellido es requerido" })}
+          placeholder="Apellidos"
+        />
+        {errors.apellidos && <p>{errors.apellidos.message as string}</p>}
+        <input
+          type="email"
+          {...register("mail", { required: "El mail es requerido" })}
+          placeholder="Mail"
+        />
+        {errors.mail && <p>{errors.mail.message as string}</p>}
+        <input
+          type="number"
+          {...register("nroTelefono", {
+            required: "El número de teléfono es requerido",
+          })}
+          placeholder="Número de teléfono"
+        />
+        {errors.nroTelefono && <p>{errors.nroTelefono.message as string}</p>}
+        <input
+          type="date"
+          {...register("fechaNacimiento", {
+            required: "La fecha de nacimiento es requerida",
+          })}
+          placeholder="Fecha de nacimiento"
+        />
+        {errors.fechaDeNacimiento && (
+          <p>{errors.fechaDeNacimiento.message as string}</p>
+        )}
+        <button type="submit">Registrarse</button>
+      </form>
+    </>
   );
 }
 

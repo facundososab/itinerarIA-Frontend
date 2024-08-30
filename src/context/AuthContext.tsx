@@ -3,6 +3,7 @@ import {
   registerRequest,
   loginRequest,
   verifyTokenRequest,
+  logoutRequest,
 } from "../auth/usuario.ts";
 import User from "../interfaces/User.ts";
 import Cookies from "js-cookie";
@@ -13,6 +14,7 @@ export const AuthContext = createContext({
   authError: { data: [] },
   signIn: (_user: User) => {},
   isLoading: false || true,
+  logout: () => {},
 });
 
 //Esta funcion se crea para poder utilizar el contexto en cualquier parte de la aplicación y no tener que estar exportando e importando el contexto en cada archivo.
@@ -36,7 +38,7 @@ export const AuthProvider = ({ children }: any) => {
       setIsAuthenticated(true);
       setAuthErrors({ data: [] });
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error";
+      const errorData = err.response?.data || "Error";
       console.log(errorData, "errorData");
       setAuthErrors({ data: errorData });
       console.log(typeof authError, "errors");
@@ -49,6 +51,21 @@ export const AuthProvider = ({ children }: any) => {
       setIsAuthenticated(true);
       setAuthErrors({ data: [] });
       console.log(isAuthenticated, "isAuthenticated");
+    } catch (err: any) {
+      const errorData =
+        err.response?.data?.message ||
+        err.response?.data?.errors?.password ||
+        err.response?.data?.errors?.username;
+      setAuthErrors({ data: errorData });
+      console.log(errorData, "errorData");
+    }
+  };
+  const logout = async () => {
+    try {
+      await logoutRequest();
+      setUser(null);
+      setIsAuthenticated(false);
+      Cookies.remove("token");
     } catch (err: any) {
       const errorData = err.response?.data?.message || "Error";
       setAuthErrors({ data: errorData });
@@ -97,6 +114,7 @@ export const AuthProvider = ({ children }: any) => {
         authError,
         signIn,
         isLoading,
+        logout,
       }}
     >
       {children}
