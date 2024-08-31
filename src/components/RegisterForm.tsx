@@ -24,7 +24,7 @@ function RegisterForm() {
   }, [isAuthenticated, navigate])
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-full flex flex-col justify-center pb-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
           Register
@@ -33,7 +33,7 @@ function RegisterForm() {
           Or{' '}
           <Link
             to="/login"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-indigo-600 hover:text-indigo-500"
           >
             sign in to your account
           </Link>
@@ -91,7 +91,7 @@ function RegisterForm() {
                   {...register('username', {
                     required: 'Username is required',
                   })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.username && (
                   <p className="mt-2 text-sm text-red-600">
@@ -115,7 +115,7 @@ function RegisterForm() {
                   {...register('password', {
                     required: 'Password is required',
                   })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.password && (
                   <p className="mt-2 text-sm text-red-600">
@@ -139,7 +139,7 @@ function RegisterForm() {
                   {...register('nombres', {
                     required: 'First name is required',
                   })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.nombres && (
                   <p className="mt-2 text-sm text-red-600">
@@ -163,7 +163,7 @@ function RegisterForm() {
                   {...register('apellidos', {
                     required: 'Last name is required',
                   })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.apellidos && (
                   <p className="mt-2 text-sm text-red-600">
@@ -185,7 +185,7 @@ function RegisterForm() {
                   id="mail"
                   type="email"
                   {...register('mail', { required: 'Email is required' })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.mail && (
                   <p className="mt-2 text-sm text-red-600">
@@ -209,7 +209,7 @@ function RegisterForm() {
                   {...register('nroTelefono', {
                     required: 'Phone number is required',
                   })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.nroTelefono && (
                   <p className="mt-2 text-sm text-red-600">
@@ -233,7 +233,7 @@ function RegisterForm() {
                   {...register('fechaNacimiento', {
                     required: 'Date of birth is required',
                   })}
-                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.fechaNacimiento && (
                   <p className="mt-2 text-sm text-red-600">
@@ -246,7 +246,7 @@ function RegisterForm() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 transform transition-transform duration-300 hover:scale-105 bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Register
               </button>

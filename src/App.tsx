@@ -2,23 +2,23 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import RegisterPage from './pages/RegisterPage.tsx'
 import LoginPage from './pages/LoginPage.tsx'
-import Menu from './components/Menu.tsx'
+import Header from './components/Header.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import ProtectedRoute from './ProtectedRoutes.tsx'
-import ItineraryPage from './pages/ItineraryPage.tsx'
+import ItinerariesPage from './pages/ItineraryPage.tsx'
+import HomePage from './pages/HomePage.tsx'
 function App() {
   return (
     <div>
       <AuthProvider>
         <BrowserRouter>
-          <Menu />
+          <Header />
           <Routes>
-            <Route path="/" element={<h1>Home</h1>} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/protected" element={<h1>Protected</h1>} />
-              <Route path="/itinerarios" element={<ItineraryPage />} />
+              <Route path="/itinerarios" element={<ItinerariesPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
