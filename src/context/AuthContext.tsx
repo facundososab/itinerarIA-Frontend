@@ -1,108 +1,109 @@
-import { useContext, useState, createContext, useEffect } from "react";
+import { useContext, useState, createContext, useEffect } from 'react'
 import {
   registerRequest,
   loginRequest,
   verifyTokenRequest,
   logoutRequest,
-} from "../auth/usuario.ts";
-import User from "../interfaces/User.ts";
-import Cookies from "js-cookie";
+} from '../auth/usuario.ts'
+import User from '../interfaces/User.ts'
+import Cookies from 'js-cookie'
 export const AuthContext = createContext({
   user: null as User | null,
   isAuthenticated: true || false,
   signup: (_user: User) => {},
-  authError: { data: [] },
+  authErrors: [],
   signIn: (_user: User) => {},
   isLoading: false || true,
   logout: () => {},
-});
+})
 
 //Esta funcion se crea para poder utilizar el contexto en cualquier parte de la aplicación y no tener que estar exportando e importando el contexto en cada archivo.
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
-};
+  return context
+}
 
 export const AuthProvider = ({ children }: any) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authError, setAuthErrors] = useState({ data: [] });
-  const [isLoading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authErrors, setAuthErrors] = useState([])
+  const [isLoading, setLoading] = useState(true)
   const signup = async (user: User) => {
     try {
-      const res = await registerRequest(user);
-      setUser(res.data);
-      setIsAuthenticated(true);
-      setAuthErrors({ data: [] });
+      const res = await registerRequest(user)
+      setUser(res.data)
+      setIsAuthenticated(true)
+      setAuthErrors([])
     } catch (err: any) {
-      const errorData = err.response?.data || "Error";
-      console.log(errorData, "errorData");
-      setAuthErrors({ data: errorData });
-      console.log(typeof authError, "errors");
+      console.log(err)
+      const errorData = err.response.data.message
+      setAuthErrors(errorData)
     }
-  };
+  }
   const signIn = async (user: User) => {
     try {
-      const res = await loginRequest(user);
-      setUser(res.data);
-      setIsAuthenticated(true);
-      setAuthErrors({ data: [] });
-      console.log(isAuthenticated, "isAuthenticated");
+      const res = await loginRequest(user)
+      setUser(res.data)
+      setIsAuthenticated(true)
+      setAuthErrors([])
+      console.log(isAuthenticated, 'isAuthenticated')
     } catch (err: any) {
       const errorData =
         err.response?.data?.message ||
         err.response?.data?.errors?.password ||
-        err.response?.data?.errors?.username;
-      setAuthErrors({ data: errorData });
-      console.log(errorData, "errorData");
+        err.response?.data?.errors?.username
+      setAuthErrors(errorData)
+      console.log(errorData, 'errorData')
     }
-  };
+  }
   const logout = async () => {
     try {
-      await logoutRequest();
-      setUser(null);
-      setIsAuthenticated(false);
-      Cookies.remove("token");
+      await logoutRequest()
+      setUser(null)
+      setIsAuthenticated(false)
+      Cookies.remove('token')
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error";
-      setAuthErrors({ data: errorData });
+      const errorData = err.response?.data?.message || 'Error'
+      setAuthErrors(errorData)
     }
-  };
+  }
   //Elimino msj despues de 5 segundos
   useEffect(() => {
-    if (authError.data.length > 0) {
+    if (authErrors.length > 0) {
       const timer = setTimeout(() => {
-        setAuthErrors({ data: [] });
-      }, 5000);
-      return () => clearTimeout(timer);
+        setAuthErrors([])
+      }, 5000)
+      return () => clearTimeout(timer)
     }
-  }, [authError]);
+  }, [authErrors])
+
   useEffect(() => {
     const checkUser = async () => {
-      const cookies = Cookies.get();
+      const cookies = Cookies.get()
       if (!cookies.token) {
-        //setIsAuthenticated(false);
-        setLoading(false);
-        return;
+        setIsAuthenticated(false)
+        setLoading(false)
+        return
       }
       try {
-        const res = await verifyTokenRequest();
+        const res = await verifyTokenRequest()
+        console.log(res, 'res')
         if (!res.data) {
-          return setIsAuthenticated(false);
+          return setIsAuthenticated(false)
         }
-        setIsAuthenticated(true);
-        setUser(res.data);
-        setLoading(false);
+        setIsAuthenticated(true)
+        setUser(res.data)
+        setLoading(false)
       } catch (err) {
-        setIsAuthenticated(false);
-        setLoading(false);
+        setIsAuthenticated(false)
+        setLoading(false)
       }
-    };
-    checkUser();
-  }, []);
+    }
+    checkUser()
+  }, [])
   //Esto es para que el usuario no se desloguee al recargar la página, y para las rutas privadas
 
   return (
@@ -111,7 +112,7 @@ export const AuthProvider = ({ children }: any) => {
         user,
         isAuthenticated,
         signup,
-        authError,
+        authErrors,
         signIn,
         isLoading,
         logout,
@@ -119,5 +120,5 @@ export const AuthProvider = ({ children }: any) => {
     >
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}

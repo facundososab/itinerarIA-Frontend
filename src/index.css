@@ -2,11 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply font-sans;
+  }
+}
+
+:root {
+  --night: #131316ff;
+  --raisin-black: #1c1c21ff;
+  --raisin-black-2: #26262cff;
+  --jet: #2f3037ff;
+  --onyx: #393a41ff;
+  --davys-gray: #4b4c52ff;
+  --davys-gray-2: #5b5c62ff;
+  --dim-gray: #6a6b70ff;
+}
+
 body {
-  background: #202020;
+  background: var(--onyx);
   color: white;
 }
 
 .content-container {
-  height: calc(100vh - theme("spacing.20"));
+  height: calc(100vh - theme('spacing.20'));
+}
+
+.menu {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--onyx);
+}
+
+.menu a {
+  font-size: 1.2rem;
+  color: #e0e0e0;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.3s ease;
+  border-radius: 0.375rem;
+}
+
+.menu a:hover {
+  color: #3b82f6;
+}
+
+.menu .active {
+  font-weight: bold;
+  color: #3b82f6;
+}
+
+form label {
+  color: #e0e0e0;
 }

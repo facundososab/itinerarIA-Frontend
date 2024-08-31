@@ -1,14 +1,14 @@
-import "./App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RegisterPage from "./pages/RegisterPage.tsx";
-import LoginPage from "./pages/LoginPage.tsx";
-import Menu from "./components/Menu.tsx";
-import { AuthProvider } from "./context/AuthContext.tsx";
-import ProtectedRoute from "./ProtectedRoutes.tsx";
-import ItineraryPage from "./pages/ItineraryPage.tsx";
+import './App.css'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import RegisterPage from './pages/RegisterPage.tsx'
+import LoginPage from './pages/LoginPage.tsx'
+import Menu from './components/Menu.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
+import ProtectedRoute from './ProtectedRoutes.tsx'
+import ItineraryPage from './pages/ItineraryPage.tsx'
 function App() {
   return (
-    <div className="container">
+    <div>
       <AuthProvider>
         <BrowserRouter>
           <Menu />
@@ -24,7 +24,7 @@ function App() {
         </BrowserRouter>
       </AuthProvider>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

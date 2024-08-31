@@ -3,7 +3,8 @@ export default interface User {
     password: string;
     nombres: string;
     apellidos: string;
-    email: string;
-    numeroDeTelefono: string;
+    mail: string;
+    nroTelefono: string;
+    fechaNacimiento: string;
 }
 
