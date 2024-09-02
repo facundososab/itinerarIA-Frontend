@@ -7,6 +7,7 @@ import {
 } from '../auth/usuario.ts'
 import User from '../interfaces/User.ts'
 import Cookies from 'js-cookie'
+
 export const AuthContext = createContext({
   user: null as User | null,
   isAuthenticated: true || false,
