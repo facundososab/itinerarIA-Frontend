@@ -3,6 +3,8 @@ import { MapPinIcon, PaperAirplaneIcon } from '@heroicons/react/24/outline'
 import { ItinerariesSidebar } from '../components/ItinerariesSidebar.tsx'
 import { Conversation, CurrentConversation, ItineraryDay } from '../types'
 import { ItineraryDisplay } from '../components/ItineraryDisplay.tsx'
+import { ItineraryProvider, useItinerary } from '../context/ItineraryContext.tsx'
+
 
 const initialConversations: Conversation[] = [
   { id: 1, title: 'Paris Trip', date: '2023-06-15' },
@@ -98,24 +100,27 @@ export default function itinerariesPage() {
   )
 
   return (
-    <div className="flex h-screen bg-raisin-black-2">
-      <ItinerariesSidebar
-        conversations={conversations}
-        onSelectConversation={handleSelectConversation}
-        onNewItinerary={handleNewItinerary}
-      />
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 p-4 overflow-y-auto">
-          {currentConversation ? (
-            <ItineraryDisplay conversation={currentConversation} />
-          ) : (
-            <div className="h-full flex items-center justify-center text-gray-500">
-              Enter a destination to generate a new itinerary
-            </div>
-          )}
-          <InputArea onSubmit={handleSubmit} />
+    <ItineraryProvider>
+      <div className="flex h-screen bg-raisin-black-2">
+        <ItinerariesSidebar
+          conversations={conversations}
+          onSelectConversation={handleSelectConversation}
+          onNewItinerary={handleNewItinerary}
+        />
+        <div className="flex-1 flex flex-col">
+          <div className="flex-1 p-4 overflow-y-auto">
+            {currentConversation ? (
+              <ItineraryDisplay conversation={currentConversation} />
+            ) : (
+              <div className="h-full flex items-center justify-center text-gray-500">
+                Enter a destination to generate a new itinerary
+              </div>
+            )}
+            <InputArea onSubmit={handleSubmit} />
+          </div>
         </div>
       </div>
-    </div>
+    </ItineraryProvider>
+
   )
 }

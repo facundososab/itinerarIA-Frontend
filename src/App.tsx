@@ -7,6 +7,7 @@ import { AuthProvider } from './context/AuthContext.tsx'
 import ProtectedRoute from './ProtectedRoutes.tsx'
 import ItinerariesPage from './pages/ItineraryPage.tsx'
 import HomePage from './pages/HomePage.tsx'
+
 function App() {
   return (
     <div>

@@ -56,7 +56,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
     const updateItinerary = async (id: ObjectId, itinerary: Itinerary) => {
         try {
-            await updateItineraryRequest(id, itinerary);
+            await updateItineraryRequest(itinerary);
         } catch (error) {
             console.error(error);
         }

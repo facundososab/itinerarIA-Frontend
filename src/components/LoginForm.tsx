@@ -19,9 +19,9 @@ function LoginForm() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/')
+      navigate('/itinerarios')
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated])
 
   return (
     <div className="flex flex-col justify-center sm:px-6 lg:px-8">
