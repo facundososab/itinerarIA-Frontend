@@ -1,11 +1,17 @@
 import { PlusCircleIcon, CalendarIcon } from '@heroicons/react/24/outline'
 import { Conversation } from '../types'
 
-export const ItinerariesSidebar: React.FC<{
+interface ItinerariesSidebarProps {
   conversations: Conversation[]
   onSelectConversation: (conv: Conversation) => void
   onNewItinerary: () => void
-}> = ({ conversations, onSelectConversation, onNewItinerary }) => (
+}
+
+export const ItinerariesSidebar = ({
+  conversations,
+  onSelectConversation,
+  onNewItinerary,
+}: ItinerariesSidebarProps): JSX.Element => (
   <div className="w-64 bg-onyx h-screen flex flex-col">
     <div className="p-4">
       <button

@@ -1,8 +1,10 @@
 import { CurrentConversation } from '../types'
 
-export const ItineraryDisplay: React.FC<{
+export const ItineraryDisplay = ({
+  conversation,
+}: {
   conversation: CurrentConversation
-}> = ({ conversation }) => (
+}): JSX.Element => (
   <div className="space-y-4 p-4 overflow-y-auto flex-grow">
     <h2 className="text-2xl font-bold">{conversation.title}</h2>
     <p className="text-gray-600">
