@@ -18,7 +18,7 @@ function LoginForm() {
   })
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
       navigate('/')
     }
   }, [isAuthenticated, navigate])
