@@ -6,10 +6,12 @@ import {
   logoutRequest,
 } from '../auth/usuario.ts'
 import User from '../interfaces/User.ts'
+import Itinerary from '../interfaces/Itinerary.ts'
 import Cookies from 'js-cookie'
 
 export const AuthContext = createContext({
   user: null as User | null,
+  itineraries: null as Itinerary[] | null,
   isAuthenticated: true || false,
   signup: (_user: User) => {},
   authErrors: [],
@@ -29,13 +31,15 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User | null>(null)
+  const [itineraries, setItineraries] = useState<Itinerary[] | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [authErrors, setAuthErrors] = useState([])
   const [isLoading, setLoading] = useState(true)
   const signup = async (user: User) => {
     try {
       const res = await registerRequest(user)
-      setUser(res.data)
+      setUser(res.data.data.usuario)
+      setItineraries(res.data.data.usuario.itineraries)
       setIsAuthenticated(true)
       setAuthErrors([])
     } catch (err: any) {
@@ -47,7 +51,8 @@ export const AuthProvider = ({ children }: any) => {
   const signIn = async (user: User) => {
     try {
       const res = await loginRequest(user)
-      setUser(res.data)
+      setUser(res.data.data.usuario)
+      setItineraries(res.data.data.usuario.itineraries)
       setIsAuthenticated(true)
       setAuthErrors([])
       console.log(isAuthenticated, 'isAuthenticated')
@@ -96,7 +101,8 @@ export const AuthProvider = ({ children }: any) => {
           return setIsAuthenticated(false)
         }
         setIsAuthenticated(true)
-        setUser(res.data)
+        setUser(res.data.data.usuario)
+        setItineraries(res.data.data.usuario.itineraries)
         setLoading(false)
       } catch (err) {
         setIsAuthenticated(false)
@@ -111,6 +117,7 @@ export const AuthProvider = ({ children }: any) => {
     <AuthContext.Provider
       value={{
         user,
+        itineraries,
         isAuthenticated,
         signup,
         authErrors,

@@ -3,7 +3,7 @@ import { useItinerary } from '../context/ItineraryContext.tsx'
 
 export function ItineraryDisplay() {
   const { user } = useAuth()
-  const { currentConversation } = useItinerary()
+  const { CurrentItinerary } = useItinerary()
   console.log(user)
   return (
     <div className="space-y-4 p-4 overflow-y-auto flex-grow">

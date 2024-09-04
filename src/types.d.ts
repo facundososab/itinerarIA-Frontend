@@ -1,4 +1,4 @@
-export type Conversation = {
+export type ItineraryItem = {
   id: number
   title: string
   date: string
@@ -9,6 +9,6 @@ export type ItineraryDay = {
   activities: string[]
 }
 
-export type CurrentConversation = Conversation & {
+export type CurrentItinerary = ItineraryItem & {
   itinerary: ItineraryDay[]
 }

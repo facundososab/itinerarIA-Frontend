@@ -6,13 +6,13 @@ import {
 } from '../context/ItineraryContext.tsx'
 
 export default function ItinerariesPage() {
-  const { currentConversation } = useItinerary()
+  const { CurrentItinerary } = useItinerary()
   return (
     <div className="flex h-screen bg-raisin-black-2">
       <ItinerariesSidebar />
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 overflow-y-auto">
-          {currentConversation ? (
+          {CurrentItinerary ? (
             <ItineraryDisplay />
           ) : (
             <div className="h-full flex items-center justify-center text-gray-500">

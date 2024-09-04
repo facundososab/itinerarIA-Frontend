@@ -10,9 +10,9 @@ import Itinerary from '../interfaces/Itinerary.ts' // Import the Itinerary type 
 import { ObjectId } from '@mikro-orm/mongodb'
 import { ReactNode } from 'react'
 import { useCallback } from 'react'
-import { Conversation, CurrentConversation, ItineraryDay } from '../types'
+import { ItineraryItem, CurrentItinerary, ItineraryDay } from '../types'
 
-const initialConversations: Conversation[] = [
+const initialItineraryItems: ItineraryItem[] = [
   { id: 1, title: 'Paris Trip', date: '2023-06-15' },
   { id: 2, title: 'Tokyo Adventure', date: '2023-07-22' },
   { id: 3, title: 'New York City Tour', date: '2023-08-10' },
@@ -44,10 +44,10 @@ export const ItineraryContext = createContext({
   getItinerary: (_id: ObjectId) => {},
   updateItinerary: (_itinerary: Itinerary) => {},
   deleteItinerary: (_id: ObjectId) => {},
-  conversations: initialConversations,
-  currentConversation: null as CurrentConversation | null,
+  ItineraryItems: initialItineraryItems,
+  CurrentItinerary: null as CurrentItinerary | null,
   handleNewItinerary: () => {},
-  handleSelectConversation: (_conv: Conversation) => {},
+  handleSelectItinerary: (_id: ObjectId) => {},
   handleSubmit: (_input: string) => {},
 })
 
@@ -60,15 +60,16 @@ export const useItinerary = () => {
 
 export function ItineraryProvider({ children }: { children: ReactNode }) {
   const [itineraries, setItineraries] = useState<Itinerary[]>([])
-  const [conversations, setConversations] =
-    useState<Conversation[]>(initialConversations)
-  const [currentConversation, setCurrentConversation] =
-    useState<CurrentConversation | null>(null)
+  const [ItineraryItems, setItineraryItems] = useState<ItineraryItem[]>(
+    initialItineraryItems
+  )
+  const [CurrentItinerary, setCurrentItinerary] =
+    useState<CurrentItinerary | null>(null)
 
-  const handleNewItinerary = useCallback(() => setCurrentConversation(null), [])
+  const handleNewItinerary = useCallback(() => setCurrentItinerary(null), [])
 
-  const handleSelectConversation = useCallback((conv: Conversation) => {
-    setCurrentConversation({
+  const handleSelectItinerary = useCallback((conv: ItineraryItem) => {
+    setCurrentItinerary({
       ...conv,
       itinerary: generateMockItinerary(conv.title),
     })
@@ -76,19 +77,19 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const handleSubmit = useCallback(
     (input: string) => {
-      const newConversation: CurrentConversation = {
-        id: conversations.length + 1,
+      const newItineraryItem: CurrentItinerary = {
+        id: ItineraryItems.length + 1,
         title: input,
         date: new Date().toISOString().split('T')[0],
         itinerary: generateMockItinerary(input),
       }
-      setConversations((prevConversations) => [
-        newConversation,
-        ...prevConversations,
+      setItineraryItems((prevItineraryItems) => [
+        newItineraryItem,
+        ...prevItineraryItems,
       ])
-      setCurrentConversation(newConversation)
+      setCurrentItinerary(newItineraryItem)
     },
-    [conversations]
+    [ItineraryItems]
   )
 
   const createItinerary = async (itinerary: Itinerary) => {
@@ -137,10 +138,10 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
         createItinerary,
         getItinerary,
         updateItinerary,
-        conversations,
-        currentConversation,
+        ItineraryItems,
+        CurrentItinerary,
         handleNewItinerary,
-        handleSelectConversation,
+        handleSelectItinerary,
         handleSubmit,
       }}
     >
