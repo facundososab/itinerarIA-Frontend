@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useAuth } from '../context/AuthContext.tsx'
 import { useItinerary } from '../context/ItineraryContext.tsx'
 import { NewItineraryButton } from './NewItineraryButton.tsx'
@@ -5,7 +6,10 @@ import { CalendarIcon } from '@heroicons/react/24/outline'
 
 export default function ItinerariesSidebar() {
   const { itineraries } = useAuth()
-  const { handleSelectItinerary } = useItinerary()
+  const { setItineraries, handleSelectItinerary } = useItinerary()
+  useEffect(() => {
+    itineraries ? setItineraries(itineraries) : null
+  }, [itineraries])
   return (
     <div className="w-64 bg-onyx h-screen flex flex-col">
       <div className="p-4">

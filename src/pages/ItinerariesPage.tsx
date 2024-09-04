@@ -8,7 +8,7 @@ import {
 export default function ItinerariesPage() {
   const { CurrentItinerary } = useItinerary()
   return (
-    <div className="flex h-screen bg-raisin-black-2">
+    <div className="flex h-full bg-raisin-black-2">
       <ItinerariesSidebar />
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 overflow-y-auto">
@@ -16,7 +16,7 @@ export default function ItinerariesPage() {
             <ItineraryDisplay />
           ) : (
             <div className="h-full flex items-center justify-center text-gray-500">
-              Enter a destination to generate a new itinerary
+              Select an itinerary to view or create a new one
             </div>
           )}
           {/* <InputArea onSubmit={handleSubmit} /> */}
