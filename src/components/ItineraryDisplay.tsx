@@ -1,26 +1,20 @@
 import { useItinerary } from '../context/ItineraryContext.tsx'
-import { CurrentConversation } from '../types'
 
-
-export const ItineraryDisplay = ({
-  conversation,
-}: {
-  conversation: CurrentConversation
-}): JSX.Element => {
-
-  const { itineraries, createItinerary } = useItinerary()
+export function ItineraryDisplay() {
+  const { itineraries, currentConversation } = useItinerary()
 
   return (
-
     <div className="space-y-4 p-4 overflow-y-auto flex-grow">
-      <h2 className="text-2xl font-bold">{conversation.title}</h2>
+      <h2 className="text-2xl font-bold">{currentConversation?.title}</h2>
       <p className="text-gray-600">
-        Here's your itinerary for {conversation.title}:
+        Here's your itinerary for {currentConversation?.title}:
       </p>
-      {itineraries?.map((itinerary, i) => (
+      {currentConversation?.itinerary.map((itinerary, i) => (
         <div key={i} className="bg-dim-gray p-4 rounded-lg shadow">
-          <h3 className="font-bold">Itinerary {itinerary.titulo}</h3>
-        </div>
+          {itinerary.activities.map((activity, j) => (
+            <div key={j} className="flex items-center space-x-4">
+            </div>
+          ))}
       ))}
     </div>
   )

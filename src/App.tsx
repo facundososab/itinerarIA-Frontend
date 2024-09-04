@@ -5,24 +5,27 @@ import LoginPage from './pages/LoginPage.tsx'
 import Header from './components/Header.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import ProtectedRoute from './ProtectedRoutes.tsx'
-import ItinerariesPage from './pages/ItineraryPage.tsx'
+import ItinerariesPage from './pages/ItinerariesPage.tsx'
 import HomePage from './pages/HomePage.tsx'
+import { ItineraryProvider } from './context/ItineraryContext.tsx'
 
 function App() {
   return (
     <div>
       <AuthProvider>
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route element={<ProtectedRoute />}>
-              <Route path="/itinerarios" element={<ItinerariesPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <ItineraryProvider>
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/itinerarios" element={<ItinerariesPage />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </ItineraryProvider>
       </AuthProvider>
     </div>
   )
