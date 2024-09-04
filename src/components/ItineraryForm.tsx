@@ -13,14 +13,16 @@ export default function InputNewItinerary({
     handleSubmit,
     formState: { errors },
   } = useForm<Itinerary>();
-  const onSubmit = handleSubmit((data) => {
+  const onCreate = handleSubmit((data) => {
     createItinerary(data);
+    onClose();
   });
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-stone-800 p-6 rounded-md shadow-md">
         <div className="text-lg font-semibold mb-1">New Itinerary</div>
-        <form onSubmit={onSubmit} className="space-y-1.5">
+        <form onSubmit={onCreate} className="space-y-1.5">
           {" "}
           <div>
             <label

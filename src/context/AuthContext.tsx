@@ -48,15 +48,13 @@ export const AuthProvider = ({ children }: any) => {
       setAuthErrors(errorData);
     }
   };
-  const signIn = async (user: User) => {
+  const signIn = async (userCreated: User) => {
     try {
-      const res = await loginRequest(user);
-      setUser(res.data.data);
+      const res = await loginRequest(userCreated);
+      setUser(res.data.data.usuario);
       setItineraries(res.data.data.usuario.itineraries);
       setIsAuthenticated(true);
       setAuthErrors([]);
-      console.log(res.data.data);
-      console.log(isAuthenticated, "isAuthenticated");
     } catch (err: any) {
       const errorData =
         err.response?.data?.message ||
@@ -97,7 +95,6 @@ export const AuthProvider = ({ children }: any) => {
       }
       try {
         const res = await verifyTokenRequest();
-        console.log(res, "res");
         if (!res.data) {
           return setIsAuthenticated(false);
         }

@@ -42,7 +42,6 @@ export const ItineraryContext = createContext({
   CurrentItinerary: null as Itinerary | null,
   handleNewItinerary: () => {},
   handleSelectItinerary: (_id: ObjectId) => {},
-  isCreated: true || false,
 });
 
 export const useItinerary = () => {
@@ -53,7 +52,6 @@ export const useItinerary = () => {
 };
 
 export function ItineraryProvider({ children }: { children: ReactNode }) {
-  const [isCreated, setIsCreated] = useState(false);
   const [itineraries, setItineraries] = useState<Itinerary[]>([]);
   const [CurrentItinerary, setCurrentItinerary] = useState<Itinerary | null>(
     null
@@ -76,7 +74,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       itinerary.user = user ? user.id : null;
       const res = await createItineraryRequest(itinerary);
       setItineraries([...itineraries, res.data]);
-      setIsCreated(true);
+
       console.log(res.data);
     } catch (error) {
       console.log(error);
@@ -124,7 +122,6 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
         CurrentItinerary,
         handleNewItinerary,
         handleSelectItinerary,
-        isCreated,
       }}
     >
       {children}
