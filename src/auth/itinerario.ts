@@ -6,8 +6,8 @@ export const createItineraryRequest = (itinerary: Itinerary) => {
   return axios.post('/itinerarios', itinerary)
 }
 
-export const getItinerariesRequest = async () => {
-  return axios.get('/itinerarios')
+export const getItinerariesRequest = async (userId: ObjectId) => {
+  return axios.get(`/itinerarios/${userId}`)
 }
 
 export const getItineraryRequest = async (id: ObjectId) => {
