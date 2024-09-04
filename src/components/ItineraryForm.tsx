@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import Itinerary from "../interfaces/Itinerary.ts";
-import User from "../interfaces/User.ts";
 import { useItinerary } from "../context/ItineraryContext.tsx";
 
 export default function InputNewItinerary({
@@ -34,7 +33,17 @@ export default function InputNewItinerary({
               <input
                 id="title"
                 type="text"
-                {...register("title", { required: "Title is required" })}
+                {...register("title", {
+                  minLength: {
+                    value: 3,
+                    message: "Title must be at least 3 characters long",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Title must be at most 20 characters long",
+                  },
+                  required: "Title is required",
+                })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter itinerary title"
               />
@@ -56,10 +65,24 @@ export default function InputNewItinerary({
               <input
                 id="description"
                 type="text"
-                {...register("description")}
+                {...register("description", {
+                  minLength: {
+                    value: 10,
+                    message: "Description must be at least 10 characters long",
+                  },
+                  maxLength: {
+                    value: 100,
+                    message: "Description must be at most 100 characters long",
+                  },
+                })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter itinerary description"
               />
+              {errors.description?.message && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description.message}
+                </p>
+              )}
             </div>
           </div>
           <div>
@@ -73,8 +96,15 @@ export default function InputNewItinerary({
               <input
                 id="duration"
                 type="number"
+                typeof="number"
                 {...register("duration", {
+                  valueAsNumber: true,
                   required: "Duration is required",
+                  min: { value: 1, message: "Duration must be at least 1 day" },
+                  max: {
+                    value: 30,
+                    message: "Duration must be at most 30 days",
+                  },
                 })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter itinerary duration"
@@ -98,6 +128,14 @@ export default function InputNewItinerary({
                 id="place"
                 type="text"
                 {...register("place", {
+                  minLength: {
+                    value: 3,
+                    message: "Place must be at least 3 characters long",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Place must be at most 20 characters long",
+                  },
                   required: "Place is required",
                 })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

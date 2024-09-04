@@ -4,12 +4,13 @@ import {
   getItineraryRequest,
   updateItineraryRequest,
   deleteItineraryRequest,
-} from '../auth/itinerario'
-import { createContext, useContext, useState } from 'react'
-import Itinerary from '../interfaces/Itinerary.ts' // Import the Itinerary type correctly
-import { ObjectId } from '@mikro-orm/mongodb'
-import { ReactNode } from 'react'
-import { useCallback } from 'react'
+} from "../auth/itinerario";
+import { createContext, useContext, useState } from "react";
+import Itinerary from "../interfaces/Itinerary.ts"; // Import the Itinerary type correctly
+import { ObjectId } from "@mikro-orm/mongodb";
+import { ReactNode } from "react";
+import { useCallback } from "react";
+import { useAuth } from "./AuthContext.tsx";
 
 // const generateMockItinerary = (title: string): ItineraryDay[] => [
 //   {
@@ -41,68 +42,74 @@ export const ItineraryContext = createContext({
   CurrentItinerary: null as Itinerary | null,
   handleNewItinerary: () => {},
   handleSelectItinerary: (_id: ObjectId) => {},
-})
+  isCreated: true || false,
+});
 
 export const useItinerary = () => {
-  const context = useContext(ItineraryContext)
+  const context = useContext(ItineraryContext);
   if (!context)
-    throw new Error('useItinerary must be used within a ItineraryProvider')
-  return context
-}
+    throw new Error("useItinerary must be used within a ItineraryProvider");
+  return context;
+};
 
 export function ItineraryProvider({ children }: { children: ReactNode }) {
-  const [itineraries, setItineraries] = useState<Itinerary[]>([])
+  const [isCreated, setIsCreated] = useState(false);
+  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
   const [CurrentItinerary, setCurrentItinerary] = useState<Itinerary | null>(
     null
-  )
+  );
+  const { user } = useAuth();
 
-  const handleNewItinerary = useCallback(() => setCurrentItinerary(null), [])
+  const handleNewItinerary = useCallback(() => setCurrentItinerary(null), []);
 
   const handleSelectItinerary = (id: ObjectId) => {
-    console.log(id, itineraries)
+    console.log(id, itineraries);
     const selectedItinerary = itineraries.find(
       (itinerary) => itinerary.id === id
-    )
-    console.log(selectedItinerary)
-    selectedItinerary ? setCurrentItinerary(selectedItinerary) : null
-  }
+    );
+    console.log(selectedItinerary);
+    selectedItinerary ? setCurrentItinerary(selectedItinerary) : null;
+  };
 
   const createItinerary = async (itinerary: Itinerary) => {
     try {
-      const res = await createItineraryRequest(itinerary)
-      setItineraries([...itineraries, res.data])
+      itinerary.user = user ? user.id : null;
+      const res = await createItineraryRequest(itinerary);
+      setItineraries([...itineraries, res.data]);
+      setIsCreated(true);
+      console.log(res.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const deleteItinerary = async (id: ObjectId) => {
     try {
-      const res = await deleteItineraryRequest(id)
+      const res = await deleteItineraryRequest(id);
       if (res.status === 204)
-        setItineraries(itineraries.filter((itinerary) => itinerary.id !== id))
+        setItineraries(itineraries.filter((itinerary) => itinerary.id !== id));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const getItineraries = async (userId: ObjectId) => {
-    const res = await getItinerariesRequest(userId)
-    setItineraries(res.data)
-  }
+    const res = await getItinerariesRequest(userId);
+    setItineraries(res.data);
+  };
 
   const getItinerary = async (id: ObjectId) => {
-    const res = await getItineraryRequest(id)
-    setItineraries(res.data)
-  }
+    const res = await getItineraryRequest(id);
+    setItineraries(res.data);
+  };
 
   const updateItinerary = async (itinerary: Itinerary) => {
     try {
-      await updateItineraryRequest(itinerary)
+      await updateItineraryRequest(itinerary);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   return (
     <ItineraryContext.Provider
@@ -117,9 +124,10 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
         CurrentItinerary,
         handleNewItinerary,
         handleSelectItinerary,
+        isCreated,
       }}
     >
       {children}
     </ItineraryContext.Provider>
-  )
+  );
 }

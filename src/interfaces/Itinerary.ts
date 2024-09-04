@@ -1,5 +1,4 @@
 import { ObjectId } from "@mikro-orm/mongodb";
-import User from "./User";
 import Place from "./Place";
 
 export default interface Itinerary {
@@ -7,7 +6,7 @@ export default interface Itinerary {
     title: string,
     description: string,
     duration: number,
-    user: User,
+    user: ObjectId | null,
     place : Place,
     preferences: string,
 }

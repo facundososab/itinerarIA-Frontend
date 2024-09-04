@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import { MapIcon, ClockIcon, ThumbsUpIcon } from 'lucide-react'
+import { Link } from "react-router-dom";
+import { MapIcon, ClockIcon, ThumbsUpIcon } from "lucide-react";
 
 export default function Component() {
   return (
@@ -156,10 +156,10 @@ export default function Component() {
               time, enjoy more, and travel with confidence.
             </p>
             <Link
-              to="/register"
+              to="/itinerarios"
               className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 sm:w-auto"
             >
-              Get Your Personalized Itinerary
+              Ver itinerarios
             </Link>
           </div>
         </div>
@@ -223,5 +223,5 @@ export default function Component() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
