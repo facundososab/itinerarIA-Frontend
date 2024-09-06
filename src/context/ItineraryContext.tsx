@@ -40,7 +40,7 @@ export const ItineraryContext = createContext({
   updateItinerary: (_itinerary: Itinerary) => {},
   deleteItinerary: (_id: ObjectId) => {},
   CurrentItinerary: null as Itinerary | null,
-  handleNewItinerary: () => {},
+  handleNewItinerary: (_itinerary: Itinerary) => {},
   handleSelectItinerary: (_id: ObjectId) => {},
 });
 
@@ -57,8 +57,17 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     null
   );
   const { user } = useAuth();
-
-  const handleNewItinerary = useCallback(() => setCurrentItinerary(null), []);
+  //creo handler para que cuando se cree un nuevo itinerario se seleccione automaticamente
+  const handleNewItinerary = useCallback(
+    (itinerary: Itinerary) => {
+      setCurrentItinerary(itinerary);
+    },
+    [itineraries]
+  );
+  const handleDeleteItinerary = useCallback(
+    () => setCurrentItinerary(null),
+    [itineraries]
+  );
 
   const handleSelectItinerary = (id: ObjectId) => {
     console.log(id, itineraries);
@@ -73,7 +82,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     try {
       itinerary.user = user ? user.id : null;
       const res = await createItineraryRequest(itinerary);
-      setItineraries([...itineraries, res.data]);
+      itineraries.push(res.data.data);
+      handleNewItinerary(res.data.data);
+      console.log(itineraries);
 
       console.log(res.data);
     } catch (error) {
@@ -84,8 +95,11 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   const deleteItinerary = async (id: ObjectId) => {
     try {
       const res = await deleteItineraryRequest(id);
-      if (res.status === 204)
+      if (res.status === 204) {
         setItineraries(itineraries.filter((itinerary) => itinerary.id !== id));
+        handleDeleteItinerary();
+        console.log("itinerary deleted");
+      }
     } catch (error) {
       console.log(error);
     }

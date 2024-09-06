@@ -1,15 +1,26 @@
-import { useEffect } from 'react'
-import { useAuth } from '../context/AuthContext.tsx'
-import { useItinerary } from '../context/ItineraryContext.tsx'
-import { NewItineraryButton } from './NewItineraryButton.tsx'
-import { CalendarIcon } from '@heroicons/react/24/outline'
+import { useEffect } from "react";
+import { useAuth } from "../context/AuthContext.tsx";
+import { useItinerary } from "../context/ItineraryContext.tsx";
+import { NewItineraryButton } from "./NewItineraryButton.tsx";
+import { CalendarIcon } from "@heroicons/react/24/outline";
 
 export default function ItinerariesSidebar() {
-  const { itineraries } = useAuth()
-  const { setItineraries, handleSelectItinerary } = useItinerary()
+  const { itineraries } = useAuth();
+  const {
+    setItineraries,
+    handleSelectItinerary,
+    deleteItinerary,
+    CurrentItinerary,
+  } = useItinerary();
   useEffect(() => {
-    itineraries ? setItineraries(itineraries) : null
-  }, [itineraries])
+    console.log(itineraries, "itineraries en useeffect");
+    itineraries ? setItineraries(itineraries) : null;
+  }, [itineraries]);
+  const onDelete = () => {
+    if (CurrentItinerary) {
+      deleteItinerary(CurrentItinerary.id);
+    }
+  };
   return (
     <div className="w-64 bg-onyx h-screen flex flex-col">
       <div className="p-4">
@@ -27,9 +38,12 @@ export default function ItinerariesSidebar() {
               <CalendarIcon className="h-4 w-4 mr-2" />
               {itinerary.duration} days
             </div>
+            <button type="submit" onClick={onDelete}>
+              <span className=" text-red-500">Delete itinerary</span>
+            </button>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }

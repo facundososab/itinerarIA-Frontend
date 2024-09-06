@@ -1,14 +1,14 @@
-import { useItinerary } from '../context/ItineraryContext.tsx'
+import { useItinerary } from "../context/ItineraryContext.tsx";
 
 export function ItineraryDisplay() {
-  const { CurrentItinerary } = useItinerary()
+  const { CurrentItinerary } = useItinerary();
 
   return (
     <div className="space-y-4 p-4">
       <h2 className="text-2xl font-bold">{CurrentItinerary?.title}</h2>
       <p className="text-gray-600">{CurrentItinerary?.description}:</p>
     </div>
-  )
+  );
 }
 
 /* {CurrentItinerary?.itinerary.map((itinerary, i) => (
