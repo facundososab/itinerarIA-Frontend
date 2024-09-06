@@ -1,16 +1,15 @@
 import { useEffect } from "react";
-import { useAuth } from "../context/AuthContext.tsx";
 import { useItinerary } from "../context/ItineraryContext.tsx";
 import { NewItineraryButton } from "./NewItineraryButton.tsx";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 
 export default function ItinerariesSidebar() {
-  const { itineraries } = useAuth();
   const {
     setItineraries,
     handleSelectItinerary,
     deleteItinerary,
     CurrentItinerary,
+    itineraries,
   } = useItinerary();
   useEffect(() => {
     console.log(itineraries, "itineraries en useeffect");
