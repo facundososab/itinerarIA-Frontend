@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
 import { MapIcon } from '@heroicons/react/24/outline'
-
+//agregar un boton para agregar lugares en el navbar
 function Header() {
   const { isAuthenticated, logout } = useAuth()
   return (

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useItinerary } from "../context/ItineraryContext.tsx";
+import { useItinerary } from "../../context/ItineraryContext.tsx";
 import { NewItineraryButton } from "./NewItineraryButton.tsx";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 

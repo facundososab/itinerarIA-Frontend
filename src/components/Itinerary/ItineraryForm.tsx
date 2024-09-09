@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import Itinerary from "../interfaces/Itinerary.ts";
-import { useItinerary } from "../context/ItineraryContext.tsx";
+import Itinerary from "../../interfaces/Itinerary.ts";
+import { useItinerary } from "../../context/ItineraryContext.tsx";
 
 export default function InputNewItinerary({
   onClose,
