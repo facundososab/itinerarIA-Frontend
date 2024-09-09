@@ -19,7 +19,7 @@ function RegisterForm() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/')
+      navigate('/itinerarios')
     }
   }, [isAuthenticated, navigate])
 

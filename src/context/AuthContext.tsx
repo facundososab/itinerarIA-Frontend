@@ -38,8 +38,8 @@ export const AuthProvider = ({ children }: any) => {
   const signup = async (user: User) => {
     try {
       const res = await registerRequest(user);
-      setUser(res.data.data.usuario);
-      setItineraries(res.data.data.usuario.itineraries);
+      setUser(res.data.data);
+      setItineraries(res.data.data.itineraries);
       setIsAuthenticated(true);
       setAuthErrors([]);
     } catch (err: any) {
