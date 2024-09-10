@@ -1,9 +1,55 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
-import { MapIcon } from '@heroicons/react/24/outline'
+import { MapIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 
 function Header() {
   const { isAuthenticated, logout } = useAuth()
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+
+  // Referencia para el contenedor del menú desplegable
+  const profileMenuRef = useRef<HTMLDivElement | null>(null)
+
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Si el clic se realiza fuera del menú, cierra el menú
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false)
+      }
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        // Cierra el menú si el usuario cambia de pestaña o minimiza la ventana
+        setIsProfileOpen(false)
+      }
+    }
+
+    if (isProfileOpen) {
+      // Agrega los listeners para detectar clics fuera y cambio de ventana
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('visibilitychange', handleVisibilityChange)
+    } else {
+      // Elimina los listeners cuando el menú esté cerrado
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+
+    // Cleanup para eliminar los event listeners cuando el componente se desmonte
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+    }
+  }, [isProfileOpen])
+
   return (
     <>
       <div>
@@ -58,13 +104,39 @@ function Header() {
                   </Link>
                 </div>
               ) : (
-                <Link
-                  to="/login"
-                  onClick={() => logout()}
-                  className="text-white"
-                >
-                  Logout
-                </Link>
+                <div className="flex items-center">
+                  <div className="ml-3 relative" ref={profileMenuRef}>
+                    <div>
+                      <button
+                        onClick={toggleProfile}
+                        className="flex items-center text-indigo-300 hover:text-indigo-200 transform transition-transform duration-300 hover:scale-105 focus:scale-105"
+                      >
+                        <UserCircleIcon className="h-8 w-8" />
+                        <ChevronDownIcon className="ml-1 h-4 w-4" />
+                      </button>
+                    </div>
+                    {isProfileOpen && (
+                      <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-[#26262c] ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <Link
+                          to="/account"
+                          className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
+                          onClick={() => setIsProfileOpen(false)}
+                        >
+                          <UserIcon className="inline-block h-4 w-4 mr-2" />
+                          My Account
+                        </Link>
+                        <Link
+                          to="/login"
+                          onClick={() => logout()}
+                          className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
+                        >
+                          <LogOutIcon className="inline-block h-4 w-4 mr-2" />
+                          Log out
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </nav>

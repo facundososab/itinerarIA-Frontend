@@ -1,7 +1,10 @@
-import { useEffect } from "react";
-import { useItinerary } from "../context/ItineraryContext.tsx";
-import { NewItineraryButton } from "./NewItineraryButton.tsx";
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from 'react'
+import { useItinerary } from '../context/ItineraryContext.tsx'
+import { NewItineraryButton } from './NewItineraryButton.tsx'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { createPortal } from 'react-dom'
+import DeleteItineraryWarningModal from './DeleteItineraryWarningModal.tsx'
+import Itinerary from '../interfaces/Itinerary.ts'
 
 export default function ItinerariesSidebar() {
   const {
@@ -10,16 +13,20 @@ export default function ItinerariesSidebar() {
     deleteItinerary,
     CurrentItinerary,
     itineraries,
-  } = useItinerary();
+  } = useItinerary()
   useEffect(() => {
-    console.log(itineraries, "itineraries en useeffect");
-    itineraries ? setItineraries(itineraries) : null;
-  }, [itineraries]);
+    console.log(itineraries, 'itineraries en useeffect')
+    itineraries ? setItineraries(itineraries) : null
+  }, [itineraries])
+
+  const [showModal, setShowModal] = useState(false)
+  const [itineraryToDelete, setItineraryToDelete] = useState<Itinerary | null>()
+
   const onDelete = () => {
     if (CurrentItinerary) {
-      deleteItinerary(CurrentItinerary.id);
+      deleteItinerary(CurrentItinerary.id)
     }
-  };
+  }
   return (
     <div className="w-64 bg-onyx h-screen flex flex-col">
       <div className="p-4">
@@ -37,12 +44,20 @@ export default function ItinerariesSidebar() {
               <CalendarIcon className="h-4 w-4 mr-2" />
               {itinerary.duration} days
             </div>
-            <button type="submit" onClick={onDelete}>
+            <button onClick={() => setShowModal(true)}>
               <span className=" text-red-500">Delete itinerary</span>
             </button>
           </div>
         ))}
       </div>
+      {showModal &&
+        createPortal(
+          <DeleteItineraryWarningModal
+            onClose={() => setShowModal(false)}
+            onDelete={onDelete}
+          />,
+          document.body
+        )}
     </div>
-  );
+  )
 }
