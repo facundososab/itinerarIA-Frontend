@@ -5,6 +5,7 @@ import { CalendarIcon } from '@heroicons/react/24/outline'
 import { createPortal } from 'react-dom'
 import DeleteItineraryWarningModal from './DeleteItineraryWarningModal.tsx'
 import Itinerary from '../interfaces/Itinerary.ts'
+import { useAuth } from '../context/AuthContext.tsx'
 
 export default function ItinerariesSidebar() {
   const {
@@ -12,8 +13,10 @@ export default function ItinerariesSidebar() {
     handleSelectItinerary,
     deleteItinerary,
     CurrentItinerary,
-    itineraries,
   } = useItinerary()
+
+  const { itineraries } = useAuth()
+
   useEffect(() => {
     console.log(itineraries, 'itineraries en useeffect')
     itineraries ? setItineraries(itineraries) : null

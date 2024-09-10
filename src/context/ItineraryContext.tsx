@@ -52,10 +52,10 @@ export const useItinerary = () => {
 }
 
 export function ItineraryProvider({ children }: { children: ReactNode }) {
+  const { user, itineraries, setItineraries } = useAuth()
   const [CurrentItinerary, setCurrentItinerary] = useState<Itinerary | null>(
     null
   )
-  const { user, itineraries, setItineraries } = useAuth()
   //creo handler para que cuando se cree un nuevo itinerario se seleccione automaticamente
   const handleNewItinerary = useCallback(
     (itinerary: Itinerary) => {
@@ -70,6 +70,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const handleSelectItinerary = (id: ObjectId) => {
     console.log(id, itineraries)
+
     const selectedItinerary = itineraries?.find(
       (itinerary) => itinerary.id === id
     )

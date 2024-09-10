@@ -57,12 +57,13 @@ export const AuthProvider = ({ children }: any) => {
       setIsAuthenticated(true)
       setAuthErrors([])
     } catch (err: any) {
+      console.log(err)
       const errorData =
         err.response?.data?.message ||
         err.response?.data?.errors?.password ||
         err.response?.data?.errors?.username
       setAuthErrors(errorData)
-      console.log(errorData, 'errorData')
+      console.log(typeof errorData, 'errorData')
     }
   }
   const logout = async () => {
