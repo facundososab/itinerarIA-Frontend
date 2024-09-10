@@ -16,6 +16,7 @@ export const AuthContext = createContext({
   signup: (_user: User) => {},
   authErrors: [],
   signIn: (_user: User) => {},
+  setItineraries: (_itineraries: Itinerary[]) => {},
   isLoading: false || true,
   logout: () => {},
 });
@@ -56,12 +57,13 @@ export const AuthProvider = ({ children }: any) => {
       setIsAuthenticated(true);
       setAuthErrors([]);
     } catch (err: any) {
+      console.log(err);
       const errorData =
         err.response?.data?.message ||
         err.response?.data?.errors?.password ||
         err.response?.data?.errors?.username;
       setAuthErrors(errorData);
-      console.log(errorData, "errorData");
+      console.log(typeof errorData, "errorData");
     }
   };
   const logout = async () => {
@@ -116,6 +118,7 @@ export const AuthProvider = ({ children }: any) => {
       value={{
         user,
         itineraries,
+        setItineraries,
         isAuthenticated,
         signup,
         authErrors,

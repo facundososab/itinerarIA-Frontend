@@ -52,7 +52,7 @@ export const useItinerary = () => {
 };
 
 export function ItineraryProvider({ children }: { children: ReactNode }) {
-  const [itineraries, setItineraries] = useState<Itinerary[]>([]);
+  const { itineraries, setItineraries } = useAuth();
   const [CurrentItinerary, setCurrentItinerary] = useState<Itinerary | null>(
     null
   );
@@ -71,7 +71,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const handleSelectItinerary = (id: ObjectId) => {
     console.log(id, itineraries);
-    const selectedItinerary = itineraries.find(
+    const selectedItinerary = itineraries?.find(
       (itinerary) => itinerary.id === id
     );
     console.log(selectedItinerary);
@@ -82,7 +82,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     try {
       itinerary.user = user ? user.id : null;
       const res = await createItineraryRequest(itinerary);
-      itineraries.push(res.data.data);
+      itineraries?.push(res.data.data);
       handleNewItinerary(res.data.data);
       console.log(itineraries);
 
@@ -96,6 +96,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     try {
       const res = await deleteItineraryRequest(id);
       if (res.status === 204) {
+        if (!itineraries) {
+          return; //no hay itinerarios?;
+        }
         setItineraries(itineraries.filter((itinerary) => itinerary.id !== id));
         handleDeleteItinerary();
         console.log("itinerary deleted");

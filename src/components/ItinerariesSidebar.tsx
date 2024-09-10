@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useItinerary } from "../context/ItineraryContext.tsx";
 import { NewItineraryButton } from "./NewItineraryButton.tsx";
 import { CalendarIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "../context/AuthContext.tsx";
 
 export default function ItinerariesSidebar() {
   const {
@@ -9,8 +10,8 @@ export default function ItinerariesSidebar() {
     handleSelectItinerary,
     deleteItinerary,
     CurrentItinerary,
-    itineraries,
   } = useItinerary();
+  const { itineraries } = useAuth();
   useEffect(() => {
     console.log(itineraries, "itineraries en useeffect");
     itineraries ? setItineraries(itineraries) : null;
