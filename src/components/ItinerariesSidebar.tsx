@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
-import { useItinerary } from '../context/ItineraryContext.tsx'
-import { NewItineraryButton } from './NewItineraryButton.tsx'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import { createPortal } from 'react-dom'
-import DeleteItineraryWarningModal from './DeleteItineraryWarningModal.tsx'
-import Itinerary from '../interfaces/Itinerary.ts'
-import { useAuth } from '../context/AuthContext.tsx'
+import { useCallback, useEffect, useState } from "react";
+import { useItinerary } from "../context/ItineraryContext.tsx";
+import { NewItineraryButton } from "./NewItineraryButton.tsx";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { createPortal } from "react-dom";
+import DeleteItineraryWarningModal from "./DeleteItineraryWarningModal.tsx";
+import Itinerary from "../interfaces/Itinerary.ts";
+import { useAuth } from "../context/AuthContext.tsx";
 
 export default function ItinerariesSidebar() {
   const {
@@ -13,23 +13,23 @@ export default function ItinerariesSidebar() {
     handleSelectItinerary,
     deleteItinerary,
     CurrentItinerary,
-  } = useItinerary()
+  } = useItinerary();
 
-  const { itineraries } = useAuth()
+  const { itineraries } = useAuth();
 
   useEffect(() => {
-    console.log(itineraries, 'itineraries en useeffect')
-    itineraries ? setItineraries(itineraries) : null
-  }, [itineraries])
+    console.log(itineraries, "itineraries en useeffect");
+    itineraries ? setItineraries(itineraries) : null;
+  }, [itineraries]);
 
-  const [showModal, setShowModal] = useState(false)
-  const [itineraryToDelete, setItineraryToDelete] = useState<Itinerary | null>()
-
+  const [showModal, setShowModal] = useState(false);
   const onDelete = () => {
     if (CurrentItinerary) {
-      deleteItinerary(CurrentItinerary.id)
+      deleteItinerary(CurrentItinerary.id);
     }
-  }
+    setShowModal(false);
+  };
+
   return (
     <div className="w-64 bg-onyx h-screen flex flex-col">
       <div className="p-4">
@@ -62,5 +62,5 @@ export default function ItinerariesSidebar() {
           document.body
         )}
     </div>
-  )
+  );
 }
