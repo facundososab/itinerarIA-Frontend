@@ -1,9 +1,13 @@
+import { ObjectId } from '@mikro-orm/mongodb'
+
 export default function DeleteItineraryWarningModal({
   onClose,
   onDelete,
+  itineraryId,
 }: {
-  onClose: () => void;
-  onDelete: () => void;
+  onClose: () => void
+  onDelete: (itineraryId: ObjectId) => void
+  itineraryId: ObjectId | null
 }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -19,7 +23,7 @@ export default function DeleteItineraryWarningModal({
             Close
           </button>
           <button
-            onClick={onDelete}
+            onClick={() => (itineraryId ? onDelete(itineraryId) : null)}
             className="bg-red-500 text-white rounded-md py-2 px-4 flex items-center justify-center hover:bg-red-600 transition duration-200 w-1/2 ml-2"
           >
             Delete
@@ -27,5 +31,5 @@ export default function DeleteItineraryWarningModal({
         </div>
       </div>
     </div>
-  );
+  )
 }
