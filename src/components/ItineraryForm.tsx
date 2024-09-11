@@ -1,4 +1,3 @@
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import Itinerary from '../interfaces/Itinerary'
 import { useItinerary } from '../context/ItineraryContext'

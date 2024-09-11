@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
 import { MapIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
+import { AdminHeaderNav } from './AdminHeaderNav.tsx'
 
 function Header() {
   const { isAuthenticated, logout } = useAuth()
@@ -73,7 +74,7 @@ function Header() {
                     <MapIcon className="h-10 w-auto text-indigo-400" />
                   </Link>
                 </div>
-                {!isAuthenticated && (
+                {!isAuthenticated ? (
                   <div className="hidden ml-10 space-x-8 lg:block">
                     <a
                       href="#features"
@@ -87,6 +88,10 @@ function Header() {
                     >
                       Benefits
                     </a>
+                  </div>
+                ) : (
+                  <div className="ml-10 space-x-8 lg:block">
+                    <AdminHeaderNav />
                   </div>
                 )}
               </div>
