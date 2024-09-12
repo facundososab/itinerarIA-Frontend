@@ -2,7 +2,7 @@ import { usePlace } from "../../context/PlaceContext.tsx";
 import { Button } from "../ui/Button.tsx";
 import { Card } from "../ui/Card.tsx";
 import Place from "../../interfaces/Place.ts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
 import { PlaceForm } from "./PlaceForm.tsx";
@@ -12,7 +12,7 @@ import { TrashIcon } from '@heroicons/react/24/outline'
 
 
 export function PlaceCard({ place }: { place: Place }) {
-    const { deletePlace, handleSelectPlace } = usePlace();
+    const { deletePlace, handleSelectPlace, setCurrentPlace } = usePlace();
     const [showModalForm, setShowModalForm] = useState(false)
     const [showModalDelete, setShowModalDelete] = useState(false)
     const [idPlaceToDelete, setIdPlaceToDelete] = useState<ObjectId | null>(null)
@@ -22,7 +22,11 @@ export function PlaceCard({ place }: { place: Place }) {
         setShowModalDelete(false)
     }
 
-
+    useEffect(() => {
+        if (!showModalForm) {
+            setCurrentPlace(null); //Para que al cerrar el form, se elimine el current itinerary, sino quedan los datos del place guardados en el form aunque no esta seleccionado.
+        }
+    }, [showModalForm]);
 
     return (
         <Card >
