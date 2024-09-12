@@ -8,11 +8,12 @@ import { createPortal } from "react-dom";
 import { PlaceForm } from "../components/Place/PlaceForm.tsx";
 
 export function PlacesPage() {
-  const { places, getPlaces, setPlaces } = usePlace();
+  const { places, getPlaces, setPlaces, CurrentPlace, setCurrentPlace } = usePlace();
 
   useEffect(() => {
     console.log(places, "places actualizados");
   }, [places]);
+
 
   useEffect(() => {
     getPlaces();
@@ -20,6 +21,10 @@ export function PlacesPage() {
   }, []);
 
   const [showModal, setShowModal] = useState(false)
+
+  const onClose = () => {
+    setShowModal(false);
+  }
 
   return (
     <>
@@ -33,7 +38,7 @@ export function PlacesPage() {
         </button>
         {showModal &&
           createPortal(
-            <PlaceForm onClose={() => setShowModal(false)} />,
+            <PlaceForm onClose={onClose} />,
             document.body
           )}
       </>

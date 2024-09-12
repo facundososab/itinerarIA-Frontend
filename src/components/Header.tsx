@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
 import { MapIcon } from '@heroicons/react/24/outline'
-//agregar un boton para agregar lugares en el navbar
+import { ButtonLink } from './ui/ButtonLink.tsx'
+
 function Header() {
   const { isAuthenticated, logout } = useAuth()
   return (
@@ -23,22 +24,29 @@ function Header() {
                     <MapIcon className="h-10 w-auto text-indigo-400" />
                   </Link>
                 </div>
+
+
                 {!isAuthenticated && (
-                  <div className="hidden ml-10 space-x-8 lg:block">
-                    <a
-                      href="#features"
-                      className="text-indigo-300 hover:text-indigo-200"
-                    >
-                      Features
-                    </a>
-                    <a
-                      href="#benefits"
-                      className="text-indigo-300 hover:text-indigo-200"
-                    >
-                      Benefits
-                    </a>
-                  </div>
+                  <>
+
+                    <div className="hidden ml-10 space-x-8 lg:block">
+                      <a
+                        href="#features"
+                        className="text-indigo-300 hover:text-indigo-200"
+                      >
+                        Features
+                      </a>
+                      <a
+                        href="#benefits"
+                        className="text-indigo-300 hover:text-indigo-200"
+                      >
+                        Benefits
+                      </a>
+                    </div>
+                  </>
                 )}
+
+
               </div>
               {!isAuthenticated ? (
                 <div className="flex items-center justify-end space-x-4 w-full py-6 ml-auto border-b border-indigo-500 lg:border-none">
@@ -58,13 +66,17 @@ function Header() {
                   </Link>
                 </div>
               ) : (
-                <Link
-                  to="/login"
-                  onClick={() => logout()}
-                  className="text-white"
-                >
-                  Logout
-                </Link>
+                <>
+                  <ButtonLink to="/lugares">Manage places</ButtonLink>
+                  <Link
+                    to="/"
+                    onClick={() => logout()}
+                    className="text-white"
+                  >
+                    Logout
+                  </Link>
+                </>
+
               )}
             </div>
           </nav>

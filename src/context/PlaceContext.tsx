@@ -21,6 +21,7 @@ export const PlaceContext = createContext({
   updatePlace: (_Place: Place) => { },
   deletePlace: (_id: ObjectId) => { },
   CurrentPlace: null as Place | null,
+  setCurrentPlace: (_Place: Place | null) => { },
   //handleNewPlace: (_Place: Place) => {},
   handleSelectPlace: (_id: ObjectId) => { },
 });
@@ -39,7 +40,6 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
   );
 
   const handleSelectPlace = (id: ObjectId) => {
-    console.log(id, places, "todos los lugares");
     const selectedPlace = places.find(
       (place) => place.id === id
     );
@@ -52,8 +52,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
     try {
       const res = await createPlaceRequest(place);
       places.push(res.data.data);
-      console.log(places);
-      console.log(res.data);
+      setPlaces((prevItineraries: Place[] | null) => [...(prevItineraries ?? []), res.data.data]);//actualiza places para que el componente se renderice automaticamente
     } catch (error) {
       console.log(error);
     }
@@ -86,7 +85,11 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
     try {
       console.log(place.id, "el id   que le paso a updatePlace")
       console.log(place, "el lugar que le paso a updatePlace")
-      await updatePlaceRequest(place);
+      const res = await updatePlaceRequest(place);
+      const updatedPlace = res.data.data
+      setPlaces((prevPlaces: Place[] | null) =>
+        prevPlaces?.map((p) => (p.id === updatedPlace.id ? updatedPlace : p)) ?? []
+      ); //actualiza el lugar en el array de lugares para el re-render
     } catch (error) {
       console.error(error);
     }
@@ -103,6 +106,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
         getPlace,
         updatePlace,
         CurrentPlace,
+        setCurrentPlace,
         // handleNewPlace,
         handleSelectPlace
       }}
