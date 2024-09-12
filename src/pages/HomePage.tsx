@@ -1,7 +1,17 @@
-import { Link } from "react-router-dom";
-import { MapIcon, ClockIcon, ThumbsUpIcon } from "lucide-react";
+import { Link, useNavigate } from 'react-router-dom'
+import { MapIcon, ClockIcon, ThumbsUpIcon } from 'lucide-react'
+import { useAuth } from '../context/AuthContext.tsx'
+import { useEffect } from 'react'
 
 export default function Component() {
+  const { isAuthenticated } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/itinerarios')
+    }
+  }, [isAuthenticated])
   return (
     <div className="min-h-screen bg-night">
       <main>
@@ -223,5 +233,5 @@ export default function Component() {
         </div>
       </footer>
     </div>
-  );
+  )
 }

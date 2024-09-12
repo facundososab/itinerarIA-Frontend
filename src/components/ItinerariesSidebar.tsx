@@ -23,8 +23,8 @@ export default function ItinerariesSidebar() {
     null
   )
 
-  const onDelete = (itineraryId: ObjectId) => {
-    deleteItinerary(itineraryId)
+  const onDelete = async (itineraryId: ObjectId) => {
+    await deleteItinerary(itineraryId)
     setShowModal(false)
   }
 

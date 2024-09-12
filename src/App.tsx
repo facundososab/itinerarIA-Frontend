@@ -9,6 +9,7 @@ import ItinerariesPage from './pages/ItinerariesPage.tsx'
 import HomePage from './pages/HomePage.tsx'
 import { ItineraryProvider } from './context/ItineraryContext.tsx'
 import ExternalServicesPage from './pages/ExternalServicesCrudPage.tsx'
+import NotFoundPage from './pages/404.tsx'
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                   element={<ExternalServicesPage />}
                 />
               </Route>
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </BrowserRouter>
         </ItineraryProvider>

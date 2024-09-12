@@ -1,4 +1,10 @@
-import { createContext, ReactNode, useContext, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import ExternalService from '../interfaces/ExternalService.ts'
 import {
   createExternalServiceRequest,
@@ -8,6 +14,7 @@ import {
   updateExternalServiceRequest,
 } from '../auth/externalService.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
+import { set } from 'react-hook-form'
 
 export const ExternalServicesContext = createContext({
   externalServices: [] as ExternalService[],
@@ -54,6 +61,7 @@ export function ExternalServicesProvider({
 
   const getAllExternalServices = async () => {
     const res = await getAllExternalServicesRequest()
+    console.log('hola')
     console.log(res.data.data)
     setExternalServices(res.data.data)
   }
@@ -66,6 +74,7 @@ export function ExternalServicesProvider({
     } catch (err: any) {
       console.log(err)
       setExternalServiceErrors(err.data)
+      console.log(externalServiceErrors)
     }
   }
 
@@ -73,13 +82,17 @@ export function ExternalServicesProvider({
     console.log(externalService)
     const res = await createExternalServiceRequest(externalService)
     console.log(res.data.data)
-    setExternalServices([...externalServices, ...res.data.data])
+    setExternalServices([...externalServices, res.data.data])
   }
 
   const updateExternalService = async (externalService: ExternalService) => {
-    const res = await updateExternalServiceRequest(externalService)
-    console.log(res.data.data)
-    setExternalService(res.data.data)
+    try {
+      const res = await updateExternalServiceRequest(externalService)
+      console.log(res.data.data)
+      setExternalService(res.data.data)
+    } catch (err: any) {
+      setExternalServiceErrors(err.response.data.message)
+    }
   }
 
   const deleteExternalService = async (id: ObjectId) => {
@@ -88,6 +101,16 @@ export function ExternalServicesProvider({
     console.log(res.data.data)
     setExternalService(res.data.data)
   }
+
+  //Elimino msj despues de 2 segundos
+  useEffect(() => {
+    if (externalServiceErrors.length > 0) {
+      const timer = setTimeout(() => {
+        setExternalServiceErrors([])
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [externalServiceErrors])
 
   return (
     <ExternalServicesContext.Provider

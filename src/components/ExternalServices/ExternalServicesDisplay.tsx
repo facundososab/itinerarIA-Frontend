@@ -1,16 +1,81 @@
-import { useEffect } from 'react'
-import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
+import { useEffect, useState } from 'react'
+import { useExternalServices } from '../../context/ExternalServicesContext'
+import { PencilIcon, TrashIcon } from 'lucide-react'
+import ExternalService from '../../interfaces/ExternalService'
+import { ObjectId } from '@mikro-orm/mongodb'
+import { createPortal } from 'react-dom'
+import DeleteExternalServiceWarningModal from './DeleteExternalServiceWarningModal.tsx'
 
 export function ExternalServicesDisplay() {
-  const { externalServices, getAllExternalServices, externalServiceErrors } =
-    useExternalServices()
+  const {
+    externalServices,
+    setExternalServices,
+    getAllExternalServices,
+    deleteExternalService,
+    updateExternalService,
+    externalServiceErrors,
+  } = useExternalServices()
+
+  const [editingService, setEditingService] = useState<ExternalService | null>(
+    null
+  )
+
+  const [externalServiceToDelete, setExternalServiceToDelete] =
+    useState<ObjectId | null>(null)
+
+  const [showModal, setShowModal] = useState(false)
+
+  // Cerrar el formulario de edición si se hace clic fuera de él
   useEffect(() => {
-    getAllExternalServices()
-  }, [externalServices])
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element | null
+      if (editingService && target && !target.closest('article')) {
+        setEditingService(null)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [editingService])
+
+  // Cargar los servicios externos al montar el componente
+  useEffect(() => {
+    const loadExternalServices = async () => {
+      await getAllExternalServices()
+    }
+    loadExternalServices()
+  }, [])
+
+  const handleEdit = (service: ExternalService) => {
+    setEditingService(service)
+  }
+
+  const onDelete = async (id: ObjectId) => {
+    await deleteExternalService(id)
+    // Filtra el servicio eliminado del estado local
+    setExternalServices(externalServices.filter((service) => service.id !== id))
+    setShowModal(false)
+  }
+
+  const handleUpdate = async () => {
+    if (editingService) {
+      await updateExternalService(editingService)
+      setExternalServices(
+        externalServices.map((service) =>
+          service.id === editingService.id ? editingService : service
+        )
+      )
+      setEditingService(null)
+    }
+  }
+
   return (
-    <div>
+    <article className="p-6 bg-[#1c1c21] text-indigo-100">
       {externalServiceErrors.length > 0 && (
-        <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-6">
+        <div className="bg-red-900 border-l-4 border-red-500 p-4 mb-6">
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -28,10 +93,10 @@ export function ExternalServicesDisplay() {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">
-                Ups! Hubieron algunos errores con tu registro
+              <h3 className="text-sm font-medium text-red-300">
+                Oops! There were some errors with your request
               </h3>
-              <div className="mt-2 text-sm text-red-700">
+              <div className="mt-2 text-sm text-red-200">
                 <ul className="list-disc pl-5 space-y-1">
                   {externalServiceErrors.map((error, index) => (
                     <li key={index}>{error}</li>
@@ -42,11 +107,195 @@ export function ExternalServicesDisplay() {
           </div>
         </div>
       )}
-      <ul>
-        {externalServices?.map((externalService, i) => (
-          <li key={i}>{externalService.nombre}</li>
-        ))}
-      </ul>
-    </div>
+
+      <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
+        <thead className="bg-[#2f3037]">
+          <tr>
+            <th className="p-3 text-left">Type</th>
+            <th className="p-3 text-left">Name</th>
+            <th className="p-3 text-left">Description</th>
+            <th className="p-3 text-left">Address</th>
+            <th className="p-3 text-left">Schedule</th>
+            <th className="p-3 text-left">Website</th>
+            <th className="p-3 text-left">Phone number</th>
+            <th className="p-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {externalServices?.map((service) => (
+            <tr
+              key={service.id.toString()}
+              className="border-b border-[#393a41]"
+            >
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.tipoServicio}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        tipoServicio: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.tipoServicio
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.nombre}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        nombre: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.nombre
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.descripcion}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        descripcion: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.descripcion
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.direccion}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        direccion: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.direccion
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.horario}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        horario: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.horario
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.sitioWeb}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        sitioWeb: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.sitioWeb
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <input
+                    type="text"
+                    value={editingService.telContacto}
+                    onChange={(e) =>
+                      setEditingService({
+                        ...editingService,
+                        telContacto: e.target.value,
+                      })
+                    }
+                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                  />
+                ) : (
+                  service.telContacto
+                )}
+              </td>
+              <td className="p-3">
+                {editingService?.id === service.id ? (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleUpdate}
+                      className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingService(null)}
+                      className="bg-gray-600 text-white p-2 rounded hover:bg-gray-700"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(service)}
+                      className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
+                    >
+                      <PencilIcon size={16} />
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowModal(true)
+                        setExternalServiceToDelete(service.id)
+                      }}
+                      className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
+                    >
+                      <TrashIcon size={16} />
+                    </button>
+                  </div>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {showModal &&
+        createPortal(
+          <DeleteExternalServiceWarningModal
+            onClose={() => setShowModal(false)}
+            onDelete={onDelete}
+            ExternalServiceId={externalServiceToDelete}
+          />,
+          document.body
+        )}
+    </article>
   )
 }

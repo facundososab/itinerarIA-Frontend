@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
 import { MapIcon, UserCircleIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
@@ -18,7 +18,6 @@ function Header() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Si el clic se realiza fuera del menú, cierra el menú
       if (
         profileMenuRef.current &&
         !profileMenuRef.current.contains(event.target as Node)
@@ -29,22 +28,18 @@ function Header() {
 
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
-        // Cierra el menú si el usuario cambia de pestaña o minimiza la ventana
         setIsProfileOpen(false)
       }
     }
 
     if (isProfileOpen) {
-      // Agrega los listeners para detectar clics fuera y cambio de ventana
       document.addEventListener('mousedown', handleClickOutside)
       document.addEventListener('visibilitychange', handleVisibilityChange)
     } else {
-      // Elimina los listeners cuando el menú esté cerrado
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
 
-    // Cleanup para eliminar los event listeners cuando el componente se desmonte
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
@@ -67,27 +62,39 @@ function Header() {
               <div className="flex items-center">
                 <div>
                   <span className="sr-only">itinerarIA</span>
-                  <Link
+                  <NavLink
                     to={isAuthenticated ? '/itinerarios' : '/'}
-                    className="text-indigo-300 hover:text-indigo-200"
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'text-indigo-700 scale-105 hover:text-indigo-600'
+                        : 'text-indigo-300 hover:text-indigo-200'
+                    }
                   >
                     <MapIcon className="h-10 w-auto text-indigo-400" />
-                  </Link>
+                  </NavLink>
                 </div>
                 {!isAuthenticated ? (
                   <div className="hidden ml-10 space-x-8 lg:block">
-                    <a
-                      href="#features"
-                      className="text-indigo-300 hover:text-indigo-200"
+                    <NavLink
+                      to="/features"
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'text-indigo-700 scale-105 hover:text-indigo-600'
+                          : 'text-indigo-300 hover:text-indigo-200'
+                      }
                     >
                       Features
-                    </a>
-                    <a
-                      href="#benefits"
-                      className="text-indigo-300 hover:text-indigo-200"
+                    </NavLink>
+                    <NavLink
+                      to="/benefits"
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'text-indigo-700 scale-105 hover:text-indigo-600'
+                          : 'text-indigo-300 hover:text-indigo-200'
+                      }
                     >
                       Benefits
-                    </a>
+                    </NavLink>
                   </div>
                 ) : (
                   <div className="ml-10 space-x-8 lg:block">
@@ -97,20 +104,28 @@ function Header() {
               </div>
               {!isAuthenticated ? (
                 <div className="flex items-center justify-end space-x-4 w-full ml-auto border-b border-indigo-500 lg:border-none">
-                  <Link
+                  <NavLink
                     id="login"
                     to="/login"
-                    className="text-white py-2 hover:text-indigo-400 hover:scale-105 focus:text-indigo-500 transform transition-transform duration-300 focus:scale-105"
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'text-indigo-700 py-2 scale-105 hover:text-indigo-600 hover:scale-105 focus:text-indigo-600 transform transition-transform duration-300'
+                        : 'text-white py-2 hover:text-indigo-400 hover:scale-105 focus:text-indigo-500 transform transition-transform duration-300 focus:scale-105'
+                    }
                   >
                     Sign in
-                  </Link>
-                  <Link
+                  </NavLink>
+                  <NavLink
                     id="register"
                     to="/register"
-                    className="items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 transform transition-transform duration-300 hover:bg-white hover:text-indigo-600 focus:bg-white focus:text-indigo-600"
+                    className={({ isActive }) =>
+                      isActive
+                        ? 'text-indigo-700 scale-105 items-center py-2 px-4 border border-transparent rounded-md shadow-sm bg-indigo-600 transform transition-transform duration-300 hover:bg-white hover:text-indigo-600 focus:bg-white focus:text-indigo-600'
+                        : 'items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 transform transition-transform duration-300 hover:bg-white hover:text-indigo-600 focus:bg-white focus:text-indigo-600'
+                    }
                   >
                     Sign up {'->'}
-                  </Link>
+                  </NavLink>
                 </div>
               ) : (
                 <div className="flex items-center">
@@ -126,22 +141,22 @@ function Header() {
                     </div>
                     {isProfileOpen && (
                       <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-[#26262c] ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Link
+                        <NavLink
                           to="/account"
                           className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
                           onClick={() => setIsProfileOpen(false)}
                         >
                           <UserIcon className="inline-block h-4 w-4 mr-2" />
                           My Account
-                        </Link>
-                        <Link
+                        </NavLink>
+                        <NavLink
                           to="/login"
                           onClick={() => logout()}
                           className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
                         >
                           <LogOutIcon className="inline-block h-4 w-4 mr-2" />
                           Log out
-                        </Link>
+                        </NavLink>
                       </div>
                     )}
                   </div>
