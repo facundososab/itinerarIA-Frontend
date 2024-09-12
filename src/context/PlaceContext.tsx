@@ -10,19 +10,19 @@ import Place from "../interfaces/Place.ts";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { ReactNode } from "react";
 import { useCallback } from "react";
-import { useAuth } from "./AuthContext.tsx";
+
 
 export const PlaceContext = createContext({
   places: null as Place[] | null,
-  //setPlaces: (_places: Place[]) => {},
+  setPlaces: (_places: Place[]) => { },
   createPlace: (_place: Place) => { },
   getPlaces: () => { },
-  getPlace: (_id: ObjectId) => Promise<Place>,
+  getPlace: async (_id: ObjectId) => { },
   updatePlace: (_Place: Place) => { },
   deletePlace: (_id: ObjectId) => { },
-  //CurrentPlace: null as Place | null,
+  CurrentPlace: null as Place | null,
   //handleNewPlace: (_Place: Place) => {},
-  //handleSelectPlace: (_id: ObjectId) => {},
+  handleSelectPlace: (_id: ObjectId) => { },
 });
 
 export const usePlace = () => {
@@ -37,6 +37,16 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
   const [CurrentPlace, setCurrentPlace] = useState<Place | null>(
     null
   );
+
+  const handleSelectPlace = (id: ObjectId) => {
+    console.log(id, places, "todos los lugares");
+    const selectedPlace = places.find(
+      (place) => place.id === id
+    );
+    console.log(selectedPlace, "lugar seleccionado");
+    selectedPlace ? setCurrentPlace(selectedPlace) : null;
+  };
+
   //tendria que validar que solo el admin pueda hacer esto. Tendria que traer el useAuth
   const createPlace = async (place: Place) => {
     try {
@@ -52,7 +62,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
   const deletePlace = async (id: ObjectId) => {
     try {
       const res = await deletePlaceRequest(id);
-      if (res.status === 204) {
+      if (res.status === 200) {
         setPlaces(places.filter((place) => place.id !== id));
         console.log("Place deleted");
       }
@@ -63,17 +73,19 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
 
   const getPlaces = async () => {
     const res = await getPlacesRequest();
-    setPlaces(res.data);
+    console.log(res.data.data, "places del back");
+    setPlaces(res.data.data);
   };
 
   const getPlace = async (id: ObjectId) => {
     const res = await getPlaceRequest(id);
-    return res.data as Place;
-    //setPlaces(res.data);
+    setPlaces(res.data);
   };
 
   const updatePlace = async (place: Place) => {
     try {
+      console.log(place.id, "el id   que le paso a updatePlace")
+      console.log(place, "el lugar que le paso a updatePlace")
       await updatePlaceRequest(place);
     } catch (error) {
       console.error(error);
@@ -84,15 +96,15 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
     <PlaceContext.Provider
       value={{
         places,
-        //setPlaces,
+        setPlaces,
         getPlaces,
         deletePlace,
         createPlace,
         getPlace,
         updatePlace,
-        // CurrentPlace,
+        CurrentPlace,
         // handleNewPlace,
-        // handleSelectPlace,
+        handleSelectPlace
       }}
     >
       {children}

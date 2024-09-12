@@ -1,10 +1,11 @@
 import { usePlace } from "../../context/PlaceContext.tsx";
 import { Button } from "../ui/Button.tsx";
-import { ButtonLink } from "../ui/ButtonLink.tsx";
 import { Card } from "../ui/Card.tsx";
 import Place from "../../interfaces/Place.ts";
 import { useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { createPortal } from "react-dom";
+import { PlaceForm } from "./PlaceForm.tsx";
 
 export function PlaceCard({ place }: { place: Place }) {
     const { deletePlace, handleSelectPlace } = usePlace();
@@ -23,13 +24,13 @@ export function PlaceCard({ place }: { place: Place }) {
                         </button>
                         {showModal &&
                             createPortal(
-                                <InputNewItinerary onClose={() => setShowModal(false)} />,
+                                <PlaceForm onClose={() => setShowModal(false)} />,
                                 document.body
                             )}
                     </div>
                 </header>
-                <p className="text-slate-300">{place.ubicacion.latitud}</p>
-                <p className="text-slate-300">{place.ubicacion.longitud}</p>
+                <p className="text-slate-300">{place.ubicacion_latitud}</p>
+                <p className="text-slate-300">{place.ubicacion_longitud}</p>
                 <p className="text-slate-300">{place.pais}</p>
                 <p className="text-slate-300">{place.provincia}</p>
                 <p className="text-slate-300">{place.codigoPostal}</p>
@@ -37,23 +38,4 @@ export function PlaceCard({ place }: { place: Place }) {
 
         </Card>
     );
-}
-
-export function NewItineraryButton() {
-    return (
-        <>
-            <button
-                className="w-full bg-blue-500 text-white rounded-md py-2 px-4 flex items-center justify-center hover:bg-blue-600 transition duration-200"
-                onClick={() => setShowModal(true)}
-            >
-                <PlusCircleIcon className="h-5 w-5 mr-2" />
-                New Itinerary
-            </button>
-            {showModal &&
-                createPortal(
-                    <InputNewItinerary onClose={() => setShowModal(false)} />,
-                    document.body
-                )}
-        </>
-    )
 }

@@ -11,7 +11,8 @@ export const getPlacesRequest = async () => {
 }
 
 export const getPlaceRequest = async (id: ObjectId) => {
-    return axios.get(`/lugares/${id}`)
+    //return axios.get(`/lugares/${id}`)
+    return axios.get(`/lugares/${id}`);
 }
 
 export const updatePlaceRequest = async (place: Place) => {
