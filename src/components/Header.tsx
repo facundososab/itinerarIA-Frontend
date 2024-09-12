@@ -75,6 +75,8 @@ function Header() {
                     <MapIcon className="h-10 w-auto text-indigo-400" />
                   </Link>
                 </div>
+
+
                 {!isAuthenticated ? (
                   <div className="hidden ml-10 space-x-8 lg:block">
                     <a
@@ -95,9 +97,9 @@ function Header() {
                     <AdminHeaderNav />
                   </div>
                 )}
-
-
               </div>
+
+
               {!isAuthenticated ? (
                 <div className="flex items-center justify-end space-x-4 w-full ml-auto border-b border-indigo-500 lg:border-none">
                   <Link
@@ -127,6 +129,7 @@ function Header() {
                         <ChevronDownIcon className="ml-1 h-4 w-4" />
                       </button>
                     </div>
+
                     {isProfileOpen && (
                       <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-[#26262c] ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <Link
@@ -137,22 +140,18 @@ function Header() {
                           <UserIcon className="inline-block h-4 w-4 mr-2" />
                           My Account
                         </Link>
-                        <>
-                          <ButtonLink to="/lugares">Manage places</ButtonLink>
-                          <Link
-                            to="/"
-                            onClick={() => logout()}
-                            className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
-                          >
-                            <LogOutIcon className="inline-block h-4 w-4 mr-2" />
-                            Log out
-                          </Link>
-                        </div>
-                    )}
+                        <Link
+                          to="/"
+                          onClick={() => logout()}
+                          className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
+                        >
+                          <LogOutIcon className="inline-block h-4 w-4 mr-2" />
+                          Log out
+                        </Link>
                       </div>
+                    )}
+                  </div>
                 </div>
-                </>
-
               )}
             </div>
           </nav>

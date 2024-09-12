@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form'
-import Itinerary from '../interfaces/Itinerary'
-import { useItinerary } from '../context/ItineraryContext'
+import Itinerary from '../../interfaces/Itinerary.ts'
+import { useItinerary } from '../../context/ItineraryContext.tsx'
 import { X } from 'lucide-react'
 
 export default function InputNewItinerary({
