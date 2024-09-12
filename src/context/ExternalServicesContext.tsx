@@ -14,7 +14,6 @@ import {
   updateExternalServiceRequest,
 } from '../auth/externalService.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
-import { set } from 'react-hook-form'
 
 export const ExternalServicesContext = createContext({
   externalServices: [] as ExternalService[],

@@ -1,4 +1,4 @@
-import { useItinerary } from "../context/ItineraryContext.tsx";
+import { useItinerary } from "../../context/ItineraryContext.tsx";
 
 export function ItineraryDisplay() {
   const { CurrentItinerary } = useItinerary();
