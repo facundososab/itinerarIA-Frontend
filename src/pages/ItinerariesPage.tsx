@@ -1,5 +1,5 @@
-import ItinerariesSidebar from '../components/ItinerariesSidebar.tsx'
-import { ItineraryDisplay } from '../components/ItineraryDisplay.tsx'
+import ItinerariesSidebar from '../components/Itinerary/ItinerariesSidebar.tsx'
+import { ItineraryDisplay } from '../components/Itinerary/ItineraryDisplay.tsx'
 import {
   //ItineraryProvider,
   useItinerary,

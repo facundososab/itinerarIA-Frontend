@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
 import { MapIcon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { ButtonLink } from './ui/ButtonLink.tsx'
 import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
 import { AdminHeaderNav } from './AdminHeaderNav.tsx'
 
@@ -94,6 +95,8 @@ function Header() {
                     <AdminHeaderNav />
                   </div>
                 )}
+
+
               </div>
               {!isAuthenticated ? (
                 <div className="flex items-center justify-end space-x-4 w-full ml-auto border-b border-indigo-500 lg:border-none">
@@ -134,18 +137,22 @@ function Header() {
                           <UserIcon className="inline-block h-4 w-4 mr-2" />
                           My Account
                         </Link>
-                        <Link
-                          to="/login"
-                          onClick={() => logout()}
-                          className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
-                        >
-                          <LogOutIcon className="inline-block h-4 w-4 mr-2" />
-                          Log out
-                        </Link>
-                      </div>
+                        <>
+                          <ButtonLink to="/lugares">Manage places</ButtonLink>
+                          <Link
+                            to="/"
+                            onClick={() => logout()}
+                            className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
+                          >
+                            <LogOutIcon className="inline-block h-4 w-4 mr-2" />
+                            Log out
+                          </Link>
+                        </div>
                     )}
-                  </div>
+                      </div>
                 </div>
+                </>
+
               )}
             </div>
           </nav>
