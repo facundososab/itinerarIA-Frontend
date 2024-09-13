@@ -10,7 +10,7 @@ export default function NewExternalServiceForm({
 }: {
   onClose: () => void
 }) {
-  const { createExternalService } = useExternalServices()
+  const { createExternalService, externalServiceErrors } = useExternalServices()
   const { places, getPlaces } = usePlace()
   const {
     register,
@@ -20,13 +20,13 @@ export default function NewExternalServiceForm({
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getPlaces()
+      getPlaces()
     }
     loadPlaces()
   }, [])
 
   const onCreate = handleSubmit(async (data) => {
-    await createExternalService(data)
+    createExternalService(data)
     onClose()
   })
 
@@ -43,9 +43,41 @@ export default function NewExternalServiceForm({
         <h2 className="text-2xl font-bold text-indigo-100 mb-4">
           New External Service
         </h2>
-        <form onSubmit={onCreate} className="space-y-4">
-          {/* Otros campos permanecen igual */}
+        {externalServiceErrors.length > 0 && (
+          <div className="bg-red-900 border-l-4 border-red-500 p-4 mb-6">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-300">
+                  Oops! There were some errors with your request
+                </h3>
+                <div className="mt-2 text-sm text-red-200">
+                  <ul className="list-disc pl-5 space-y-1">
+                    {externalServiceErrors.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
+        <form onSubmit={onCreate} className="space-y-4">
           <div>
             <label
               htmlFor="tipoServicio"
@@ -93,9 +125,10 @@ export default function NewExternalServiceForm({
                   message: 'Name must be at least 3 characters long',
                 },
                 maxLength: {
-                  value: 20,
-                  message: 'Name must be at most 20 characters long',
+                  value: 40,
+                  message: 'Name must be at most 40 characters long',
                 },
+                required: 'Name is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter service name"
@@ -126,6 +159,7 @@ export default function NewExternalServiceForm({
                   value: 100,
                   message: 'Description must be at most 100 characters long',
                 },
+                required: 'Description is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service description"
@@ -156,6 +190,7 @@ export default function NewExternalServiceForm({
                   value: 40,
                   message: 'Address must be at most 40 characters long',
                 },
+                required: 'Address is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service address"
@@ -246,6 +281,10 @@ export default function NewExternalServiceForm({
                   value: 50,
                   message: 'Website must be at most 50 characters long',
                 },
+                pattern: {
+                  value: /^www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/,
+                  message: 'Website must be a valid URL (www.example.com)',
+                },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service website"
@@ -253,6 +292,35 @@ export default function NewExternalServiceForm({
             {errors.sitioWeb?.message && (
               <p className="mt-1 text-sm text-red-400">
                 {errors.sitioWeb.message}
+              </p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="telContacto"
+              className="block text-sm font-medium text-indigo-300"
+            >
+              Phone number
+            </label>
+            <input
+              id="telContacto"
+              type="number"
+              {...register('telContacto', {
+                minLength: {
+                  value: 10,
+                  message: 'Website must be 10 characters long',
+                },
+                maxLength: {
+                  value: 10,
+                  message: 'Website must be 10 characters long',
+                },
+              })}
+              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter external service website"
+            />
+            {errors.telContacto?.message && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.telContacto.message}
               </p>
             )}
           </div>

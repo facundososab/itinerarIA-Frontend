@@ -61,13 +61,9 @@ export function ExternalServicesProvider({
   const getAllExternalServices = async () => {
     try {
       const res = await getAllExternalServicesRequest()
-      console.log('hola')
-      console.log(res.data.data)
       setExternalServices(res.data.data)
     } catch (err: any) {
       const res = await getAllExternalServicesRequest()
-      console.log('hola')
-      console.log(res.data.data)
       setExternalServices(res.data.data)
     }
   }
@@ -75,29 +71,26 @@ export function ExternalServicesProvider({
   const getOneExternalService = async (id: ObjectId) => {
     try {
       const res = await getExternalServiceRequest(id)
-      console.log(res.data.data)
       setExternalService(res.data.data)
     } catch (err: any) {
-      console.log(err)
       setExternalServiceErrors(err.response.data.message)
-      console.log(externalServiceErrors)
     }
   }
 
   const createExternalService = async (externalService: ExternalService) => {
-    console.log(externalService)
-    const res = await createExternalServiceRequest(externalService)
-    console.log(res.data.data)
-    setExternalServices([...externalServices, res.data.data])
+    try {
+      const res = await createExternalServiceRequest(externalService)
+      setExternalServices([...externalServices, res.data.data])
+    } catch (err: any) {
+      setExternalServiceErrors(err.response.data.message)
+    }
   }
 
   const updateExternalService = async (externalService: ExternalService) => {
     try {
       const res = await updateExternalServiceRequest(externalService)
-      console.log(res.data.data)
       setExternalServices([...externalServices, res.data.data])
     } catch (err: any) {
-      console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
     }
   }
@@ -107,7 +100,6 @@ export function ExternalServicesProvider({
       const res = await deleteExternalServiceRequest(id)
       setExternalService(res.data.data)
     } catch (err: any) {
-      console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
     }
   }
