@@ -15,3 +15,7 @@ export const verifyTokenRequest = async () => {
 export const logoutRequest = async () => {
   return axios.post(`/auth/logout`);
 }
+
+export const updateUserRequest = async (user: User) => {
+  return axios.put(`/usuarios/${user.id}`, user);
+}

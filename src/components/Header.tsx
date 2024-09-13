@@ -145,7 +145,7 @@ function Header() {
                     {isProfileOpen && (
                       <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-[#26262c] ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <NavLink
-                          to="/account"
+                          to="/myaccount"
                           className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
                           onClick={() => setIsProfileOpen(false)}
                         >

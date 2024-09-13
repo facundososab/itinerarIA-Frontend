@@ -12,6 +12,7 @@ import ExternalServicesPage from './pages/ExternalServicesCrudPage.tsx'
 import NotFoundPage from './pages/404.tsx'
 import { PlacesPage } from './pages/PlacesPage.tsx'
 import { PlaceProvider } from './context/PlaceContext.tsx'
+import MyAccountPage from './pages/MyAccountPage.tsx'
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
                     path="/externalServices"
                     element={<ExternalServicesPage />}
                   />
+                  <Route path="/myaccount" element={<MyAccountPage />} />
                 </Route>
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>

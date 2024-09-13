@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useExternalServices } from '../../context/ExternalServicesContext'
-import { PencilIcon, TrashIcon } from 'lucide-react'
 import ExternalService from '../../interfaces/ExternalService'
 import { ObjectId } from '@mikro-orm/mongodb'
 import { createPortal } from 'react-dom'
 import DeleteExternalServiceWarningModal from './DeleteExternalServiceWarningModal.tsx'
+import ExternalServiceRow from './ExternalServiceRow.tsx'
+import { usePlace } from '../../context/PlaceContext.tsx'
 
 export function ExternalServicesDisplay() {
   const {
@@ -15,6 +16,15 @@ export function ExternalServicesDisplay() {
     updateExternalService,
     externalServiceErrors,
   } = useExternalServices()
+
+  const { places, getPlaces } = usePlace()
+
+  useEffect(() => {
+    const loadPlaces = async () => {
+      await getPlaces()
+    }
+    loadPlaces()
+  }, [])
 
   const [editingService, setEditingService] = useState<ExternalService | null>(
     null
@@ -115,6 +125,7 @@ export function ExternalServicesDisplay() {
             <th className="p-3 text-left">Name</th>
             <th className="p-3 text-left">Description</th>
             <th className="p-3 text-left">Address</th>
+            <th className="p-3 text-left">Place</th>
             <th className="p-3 text-left">Schedule</th>
             <th className="p-3 text-left">Website</th>
             <th className="p-3 text-left">Phone number</th>
@@ -123,166 +134,17 @@ export function ExternalServicesDisplay() {
         </thead>
         <tbody>
           {externalServices?.map((service) => (
-            <tr
+            <ExternalServiceRow
               key={service.id.toString()}
-              className="border-b border-[#393a41]"
-            >
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.tipoServicio}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        tipoServicio: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.tipoServicio
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.nombre}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        nombre: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.nombre
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.descripcion}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        descripcion: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.descripcion
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.direccion}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        direccion: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.direccion
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.horario}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        horario: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.horario
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.sitioWeb}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        sitioWeb: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.sitioWeb
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <input
-                    type="text"
-                    value={editingService.telContacto}
-                    onChange={(e) =>
-                      setEditingService({
-                        ...editingService,
-                        telContacto: e.target.value,
-                      })
-                    }
-                    className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                  />
-                ) : (
-                  service.telContacto
-                )}
-              </td>
-              <td className="p-3">
-                {editingService?.id === service.id ? (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleUpdate}
-                      className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => setEditingService(null)}
-                      className="bg-gray-600 text-white p-2 rounded hover:bg-gray-700"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(service)}
-                      className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
-                    >
-                      <PencilIcon size={16} />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowModal(true)
-                        setExternalServiceToDelete(service.id)
-                      }}
-                      className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
-                    >
-                      <TrashIcon size={16} />
-                    </button>
-                  </div>
-                )}
-              </td>
-            </tr>
+              service={service}
+              editingService={editingService}
+              handleUpdate={handleUpdate}
+              handleEdit={handleEdit}
+              setShowModal={setShowModal}
+              setEditingService={setEditingService}
+              setExternalServiceToDelete={setExternalServiceToDelete}
+              places={places}
+            />
           ))}
         </tbody>
       </table>

@@ -1,7 +1,9 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
 import ExternalService from '../../interfaces/ExternalService.ts'
 import { X } from 'lucide-react'
+import { usePlace } from '../../context/PlaceContext.tsx'
 
 export default function NewExternalServiceForm({
   onClose,
@@ -9,11 +11,19 @@ export default function NewExternalServiceForm({
   onClose: () => void
 }) {
   const { createExternalService } = useExternalServices()
+  const { places, getPlaces } = usePlace()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ExternalService>()
+
+  useEffect(() => {
+    const loadPlaces = async () => {
+      await getPlaces()
+    }
+    loadPlaces()
+  }, [])
 
   const onCreate = handleSubmit((data) => {
     createExternalService(data)
@@ -34,6 +44,8 @@ export default function NewExternalServiceForm({
           New External Service
         </h2>
         <form onSubmit={onCreate} className="space-y-4">
+          {/* Otros campos permanecen igual */}
+
           <div>
             <label
               htmlFor="tipoServicio"
@@ -86,7 +98,7 @@ export default function NewExternalServiceForm({
                 },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter itinerary name"
+              placeholder="Enter service name"
             />
             {errors.nombre?.message && (
               <p className="mt-1 text-sm text-red-400">
@@ -97,13 +109,13 @@ export default function NewExternalServiceForm({
 
           <div>
             <label
-              htmlFor="description"
+              htmlFor="descripcion"
               className="block text-sm font-medium text-indigo-300"
             >
               Description
             </label>
             <input
-              id="description"
+              id="descripcion"
               type="text"
               {...register('descripcion', {
                 minLength: {
@@ -130,7 +142,7 @@ export default function NewExternalServiceForm({
               htmlFor="direccion"
               className="block text-sm font-medium text-indigo-300"
             >
-              Adress
+              Address
             </label>
             <input
               id="direccion"
@@ -138,19 +150,48 @@ export default function NewExternalServiceForm({
               {...register('direccion', {
                 minLength: {
                   value: 10,
-                  message: 'Adress must be at least 10 characters long',
+                  message: 'Address must be at least 10 characters long',
                 },
                 maxLength: {
                   value: 40,
-                  message: 'Adress must be at most 40 characters long',
+                  message: 'Address must be at most 40 characters long',
                 },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter external service adress"
+              placeholder="Enter external service address"
             />
             {errors.direccion?.message && (
               <p className="mt-1 text-sm text-red-400">
                 {errors.direccion.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="lugar"
+              className="block text-sm font-medium text-indigo-300"
+            >
+              Place
+            </label>
+            <select
+              id="lugar"
+              {...register('lugar', {
+                required: 'Place is required',
+              })}
+              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="">Select a place</option>
+              {places &&
+                places.map((place) => (
+                  <option key={place.id.toString()} value={place.id.toString()}>
+                    {place.nombre}
+                  </option>
+                ))}
+            </select>
+            {errors.lugar?.message && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.lugar.message}
               </p>
             )}
           </div>
@@ -174,7 +215,7 @@ export default function NewExternalServiceForm({
                   value: 40,
                   message: 'Schedule must be at most 40 characters long',
                 },
-                required: 'Place is required',
+                required: 'Schedule is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service schedule"
@@ -212,36 +253,6 @@ export default function NewExternalServiceForm({
             {errors.sitioWeb?.message && (
               <p className="mt-1 text-sm text-red-400">
                 {errors.sitioWeb.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="telContacto"
-              className="block text-sm font-medium text-indigo-300"
-            >
-              Phone Number
-            </label>
-            <input
-              id="telContacto"
-              type="text"
-              {...register('telContacto', {
-                minLength: {
-                  value: 10,
-                  message: 'Phone number must be 10 characters long',
-                },
-                maxLength: {
-                  value: 10,
-                  message: 'Phone number must be 10 characters long',
-                },
-              })}
-              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter external service phone number"
-            />
-            {errors.telContacto?.message && (
-              <p className="mt-1 text-sm text-red-400">
-                {errors.telContacto.message}
               </p>
             )}
           </div>

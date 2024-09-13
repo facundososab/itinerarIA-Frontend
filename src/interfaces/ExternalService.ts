@@ -1,4 +1,5 @@
 import { ObjectId } from "@mikro-orm/mongodb";
+import Place from "./Place.ts";
 
 export default interface ExternalService {
     id: ObjectId,
@@ -9,4 +10,5 @@ export default interface ExternalService {
   horario?: string,
   sitioWeb?: string,
   telContacto?: string,
+  lugar: Place,
 }

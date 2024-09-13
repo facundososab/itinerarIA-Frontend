@@ -4,6 +4,7 @@ import {
   loginRequest,
   verifyTokenRequest,
   logoutRequest,
+  updateUserRequest,
 } from '../auth/usuario.ts'
 import User from '../interfaces/User.ts'
 import Itinerary from '../interfaces/Itinerary.ts'
@@ -19,6 +20,7 @@ export const AuthContext = createContext({
   signIn: (_user: User) => {},
   isLoading: false || true,
   logout: () => {},
+  updateUser: (_user: User) => {},
 })
 
 //Esta funcion se crea para poder utilizar el contexto en cualquier parte de la aplicación y no tener que estar exportando e importando el contexto en cada archivo.
@@ -77,6 +79,18 @@ export const AuthProvider = ({ children }: any) => {
       setAuthErrors(errorData)
     }
   }
+
+  const updateUser = async (user: User) => {
+    try {
+      const res = await updateUserRequest(user)
+      setUser(res.data.data)
+      setAuthErrors([])
+    } catch (err: any) {
+      const errorData = err.response.data.message
+      setAuthErrors(errorData)
+    }
+  }
+
   //Elimino msj despues de 5 segundos
   useEffect(() => {
     if (authErrors.length > 0) {
@@ -125,6 +139,7 @@ export const AuthProvider = ({ children }: any) => {
         signIn,
         isLoading,
         logout,
+        updateUser,
       }}
     >
       {children}

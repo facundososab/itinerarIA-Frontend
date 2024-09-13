@@ -59,10 +59,17 @@ export function ExternalServicesProvider({
   const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([])
 
   const getAllExternalServices = async () => {
-    const res = await getAllExternalServicesRequest()
-    console.log('hola')
-    console.log(res.data.data)
-    setExternalServices(res.data.data)
+    try {
+      const res = await getAllExternalServicesRequest()
+      console.log('hola')
+      console.log(res.data.data)
+      setExternalServices(res.data.data)
+    } catch (err: any) {
+      const res = await getAllExternalServicesRequest()
+      console.log('hola')
+      console.log(res.data.data)
+      setExternalServices(res.data.data)
+    }
   }
 
   const getOneExternalService = async (id: ObjectId) => {
@@ -72,7 +79,7 @@ export function ExternalServicesProvider({
       setExternalService(res.data.data)
     } catch (err: any) {
       console.log(err)
-      setExternalServiceErrors(err.data)
+      setExternalServiceErrors(err.response.data.message)
       console.log(externalServiceErrors)
     }
   }
@@ -90,6 +97,7 @@ export function ExternalServicesProvider({
       console.log(res.data.data)
       setExternalService(res.data.data)
     } catch (err: any) {
+      console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
     }
   }
