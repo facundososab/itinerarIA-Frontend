@@ -71,7 +71,7 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-stone-800 p-6 rounded-md shadow-md">
+      <div className="bg-stone-800 p-6 rounded-md shadow-md w-full max-w-md">
         <div className="text-lg font-semibold mb-1">Data of the new place</div>
         <form onSubmit={handleSubmit(onSave)} className="space-y-1.5">
           {" "}

@@ -31,8 +31,9 @@ export default function NewExternalServiceForm({
   })
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
-      <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 overflow-y-auto">
+      <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg w-full max-w-md m-4 relative">
+
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-indigo-300 hover:text-indigo-100 transition-colors duration-200"
@@ -78,7 +79,7 @@ export default function NewExternalServiceForm({
         )}
 
         <form onSubmit={onCreate} className="space-y-4">
-          <div>
+          <div className="max-h-[60vh] overflow-y-auto pr-2">
             <label
               htmlFor="tipoServicio"
               className="block text-sm font-medium text-indigo-300"
@@ -202,7 +203,7 @@ export default function NewExternalServiceForm({
             )}
           </div>
 
-          <div>
+          <div className="space-y-1">
             <label
               htmlFor="lugar"
               className="block text-sm font-medium text-indigo-300"
@@ -325,7 +326,7 @@ export default function NewExternalServiceForm({
             )}
           </div>
 
-          <div>
+          <div className="pt-4">
             <button
               type="submit"
               className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
