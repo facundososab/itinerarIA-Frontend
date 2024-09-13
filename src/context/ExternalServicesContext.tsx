@@ -95,7 +95,7 @@ export function ExternalServicesProvider({
     try {
       const res = await updateExternalServiceRequest(externalService)
       console.log(res.data.data)
-      setExternalService(res.data.data)
+      setExternalServices([...externalServices, res.data.data])
     } catch (err: any) {
       console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
@@ -103,10 +103,13 @@ export function ExternalServicesProvider({
   }
 
   const deleteExternalService = async (id: ObjectId) => {
-    const res = await deleteExternalServiceRequest(id)
-    //ver que devuelve el delete
-    console.log(res.data.data)
-    setExternalService(res.data.data)
+    try {
+      const res = await deleteExternalServiceRequest(id)
+      setExternalService(res.data.data)
+    } catch (err: any) {
+      console.log(err.response.data.message)
+      setExternalServiceErrors(err.response.data.message)
+    }
   }
 
   //Elimino msj despues de 2 segundos

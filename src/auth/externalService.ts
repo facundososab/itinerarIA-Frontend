@@ -2,7 +2,7 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import ExternalService from "../interfaces/ExternalService.ts";
 import instance from "./axios.ts";
 
-export const createExternalServiceRequest = (externalService: ExternalService) => {
+export const createExternalServiceRequest = async(externalService: ExternalService) => {
   return instance.post("/externalServices", externalService);
 }
 
@@ -18,7 +18,7 @@ export const updateExternalServiceRequest = async (externalService: ExternalServ
   return instance.put(`/externalServices/${externalService.id}`, externalService);
 }
 
-export const deleteExternalServiceRequest = (id: ObjectId) => {
+export const deleteExternalServiceRequest = async(id: ObjectId) => {
   return instance.delete(`/externalServices/${id}`);
 }
 

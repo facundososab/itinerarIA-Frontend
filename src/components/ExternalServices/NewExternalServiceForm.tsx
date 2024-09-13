@@ -25,8 +25,8 @@ export default function NewExternalServiceForm({
     loadPlaces()
   }, [])
 
-  const onCreate = handleSubmit((data) => {
-    createExternalService(data)
+  const onCreate = handleSubmit(async (data) => {
+    await createExternalService(data)
     onClose()
   })
 
