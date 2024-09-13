@@ -228,15 +228,15 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
                 {...register("ubicacion_latitud", {
                   min: {
                     value: -90,
-                    message: "The latitud cannot be less than -90",
+                    message: "Latitud cannot be less than -90",
                   },
                   max: {
                     value: 90,
-                    message: "The latitud cannot be greater than 90",
+                    message: "Latitud cannot be greater than 90",
                   },
                   minLength: {
                     value: 7,
-                    message: "latitud must be at least 7 characters long (between -90 and 90 with six decimals)",
+                    message: "Latitud must be at least 7 characters long (between -90 and 90 with six decimals)",
                   },
                   maxLength: {
                     value: 9,
@@ -273,25 +273,25 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
                 {...register("ubicacion_longitud", {
                   min: {
                     value: -180,
-                    message: "The longitud cannot be less than -180",
+                    message: "Longitud cannot be less than -180",
                   },
                   max: {
                     value: 180,
-                    message: "The longitud cannot be greater than 180",
+                    message: "Longitud cannot be greater than 180",
                   },
                   minLength: {
                     value: 7,
-                    message: "longitude must be at least 7 characters long (between -180 and 180 with six decimals)",
+                    message: "Longitude must be at least 7 characters long (between -180 and 180 with six decimals)",
                   },
                   maxLength: {
                     value: 10,
-                    message: "longitude must be at most 10 characters long(between -180 and 180 with six decimals)",
+                    message: "Longitude must be at most 10 characters long(between -180 and 180 with six decimals)",
                   },
                   pattern: {
                     value: /^-?\d+(\.\d+)?$/,
                     message: "Please, enter a valid longitude (between -180 and 180 with six decimals)",
                   },
-                  required: "longitude is required",
+                  required: "Longitude is required",
                 },
                 )}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

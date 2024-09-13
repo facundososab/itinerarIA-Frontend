@@ -12,16 +12,15 @@ import { ReactNode } from 'react'
 
 export const PlaceContext = createContext({
   places: [] as Place[],
-  setPlaces: (_places: Place[]) => {},
-  createPlace: (_place: Place) => {},
-  getPlaces: () => {},
-  getPlace: async (_id: ObjectId) => {},
-  updatePlace: (_Place: Place) => {},
-  deletePlace: (_id: ObjectId) => {},
+  setPlaces: (_places: Place[]) => { },
+  createPlace: (_place: Place) => { },
+  getPlaces: () => { },
+  getPlace: async (_id: ObjectId) => { },
+  updatePlace: (_Place: Place) => { },
+  deletePlace: (_id: ObjectId) => { },
   CurrentPlace: null as Place | null,
-  setCurrentPlace: (_Place: Place | null) => {},
-  //handleNewPlace: (_Place: Place) => {},
-  handleSelectPlace: (_id: ObjectId) => {},
+  setCurrentPlace: (_Place: Place | null) => { },
+  handleSelectPlace: (_id: ObjectId) => { },
 })
 
 export const usePlace = () => {
@@ -67,10 +66,10 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
   }
 
   const getPlaces = async () => {
-    const res = await getPlacesRequest()
-    console.log(res.data.data, 'places del back')
-    setPlaces(res.data.data)
-  }
+    const res = await getPlacesRequest();
+    console.log(res.data.data, "places del back");
+    setPlaces(res.data.data);
+  };
 
   const getPlace = async (id: ObjectId) => {
     const res = await getPlaceRequest(id)
