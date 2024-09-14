@@ -12,8 +12,15 @@ import Place from "../../interfaces/Place.ts";
 import { ObjectId } from "@mikro-orm/mongodb";
 //dayjs.extend(utc);
 
-export function PlaceForm({ onClose }: { onClose: () => void, }) {
-  const { createPlace, updatePlace, CurrentPlace, places, setPlaces, getPlaces } = usePlace();
+export function PlaceForm({ onClose }: { onClose: () => void }) {
+  const {
+    createPlace,
+    updatePlace,
+    CurrentPlace,
+    places,
+    setPlaces,
+    getPlaces,
+  } = usePlace();
   //const navigate = useNavigate();
   //const params = useParams();
   const {
@@ -23,7 +30,7 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
     formState: { errors },
   } = useForm<Place>();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(places, "places en useeffect");
@@ -34,12 +41,13 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
     console.log(places, "places actualizados");
   }, [places]);
 
-
   const onSave = (dataPlace: Place) => {
     try {
-
       if (CurrentPlace) {
-        console.log("actualizando los datos del lugar con estos datos:", dataPlace);
+        console.log(
+          "actualizando los datos del lugar con estos datos:",
+          dataPlace
+        );
         updatePlace(dataPlace);
         // loadPlaces();
       } else {
@@ -80,7 +88,7 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               htmlFor="nombre"
               className="block text-sm font-medium text-white"
             >
-              name
+              Name
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -107,13 +115,12 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               </p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="pais"
               className="block text-sm font-medium text-white"
             >
-              country
+              Country
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -135,19 +142,15 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               />
             </div>
             {errors.pais?.message && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.pais.message}
-              </p>
+              <p className="mt-1 text-sm text-red-600">{errors.pais.message}</p>
             )}
           </div>
-
-
           <div>
             <label
               htmlFor="provincia"
               className="block text-sm font-medium text-white"
             >
-              province
+              Province
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -172,16 +175,14 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               <p className="mt-1 text-sm text-red-600">
                 {errors.provincia.message}
               </p>
-
             )}
           </div>
-
           <div>
             <label
               htmlFor="codigoPostal"
               className="block text-sm font-medium text-white"
             >
-              codigoPostal
+              ZIP Code
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -198,7 +199,8 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
                   },
                   pattern: {
                     value: /^[A-Za-z0-9-]{4,10}$/,
-                    message: "Please, enter a valid zipCode (alphanumeric and - only)",
+                    message:
+                      "Please, enter a valid zipCode (alphanumeric and - only)",
                   },
                   required: "zipCode is required",
                 })}
@@ -212,13 +214,12 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               </p>
             )}
           </div>
-
           <div>
             <label
               htmlFor="ubicacion_latitud"
               className="block text-sm font-medium text-white"
             >
-              latitud
+              Latitud
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -236,18 +237,21 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
                   },
                   minLength: {
                     value: 7,
-                    message: "Latitud must be at least 7 characters long (between -90 and 90 with six decimals)",
+                    message:
+                      "Latitud must be at least 7 characters long (between -90 and 90 with six decimals)",
                   },
                   maxLength: {
                     value: 9,
-                    message: "latitude must be at most 9 characters long(between -90 and 90 with six decimals)",
+                    message:
+                      "latitude must be at most 9 characters long(between -90 and 90 with six decimals)",
                   },
                   pattern: {
                     value: /^-?\d+(\.\d+)?$/,
-                    message: "Please, enter a valid latitude (between -90 and 90 with six decimals)",
+                    message:
+                      "Please, enter a valid latitude (between -90 and 90 with six decimals)",
                   },
                   required: "latitude is required",
-                },)}
+                })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter the place's latitude (between -90 and 90 with six decimals)"
               />
@@ -263,7 +267,7 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               htmlFor="ubicacion_longitud"
               className="block text-sm font-medium text-white"
             >
-              longitud
+              Longitude
             </label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
@@ -281,19 +285,21 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
                   },
                   minLength: {
                     value: 7,
-                    message: "Longitude must be at least 7 characters long (between -180 and 180 with six decimals)",
+                    message:
+                      "Longitude must be at least 7 characters long (between -180 and 180 with six decimals)",
                   },
                   maxLength: {
                     value: 10,
-                    message: "Longitude must be at most 10 characters long(between -180 and 180 with six decimals)",
+                    message:
+                      "Longitude must be at most 10 characters long(between -180 and 180 with six decimals)",
                   },
                   pattern: {
                     value: /^-?\d+(\.\d+)?$/,
-                    message: "Please, enter a valid longitude (between -180 and 180 with six decimals)",
+                    message:
+                      "Please, enter a valid longitude (between -180 and 180 with six decimals)",
                   },
                   required: "Longitude is required",
-                },
-                )}
+                })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter the place's longitude (between -180 and 180 with six decimals)"
               />
@@ -304,9 +310,6 @@ export function PlaceForm({ onClose }: { onClose: () => void, }) {
               </p>
             )}
           </div>
-
-
-
           <div>
             <button
               type="submit"

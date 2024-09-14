@@ -7,29 +7,29 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import DeleteWarningModal from "../components/DeleteWarningModal";
 
 export function PlacesPage() {
-  const { places, getPlaces, deletePlace, setCurrentPlace } = usePlace();
+  const { places, deletePlace, setCurrentPlace, setPlaces } = usePlace();
   const [showModalForm, setShowModalForm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
-  const [idPlaceToDelete, setIdPlaceToDelete] = useState<ObjectId | null>(null)
+  const [idPlaceToDelete, setIdPlaceToDelete] = useState<ObjectId | null>(null);
 
   useEffect(() => {
-    getPlaces();
-  }, []);
+    places ? setPlaces(places) : null;
+  }, [places]);
 
   const onClose = () => {
     setShowModalForm(false);
   };
 
   const onDelete = (placeId: ObjectId) => {
-    deletePlace(placeId)
-    setShowModalDelete(false)
-  }
+    deletePlace(placeId);
+    setShowModalDelete(false);
+  };
 
   return (
     <article className="min-h-screen w-full bg-[#1c1c21] text-indigo-100 flex flex-col">
       <div className="flex-grow container mx-auto p-6 overflow-auto">
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-white">External Services</h1>
+          <h1 className="text-3xl font-bold text-white">Places</h1>
           <button
             onClick={() => setShowModalForm(true)}
             className="bg-indigo-600 text-white px-4 py-2 rounded-md flex items-center hover:bg-indigo-700 transition-colors"
@@ -41,8 +41,12 @@ export function PlacesPage() {
 
         {places?.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64">
-            <h2 className="text-4xl font-bold text-white mb-4">No places yet</h2>
-            <p className="text-xl text-gray-400">Add a new place to get started</p>
+            <h2 className="text-4xl font-bold text-white mb-4">
+              No places yet
+            </h2>
+            <p className="text-xl text-gray-400">
+              Add a new place to get started
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -78,9 +82,9 @@ export function PlacesPage() {
                         </button>
                         <button
                           onClick={(e) => {
-                            e.stopPropagation()
-                            setShowModalDelete(true)
-                            setIdPlaceToDelete(place.id)
+                            e.stopPropagation();
+                            setShowModalDelete(true);
+                            setIdPlaceToDelete(place.id);
                           }}
                           className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
                         >

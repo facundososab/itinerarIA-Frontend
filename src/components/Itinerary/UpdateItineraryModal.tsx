@@ -1,32 +1,49 @@
-import { useForm } from "react-hook-form";
+import { ObjectId } from "@mikro-orm/mongodb";
 import Itinerary from "../../interfaces/Itinerary.ts";
-import { useItinerary } from "../../context/ItineraryContext.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
+import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
 import { usePlace } from "../../context/PlaceContext.tsx";
 import { useEffect } from "react";
 
-export default function InputNewItinerary({
+function UpdateItineraryModal({
   onClose,
+  onUpdate,
+  id,
+  text,
 }: {
   onClose: () => void;
+  onUpdate: (id: Itinerary) => void;
+  id: ObjectId | undefined;
+  text: string;
 }) {
-  const { createItinerary } = useItinerary();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Itinerary>();
-  const onCreate = handleSubmit((data) => {
-    createItinerary(data);
+  const { itineraries } = useAuth();
+  const itineraryToUpdate = itineraries?.find(
+    (itinerary) => itinerary.id === id
+  );
+  if (!itineraryToUpdate) return null;
+  const onEdit = handleSubmit((data) => {
+    onUpdate(data);
     onClose();
   });
-  const { getPlaces, places } = usePlace();
+  const { places, getPlaces } = usePlace();
   useEffect(() => {
     const loadPlaces = async () => {
       getPlaces();
     };
     loadPlaces();
   }, []);
+  setValue("title", itineraryToUpdate.title);
+  setValue("description", itineraryToUpdate.description);
+  setValue("duration", itineraryToUpdate.duration);
+  setValue("place", itineraryToUpdate.place);
+  setValue("preferences", itineraryToUpdate.preferences);
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
@@ -41,7 +58,7 @@ export default function InputNewItinerary({
         <h2 className="text-2xl font-bold text-indigo-100 mb-4">
           New Itinerary
         </h2>
-        <form onSubmit={onCreate} className="space-y-4">
+        <form onSubmit={onEdit} className="space-y-4">
           <div>
             <label
               htmlFor="title"
@@ -191,7 +208,7 @@ export default function InputNewItinerary({
               type="submit"
               className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
             >
-              Create Itinerary
+              {text}
             </button>
           </div>
         </form>
@@ -199,3 +216,5 @@ export default function InputNewItinerary({
     </div>
   );
 }
+
+export default UpdateItineraryModal;
