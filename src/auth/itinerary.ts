@@ -15,7 +15,7 @@ export const getItineraryRequest = async (id: ObjectId) => {
 }
 
 export const updateItineraryRequest = async (itinerary: Itinerary) => {
-  return axios.put(`/itinerarios/${itinerary.id}`, itinerary)
+  return axios.patch(`/itinerarios/${itinerary.id}`,itinerary )
 }
 
 export const deleteItineraryRequest = (id: ObjectId) => {

@@ -3,19 +3,21 @@ import Itinerary from "../../interfaces/Itinerary.ts";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
-import { usePlace } from "../../context/PlaceContext.tsx";
 import { useEffect } from "react";
+import Place from "../../interfaces/Place.ts";
 
 function UpdateItineraryModal({
   onClose,
   onUpdate,
   id,
   text,
+  places,
 }: {
   onClose: () => void;
-  onUpdate: (id: Itinerary) => void;
+  onUpdate: (data: Itinerary) => void;
   id: ObjectId | undefined;
   text: string;
+  places: Place[];
 }) {
   const {
     register,
@@ -29,22 +31,23 @@ function UpdateItineraryModal({
   );
   if (!itineraryToUpdate) return null;
   const onEdit = handleSubmit((data) => {
-    onUpdate(data);
+    const itineraryUpdate: Itinerary = {
+      ...data,
+      id: itineraryToUpdate.id,
+    };
+    if (!id) return null;
+    onUpdate(itineraryUpdate);
     onClose();
   });
-  const { places, getPlaces } = usePlace();
-  useEffect(() => {
-    const loadPlaces = async () => {
-      getPlaces();
-    };
-    loadPlaces();
-  }, []);
-  setValue("title", itineraryToUpdate.title);
-  setValue("description", itineraryToUpdate.description);
-  setValue("duration", itineraryToUpdate.duration);
-  setValue("place", itineraryToUpdate.place);
-  setValue("preferences", itineraryToUpdate.preferences);
 
+  useEffect(() => {
+    setValue("title", itineraryToUpdate.title);
+    setValue("description", itineraryToUpdate.description);
+    setValue("duration", itineraryToUpdate.duration);
+    setValue("place", itineraryToUpdate.place);
+    setValue("preferences", itineraryToUpdate.preferences);
+  }, [itineraryToUpdate]);
+  // if (loadingPlaces) return <div>Loading...</div>;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
       <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
@@ -56,7 +59,7 @@ function UpdateItineraryModal({
           <X size={24} />
         </button>
         <h2 className="text-2xl font-bold text-indigo-100 mb-4">
-          New Itinerary
+          Update Itinerary {itineraryToUpdate.title}
         </h2>
         <form onSubmit={onEdit} className="space-y-4">
           <div>

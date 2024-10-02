@@ -71,7 +71,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
 
   const getPlaces = async () => {
     const res = await getPlacesRequest();
-    console.log(res.data.data, "places del back");
+    // console.log(res.data.data, "places del back");
     setPlaces(res.data.data);
   };
 

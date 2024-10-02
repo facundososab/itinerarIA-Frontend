@@ -7,12 +7,12 @@ export const createPlaceRequest = (place: Place) => {
 }
 
 export const getPlacesRequest = async () => {
-    return axios.get('/lugares')
+    return await axios.get('/lugares')
 }
 
 export const getPlaceRequest = async (id: ObjectId) => {
     //return axios.get(`/lugares/${id}`)
-    return axios.get(`/lugares/${id}`);
+    return await axios.get(`/lugares/${id}`);
 }
 
 export const updatePlaceRequest = async (place: Place) => {

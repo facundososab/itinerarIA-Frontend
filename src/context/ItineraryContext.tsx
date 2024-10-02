@@ -4,32 +4,13 @@ import {
   getItineraryRequest,
   updateItineraryRequest,
   deleteItineraryRequest,
-} from "../auth/itinerario";
+} from "../auth/itinerary.ts";
 import { createContext, useContext, useState } from "react";
 import Itinerary from "../interfaces/Itinerary.ts"; // Import the Itinerary type correctly
 import { ObjectId } from "@mikro-orm/mongodb";
 import { ReactNode } from "react";
 import { useCallback } from "react";
 import { useAuth } from "./AuthContext.tsx";
-
-// const generateMockItinerary = (title: string): ItineraryDay[] => [
-//   {
-//     day: 1,
-//     activities: [
-//       `Check-in to hotel in ${title}`,
-//       'Visit local landmarks',
-//       'Dinner at a popular restaurant',
-//     ],
-//   },
-//   {
-//     day: 2,
-//     activities: [
-//       'Morning city tour',
-//       'Afternoon museum visit',
-//       'Evening cultural show',
-//     ],
-//   },
-// ]
 
 export const ItineraryContext = createContext({
   itineraries: null as Itinerary[] | null,
@@ -60,6 +41,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   const handleNewItinerary = useCallback(
     (itinerary: Itinerary) => {
       setCurrentItinerary(itinerary);
+      console.log("entra al handleNewItinerary");
     },
     [itineraries]
   );
@@ -68,13 +50,21 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     [itineraries]
   );
 
+  const handleUpdateItinerary = useCallback(
+    (itinerary: Itinerary) => {
+      console.log("entra al handleUpdateItinerary");
+      setCurrentItinerary(itinerary);
+    },
+    [itineraries]
+  );
+
   const handleSelectItinerary = (id: ObjectId) => {
-    console.log(id, itineraries);
+    // console.log(id, itineraries, "itinerario seleccionado");
 
     const selectedItinerary = itineraries?.find(
       (itinerary) => itinerary.id === id
     );
-    console.log(selectedItinerary);
+    // console.log(selectedItinerary);
     selectedItinerary ? setCurrentItinerary(selectedItinerary) : null;
   };
 
@@ -122,9 +112,15 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   const updateItinerary = async (itinerary: Itinerary) => {
     try {
       const res = await updateItineraryRequest(itinerary);
-      itineraries?.push(res.data.data);
-      handleNewItinerary(res.data.data);
-      console.log(itineraries);
+      const itineraryUpdated: Itinerary = res.data.data;
+      const newItineraries = itineraries?.map((itinerary) =>
+        itinerary.id === itineraryUpdated.id ? itineraryUpdated : itinerary
+      );
+      itineraries ? setItineraries(newItineraries as Itinerary[]) : null;
+      handleUpdateItinerary(itineraryUpdated);
+      console.log(res.data, "devolucion");
+      console.log(itineraries, "post actualizacion");
+      console.log(itineraryUpdated, "itinerario actualizado");
     } catch (error) {
       console.error(error);
     }

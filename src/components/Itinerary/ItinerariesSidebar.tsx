@@ -9,6 +9,7 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { EditIcon } from "lucide-react";
 import Itinerary from "../../interfaces/Itinerary.ts";
 import UpdateItineraryModal from "./UpdateItineraryModal.tsx";
+import { usePlace } from "../../context/PlaceContext.tsx";
 export default function ItinerariesSidebar() {
   const {
     setItineraries,
@@ -18,7 +19,14 @@ export default function ItinerariesSidebar() {
   } = useItinerary();
 
   const { itineraries } = useAuth();
+  const { places, getPlaces } = usePlace();
+  useEffect(() => {
+    const loadPlaces = async () => {
+      getPlaces();
+    };
 
+    loadPlaces();
+  }, []); //para traerme los lugares desde el backend y que se muestren en el select del modal de Update
   useEffect(() => {
     console.log(itineraries, "itineraries en useeffect");
     itineraries ? setItineraries(itineraries) : null;
@@ -29,17 +37,17 @@ export default function ItinerariesSidebar() {
   const [itineraryToDelete, setItineraryToDelete] = useState<ObjectId | null>(
     null
   );
-  const [itineraryToUpdate, setItineraryToUpdate] = useState<Itinerary | null>(
-    null
-  );
+  const [itineraryToUpdate, setItineraryToUpdate] = useState<
+    ObjectId | undefined
+  >(undefined);
 
   const onDelete = (itineraryId: ObjectId) => {
     deleteItinerary(itineraryId);
     setShowDeleteModal(false);
   };
 
-  const onUpdate = (itinerary: Itinerary) => {
-    updateItinerary(itinerary);
+  const onUpdate = (data: Itinerary) => {
+    updateItinerary(data);
     setShowUpdateModal(false);
   };
 
@@ -66,7 +74,7 @@ export default function ItinerariesSidebar() {
               onClick={(e) => {
                 e.stopPropagation(); // Evita que el clic en el botón seleccione el itinerario
                 setShowUpdateModal(true);
-                setItineraryToUpdate(itinerary);
+                setItineraryToUpdate(itinerary.id);
               }}
               className="p-1 my-3 border border-gray-600 rounded-md hover:bg-blue-100"
             >
@@ -77,8 +85,9 @@ export default function ItinerariesSidebar() {
                 <UpdateItineraryModal
                   onClose={() => setShowUpdateModal(false)}
                   onUpdate={onUpdate}
-                  id={itineraryToUpdate?.id}
+                  id={itineraryToUpdate}
                   text="Update itinerary"
+                  places={places}
                 />,
                 document.body
               )}

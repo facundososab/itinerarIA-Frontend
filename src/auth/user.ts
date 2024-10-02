@@ -1,4 +1,4 @@
-import axios from './axios';
+import axios from './axios.js';
 import User  from '../interfaces/User.js';
 
 
