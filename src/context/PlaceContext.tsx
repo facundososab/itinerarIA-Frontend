@@ -42,7 +42,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
 
   const handleSelectPlace = (id: ObjectId) => {
     const selectedPlace = places.find((place) => place.id === id);
-    console.log(selectedPlace, "lugar seleccionado");
+    // console.log(selectedPlace, "lugar seleccionado");
     selectedPlace ? setCurrentPlace(selectedPlace) : null;
   };
 
@@ -50,7 +50,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
   const createPlace = async (place: Place) => {
     try {
       const res = await createPlaceRequest(place);
-      places.push(res.data.data);
+      places?.push(res.data.data);
       handleNewPlace(res.data.data);
     } catch (error) {
       console.log(error);
@@ -62,7 +62,7 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
       const res = await deletePlaceRequest(id);
       if (res.status === 200) {
         setPlaces(places.filter((place) => place.id !== id));
-        console.log("Place deleted");
+        // console.log("Place deleted");
       }
     } catch (error) {
       console.log(error);
@@ -82,8 +82,8 @@ export function PlaceProvider({ children }: { children: ReactNode }) {
 
   const updatePlace = async (place: Place) => {
     try {
-      console.log(place.id, "el id   que le paso a updatePlace");
-      console.log(place, "el lugar que le paso a updatePlace");
+      // console.log(place.id, "el id   que le paso a updatePlace");
+      // console.log(place, "el lugar que le paso a updatePlace");
       const res = await updatePlaceRequest(place);
       const updatedPlace = res.data.data;
       setPlaces(

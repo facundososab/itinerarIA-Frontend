@@ -118,9 +118,6 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       );
       itineraries ? setItineraries(newItineraries as Itinerary[]) : null;
       handleUpdateItinerary(itineraryUpdated);
-      console.log(res.data, "devolucion");
-      console.log(itineraries, "post actualizacion");
-      console.log(itineraryUpdated, "itinerario actualizado");
     } catch (error) {
       console.error(error);
     }

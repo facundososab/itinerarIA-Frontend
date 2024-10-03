@@ -7,12 +7,21 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import DeleteWarningModal from "../components/DeleteWarningModal";
 
 export function PlacesPage() {
-  const { places, deletePlace, setCurrentPlace, setPlaces } = usePlace();
+  const { places, deletePlace, setCurrentPlace, setPlaces, getPlaces } =
+    usePlace();
   const [showModalForm, setShowModalForm] = useState(false);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [idPlaceToDelete, setIdPlaceToDelete] = useState<ObjectId | null>(null);
 
   useEffect(() => {
+    const loadPlaces = async () => {
+      getPlaces();
+    };
+
+    loadPlaces();
+  }, []); //Sin esto los lugares no se cargan en la tabla la primera vez que se renderiza la pagina
+  useEffect(() => {
+    console.log("places", places);
     places ? setPlaces(places) : null;
   }, [places]);
 

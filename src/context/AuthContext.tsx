@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: any) => {
   const signIn = async (userCreated: User) => {
     try {
       const res = await loginRequest(userCreated);
-      console.log(res.data.data.usuario, "res.data.data.usuario");
+      // console.log(res.data.data.usuario, "res.data.data.usuario");
       setUser(res.data.data.usuario);
       setItineraries(res.data.data.usuario.itineraries);
       setIsAuthenticated(true);
