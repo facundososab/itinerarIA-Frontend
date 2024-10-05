@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
 import ExternalService from '../../interfaces/ExternalService.ts'
 import { X } from 'lucide-react'
-import { usePlace } from '../../context/PlaceContext.tsx'
+import { usePlaces } from '../../context/PlaceContext.tsx'
 
 export default function NewExternalServiceForm({
   onClose,
@@ -11,7 +11,7 @@ export default function NewExternalServiceForm({
   onClose: () => void
 }) {
   const { createExternalService, externalServiceErrors } = useExternalServices()
-  const { places, getPlaces } = usePlace()
+  const { places, getAllPlaces } = usePlaces()
   const {
     register,
     handleSubmit,
@@ -20,7 +20,7 @@ export default function NewExternalServiceForm({
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces()
+      getAllPlaces()
     }
     loadPlaces()
   }, [])

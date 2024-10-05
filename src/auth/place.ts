@@ -6,7 +6,7 @@ export const createPlaceRequest = (place: Place) => {
     return axios.post('/lugares', place)
 }
 
-export const getPlacesRequest = async () => {
+export const getAllPlacesRequest = async () => {
     return axios.get('/lugares')
 }
 

@@ -5,7 +5,7 @@ import { ObjectId } from '@mikro-orm/mongodb'
 import { createPortal } from 'react-dom'
 import DeleteExternalServiceWarningModal from './DeleteExternalServiceWarningModal.tsx'
 import ExternalServiceRow from './ExternalServiceRow.tsx'
-import { usePlace } from '../../context/PlaceContext.tsx'
+import { usePlaces } from '../../context/PlaceContext.tsx'
 
 export function ExternalServicesDisplay() {
   const {
@@ -17,11 +17,11 @@ export function ExternalServicesDisplay() {
     externalServiceErrors,
   } = useExternalServices()
 
-  const { places, getPlaces } = usePlace()
+  const { places, getAllPlaces } = usePlaces()
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getPlaces()
+      await getAllPlaces()
     }
     loadPlaces()
   }, [])

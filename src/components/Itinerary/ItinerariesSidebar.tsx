@@ -9,7 +9,7 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { EditIcon } from "lucide-react";
 import Itinerary from "../../interfaces/Itinerary.ts";
 import UpdateItineraryModal from "./UpdateItineraryModal.tsx";
-import { usePlace } from "../../context/PlaceContext.tsx";
+import { usePlaces } from "../../context/PlaceContext.tsx";
 export default function ItinerariesSidebar() {
   const {
     setItineraries,
@@ -19,10 +19,10 @@ export default function ItinerariesSidebar() {
   } = useItinerary();
 
   const { itineraries } = useAuth();
-  const { places, getPlaces } = usePlace();
+  const { places, getAllPlaces } = usePlaces();
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
+      getAllPlaces();
     };
 
     loadPlaces();

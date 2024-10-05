@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import Itinerary from "../../interfaces/Itinerary.ts";
 import { useItinerary } from "../../context/ItineraryContext.tsx";
 import { X } from "lucide-react";
-import { usePlace } from "../../context/PlaceContext.tsx";
+import { usePlaces } from "../../context/PlaceContext.tsx";
 import { useEffect, useState } from "react";
 import { usePreference } from "../../context/PreferenceContext.tsx";
 import Preference from "../../interfaces/Preference.ts";
@@ -23,11 +23,11 @@ export default function InputNewItinerary({
     createItinerary(data);
     onClose();
   });
-  const { getPlaces, places } = usePlace();
+  const { getAllPlaces, places } = usePlaces();
   const [selectedPreferences, setSelectedPreferences] = useState<number[]>([]);
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
+      getAllPlaces();
     };
     loadPlaces();
   }, []);
