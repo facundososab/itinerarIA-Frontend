@@ -3,7 +3,9 @@ import Itinerary from "../../interfaces/Itinerary.ts";
 import { useItinerary } from "../../context/ItineraryContext.tsx";
 import { X } from "lucide-react";
 import { usePlace } from "../../context/PlaceContext.tsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { usePreference } from "../../context/PreferenceContext.tsx";
+import Preference from "../../interfaces/Preference.ts";
 
 export default function InputNewItinerary({
   onClose,
@@ -16,16 +18,32 @@ export default function InputNewItinerary({
     handleSubmit,
     formState: { errors },
   } = useForm<Itinerary>();
+  const { preferences, getPreferences } = usePreference();
   const onCreate = handleSubmit((data) => {
     createItinerary(data);
     onClose();
   });
   const { getPlaces, places } = usePlace();
+  const [selectedPreferences, setSelectedPreferences] = useState<number[]>([]);
   useEffect(() => {
     const loadPlaces = async () => {
       getPlaces();
     };
     loadPlaces();
+  }, []);
+  const handlePreferenceChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedOptions = Array.from(event.target.selectedOptions, (option) =>
+      Number(option.value)
+    );
+    setSelectedPreferences(selectedOptions);
+  };
+  useEffect(() => {
+    const loadPreferences = async () => {
+      await getPreferences();
+    };
+    loadPreferences();
   }, []);
 
   return (
@@ -170,15 +188,21 @@ export default function InputNewItinerary({
             >
               Preferences
             </label>
-            <input
+            <select
+              multiple
               id="preferences"
-              type="text"
-              {...register("preferences", {
-                required: "Preferences are required",
-              })}
+              onChange={handlePreferenceChange}
+              // {...register("preferences", {
+              //   required: "Preferences are required",
+              // })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter itinerary preferences"
-            />
+            >
+              {preferences?.map((preference: Preference, index: number) => (
+                <option key={index} value={preference.name}>
+                  {preference.name}
+                </option>
+              ))}
+            </select>
             {errors.preferences?.message && (
               <p className="mt-1 text-sm text-red-400">
                 {errors.preferences.message}

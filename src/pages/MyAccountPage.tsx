@@ -1,32 +1,32 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { UserIcon, MailIcon, PhoneIcon, CalendarIcon } from 'lucide-react'
-import User from '../interfaces/User'
+import { useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { UserIcon, MailIcon, PhoneIcon, CalendarIcon } from "lucide-react";
+import User from "../interfaces/User";
 
 export default function MyAccountPage() {
-  const { user, updateUser } = useAuth()
-  const [editMode, setEditMode] = useState(false)
-  const [formData, setFormData] = useState<User | null>(null)
+  const { user, updateUser } = useAuth();
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState<User | null>(null);
 
   useEffect(() => {
-    setFormData(user)
-  }, [user])
+    setFormData(user);
+  }, [user]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => (prev ? { ...prev, [name]: value } : null))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     if (formData) {
-      await updateUser(formData)
-      setEditMode(false)
+      await updateUser(formData);
+      setEditMode(false);
     }
-  }
+  };
 
   if (!formData) {
-    return <div className="text-indigo-100">Loading...</div>
+    return <div className="text-indigo-100">Loading...</div>;
   }
 
   return (
@@ -150,7 +150,7 @@ export default function MyAccountPage() {
                   htmlFor="fechaNacimiento"
                   className="block text-sm font-medium text-indigo-300"
                 >
-                  Date of Birth
+                  Date of Birth(DD/MM/YYYY)
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -164,7 +164,7 @@ export default function MyAccountPage() {
                     name="fechaNacimiento"
                     id="fechaNacimiento"
                     className="bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-[#393a41] rounded-md"
-                    value={formData.fechaNacimiento}
+                    value={formData.fechaNacimiento.split("T")[0]}
                     onChange={handleInputChange}
                     disabled={!editMode}
                   />
@@ -202,5 +202,5 @@ export default function MyAccountPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
