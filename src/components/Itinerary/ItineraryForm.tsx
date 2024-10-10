@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import Itinerary from '../../interfaces/Itinerary'
 import { useItinerary } from '../../context/ItineraryContext'
@@ -69,7 +69,7 @@ export default function InputNewItinerary({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
-      <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-3xl w-full relative max-h-[90vh] overflow-y-auto">
+      <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
         <button
           onClick={onClose}
           className="absolute top-2 right-2 text-indigo-300 hover:text-indigo-100 transition-colors duration-200"
@@ -204,9 +204,20 @@ export default function InputNewItinerary({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-indigo-300 mb-2">
-              Participants
-            </label>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-medium text-indigo-300">
+                Participants
+              </label>
+              <button
+                type="button"
+                onClick={() => append({ age: 0, preferences: [] })}
+                className="flex items-center px-3 py-1 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200 bg-[#1c1c21] text-indigo-300 hover:bg-indigo-700 hover:text-white"
+              >
+                <Plus size={16} className="mr-2" />
+                Add from favorites
+              </button>
+            </div>
+
             {fields.map((field, index) => (
               <div key={field.id} className="mb-4 p-4 bg-[#26262c] rounded-md">
                 <div className="flex justify-between items-center mb-2">
