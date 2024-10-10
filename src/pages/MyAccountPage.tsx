@@ -1,32 +1,41 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { UserIcon, MailIcon, PhoneIcon, CalendarIcon } from "lucide-react";
-import User from "../interfaces/User";
+import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
+import {
+  UserIcon,
+  MailIcon,
+  PhoneIcon,
+  CalendarIcon,
+  CheckCircle,
+} from 'lucide-react'
+import User from '../interfaces/User'
 
 export default function MyAccountPage() {
-  const { user, updateUser } = useAuth();
-  const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState<User | null>(null);
+  const { user, updateUser } = useAuth()
+  const [editMode, setEditMode] = useState(false)
+  const [formData, setFormData] = useState<User | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   useEffect(() => {
-    setFormData(user);
-  }, [user]);
+    setFormData(user)
+  }, [user])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => (prev ? { ...prev, [name]: value } : null));
-  };
+    const { name, value } = e.target
+    setFormData((prev) => (prev ? { ...prev, [name]: value } : null))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (formData) {
-      await updateUser(formData);
-      setEditMode(false);
+      await updateUser(formData)
+      setEditMode(false)
+      setSuccessMessage('Your profile has been updated successfully!')
+      setTimeout(() => setSuccessMessage(null), 5000) // Clear message after 5 seconds
     }
-  };
+  }
 
   if (!formData) {
-    return <div className="text-indigo-100">Loading...</div>;
+    return <div className="text-indigo-100">Loading...</div>
   }
 
   return (
@@ -54,7 +63,7 @@ export default function MyAccountPage() {
                     type="text"
                     name="username"
                     id="username"
-                    className="bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-[#393a41] rounded-md"
+                    className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={formData.username}
                     onChange={handleInputChange}
                     disabled={!editMode}
@@ -79,7 +88,7 @@ export default function MyAccountPage() {
                     type="email"
                     name="mail"
                     id="mail"
-                    className="bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-[#393a41] rounded-md"
+                    className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={formData.mail}
                     onChange={handleInputChange}
                     disabled={!editMode}
@@ -97,7 +106,7 @@ export default function MyAccountPage() {
                   type="text"
                   name="nombres"
                   id="nombres"
-                  className="mt-1 bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-[#393a41] rounded-md"
+                  className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   value={formData.nombres}
                   onChange={handleInputChange}
                   disabled={!editMode}
@@ -114,7 +123,7 @@ export default function MyAccountPage() {
                   type="text"
                   name="apellidos"
                   id="apellidos"
-                  className="mt-1 bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-[#393a41] rounded-md"
+                  className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   value={formData.apellidos}
                   onChange={handleInputChange}
                   disabled={!editMode}
@@ -138,7 +147,7 @@ export default function MyAccountPage() {
                     type="tel"
                     name="nroTelefono"
                     id="nroTelefono"
-                    className="bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-[#393a41] rounded-md"
+                    className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={formData.nroTelefono}
                     onChange={handleInputChange}
                     disabled={!editMode}
@@ -150,7 +159,7 @@ export default function MyAccountPage() {
                   htmlFor="fechaNacimiento"
                   className="block text-sm font-medium text-indigo-300"
                 >
-                  Date of Birth(DD/MM/YYYY)
+                  Date of Birth (DD/MM/YYYY)
                 </label>
                 <div className="mt-1 relative rounded-md shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -163,8 +172,8 @@ export default function MyAccountPage() {
                     type="date"
                     name="fechaNacimiento"
                     id="fechaNacimiento"
-                    className="bg-[#26262c] focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-[#393a41] rounded-md"
-                    value={formData.fechaNacimiento.split("T")[0]}
+                    className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                    value={formData.fechaNacimiento.split('T')[0]}
                     onChange={handleInputChange}
                     disabled={!editMode}
                   />
@@ -199,8 +208,14 @@ export default function MyAccountPage() {
               )}
             </div>
           </form>
+          {successMessage && (
+            <div className="mt-4 p-4 bg-green-800 text-green-100 rounded-md flex items-center">
+              <CheckCircle className="h-5 w-5 mr-2" />
+              {successMessage}
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
+  )
 }

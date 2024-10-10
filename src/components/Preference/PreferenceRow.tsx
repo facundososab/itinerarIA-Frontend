@@ -1,6 +1,6 @@
-import { PencilIcon, TrashIcon } from "lucide-react";
-import Preference from "../../interfaces/Preference.ts";
-import { ObjectId } from "@mikro-orm/mongodb";
+import { PencilIcon, TrashIcon } from 'lucide-react'
+import Preference from '../../interfaces/Preference.ts'
+import { ObjectId } from '@mikro-orm/mongodb'
 
 export default function PreferenceRow({
   preference,
@@ -11,13 +11,13 @@ export default function PreferenceRow({
   setShowModal,
   setPreferenceToDelete,
 }: {
-  preference: Preference;
-  editingPreference: Preference | null;
-  setEditingPreference: (preference: Preference | null) => void;
-  handleUpdate: () => void;
-  handleEdit: (preference: Preference) => void;
-  setShowModal: (show: boolean) => void;
-  setPreferenceToDelete: (id: ObjectId) => void;
+  preference: Preference
+  editingPreference: Preference | null
+  setEditingPreference: (preference: Preference | null) => void
+  handleUpdate: () => void
+  handleEdit: (preference: Preference) => void
+  setShowModal: (show: boolean) => void
+  setPreferenceToDelete: (id: ObjectId) => void
 }) {
   return (
     <tr key={preference.id.toString()} className="border-b border-[#393a41]">
@@ -56,9 +56,12 @@ export default function PreferenceRow({
         )}
       </td>
 
-      <td className="p-3">
+      {/* Aquí agregamos text-right para alinear el contenido */}
+      <td className="p-3 text-right">
         {editingPreference?.id === preference.id ? (
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-end">
+            {' '}
+            {/* Asegura que los botones también estén alineados */}
             <button
               onClick={handleUpdate}
               className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
@@ -73,7 +76,9 @@ export default function PreferenceRow({
             </button>
           </div>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-end">
+            {' '}
+            {/* Justificación a la derecha */}
             <button
               onClick={() => handleEdit(preference)}
               className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
@@ -82,8 +87,8 @@ export default function PreferenceRow({
             </button>
             <button
               onClick={() => {
-                setShowModal(true);
-                setPreferenceToDelete(preference.id);
+                setShowModal(true)
+                setPreferenceToDelete(preference.id)
               }}
               className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
             >
@@ -93,5 +98,5 @@ export default function PreferenceRow({
         )}
       </td>
     </tr>
-  );
+  )
 }

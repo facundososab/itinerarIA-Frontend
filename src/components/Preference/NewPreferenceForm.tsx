@@ -1,24 +1,24 @@
-import { useForm } from "react-hook-form";
-import { usePreference } from "../../context/PreferenceContext.tsx";
-import Preference from "../../interfaces/Preference.ts";
-import { X } from "lucide-react";
+import { useForm } from 'react-hook-form'
+import { usePreference } from '../../context/PreferenceContext.tsx'
+import Preference from '../../interfaces/Preference.ts'
+import { X } from 'lucide-react'
 
 export default function NewPreferenceForm({
   onClose,
 }: {
-  onClose: () => void;
+  onClose: () => void
 }) {
-  const { createPreference, preferenceErrors } = usePreference();
+  const { createPreference, preferenceErrors } = usePreference()
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Preference>();
+  } = useForm<Preference>()
 
   const onCreate = handleSubmit(async (data) => {
-    createPreference(data);
-    onClose();
-  });
+    createPreference(data)
+    onClose()
+  })
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
@@ -73,21 +73,21 @@ export default function NewPreferenceForm({
               htmlFor="name"
               className="block text-sm font-medium text-indigo-300"
             >
-              Service Type
+              Name
             </label>
             <input
               id="name"
               type="text"
-              {...register("name", {
+              {...register('name', {
                 minLength: {
                   value: 3,
-                  message: "Service type must be at least 3 characters long",
+                  message: 'Name must be at least 3 characters long',
                 },
                 maxLength: {
                   value: 20,
-                  message: "Service type must be at most 20 characters long",
+                  message: 'Name must be at most 20 characters long',
                 },
-                required: "Service type is required",
+                required: 'Name is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter service type"
@@ -102,21 +102,21 @@ export default function NewPreferenceForm({
               htmlFor="description"
               className="block text-sm font-medium text-indigo-300"
             >
-              Name
+              Description
             </label>
             <input
               id="description"
               type="text"
-              {...register("description", {
+              {...register('description', {
                 minLength: {
                   value: 3,
-                  message: "Name must be at least 3 characters long",
+                  message: 'Description must be at least 3 characters long',
                 },
                 maxLength: {
                   value: 40,
-                  message: "Name must be at most 40 characters long",
+                  message: 'Description must be at most 40 characters long',
                 },
-                required: "Name is required",
+                required: 'Description is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter service name"
@@ -138,5 +138,5 @@ export default function NewPreferenceForm({
         </form>
       </div>
     </div>
-  );
+  )
 }

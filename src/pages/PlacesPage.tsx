@@ -1,38 +1,38 @@
-import { useEffect, useState } from "react";
-import { usePlace } from "../context/PlaceContext";
-import { PlusCircleIcon, PencilIcon, TrashIcon } from "lucide-react";
-import { createPortal } from "react-dom";
-import { PlaceForm } from "../components/Place/PlaceForm";
-import { ObjectId } from "@mikro-orm/mongodb";
-import DeleteWarningModal from "../components/DeleteWarningModal";
+import { useEffect, useState } from 'react'
+import { usePlace } from '../context/PlaceContext'
+import { PlusCircleIcon, PencilIcon, TrashIcon } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { PlaceForm } from '../components/Place/PlaceForm'
+import { ObjectId } from '@mikro-orm/mongodb'
+import DeleteWarningModal from '../components/DeleteWarningModal'
 
 export function PlacesPage() {
   const { places, deletePlace, setCurrentPlace, setPlaces, getPlaces } =
-    usePlace();
-  const [showModalForm, setShowModalForm] = useState(false);
-  const [showModalDelete, setShowModalDelete] = useState(false);
-  const [idPlaceToDelete, setIdPlaceToDelete] = useState<ObjectId | null>(null);
+    usePlace()
+  const [showModalForm, setShowModalForm] = useState(false)
+  const [showModalDelete, setShowModalDelete] = useState(false)
+  const [idPlaceToDelete, setIdPlaceToDelete] = useState<ObjectId | null>(null)
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
-    };
+      getPlaces()
+    }
 
-    loadPlaces();
-  }, []); //Sin esto los lugares no se cargan en la tabla la primera vez que se renderiza la pagina
+    loadPlaces()
+  }, []) //Sin esto los lugares no se cargan en la tabla la primera vez que se renderiza la pagina
   useEffect(() => {
-    console.log("places", places);
-    places ? setPlaces(places) : null;
-  }, [places]);
+    console.log('places', places)
+    places ? setPlaces(places) : null
+  }, [places])
 
   const onClose = () => {
-    setShowModalForm(false);
-  };
+    setShowModalForm(false)
+  }
 
   const onDelete = (placeId: ObjectId) => {
-    deletePlace(placeId);
-    setShowModalDelete(false);
-  };
+    deletePlace(placeId)
+    setShowModalDelete(false)
+  }
 
   return (
     <article className="min-h-screen w-full bg-[#1c1c21] text-indigo-100 flex flex-col">
@@ -74,16 +74,16 @@ export function PlacesPage() {
                 {places?.map((place, i) => (
                   <tr key={i} className="border-b border-[#393a41]">
                     <td className="p-3">{place.nombre}</td>
-                    <td className="p-3">{place.pais || "N/A"}</td>
-                    <td className="p-3">{place.provincia || "N/A"}</td>
-                    <td className="p-3">{place.codigoPostal || "N/A"}</td>
+                    <td className="p-3">{place.pais || 'N/A'}</td>
+                    <td className="p-3">{place.provincia || 'N/A'}</td>
+                    <td className="p-3">{place.codigoPostal || 'N/A'}</td>
                     <td className="p-3">{`${place.ubicacion_latitud}, ${place.ubicacion_longitud}`}</td>
                     <td className="p-3">
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
-                            setShowModalForm(true);
-                            setCurrentPlace(place);
+                            setShowModalForm(true)
+                            setCurrentPlace(place)
                           }}
                           className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
                         >
@@ -91,9 +91,9 @@ export function PlacesPage() {
                         </button>
                         <button
                           onClick={(e) => {
-                            e.stopPropagation();
-                            setShowModalDelete(true);
-                            setIdPlaceToDelete(place.id);
+                            e.stopPropagation()
+                            setShowModalDelete(true)
+                            setIdPlaceToDelete(place.id)
                           }}
                           className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
                         >
@@ -123,5 +123,5 @@ export function PlacesPage() {
           )}
       </div>
     </article>
-  );
+  )
 }

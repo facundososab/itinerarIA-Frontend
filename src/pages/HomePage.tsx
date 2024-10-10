@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { MapIcon, ClockIcon, ThumbsUpIcon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.tsx'
 import { useEffect } from 'react'
+import ItineraryLanding from '../img/itinerary-landing.svg'
 
 export default function Component() {
   const { isAuthenticated } = useAuth()
@@ -30,36 +31,11 @@ export default function Component() {
                     Personalized recommendations and tailored itineraries based
                     on your preferences.
                   </p>
-                  <div className="mt-10 sm:mt-12">
-                    <form action="#" className="sm:max-w-xl sm:mx-auto lg:mx-0">
-                      <div className="sm:flex">
-                        <div className="min-w-0 flex-1">
-                          <label htmlFor="email" className="sr-only">
-                            Email address
-                          </label>
-                          <input
-                            id="email"
-                            type="email"
-                            placeholder="Enter your email"
-                            className="block w-full px-4 py-3 rounded-md border-0 text-base text-indigo-100 placeholder-indigo-400 bg-[#26262c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 focus:ring-offset-[#1c1c21]"
-                          />
-                        </div>
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                          <button
-                            type="submit"
-                            className="block w-full py-3 px-4 rounded-md shadow bg-indigo-500 text-white font-medium hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-400 focus:ring-offset-[#1c1c21]"
-                          >
-                            Get Started
-                          </button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
                 </div>
               </div>
-              <div className="mt-12 -mb-16 sm:-mb-48 lg:m-0 lg:relative">
-                <div className="mx-auto max-w-md flex justify-center it-center px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0">
-                  <img src="../img/img1-landing-route.svg" alt="" />
+              <div className="mt-12 -mb-16 sm:-mb-48">
+                <div className="mx-auto max-w-md flex justify-center items-center px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0">
+                  <img src={ItineraryLanding} alt="Hero" className="w-1/2" />
                 </div>
               </div>
             </div>
@@ -166,10 +142,10 @@ export default function Component() {
               time, enjoy more, and travel with confidence.
             </p>
             <Link
-              to="/itinerarios"
+              to="/register"
               className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 sm:w-auto"
             >
-              Ver itinerarios
+              Get Started
             </Link>
           </div>
         </div>
