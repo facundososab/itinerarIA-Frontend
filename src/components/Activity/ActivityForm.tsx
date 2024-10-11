@@ -11,6 +11,7 @@ const ActividadForm: React.FC<ActividadFormProps> = ({ actividad, onSave }) => {
   const [nombre, setNombre] = useState(actividad?.nombre || '');    
   const [fecha, setFecha] = useState(actividad?.fecha || '');
   const [lugar, setLugar] = useState(actividad?.lugar || '');
+  // falta agregar el resto de los atributos de la entidad Actividad
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
