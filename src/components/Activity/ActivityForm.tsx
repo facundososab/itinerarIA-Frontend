@@ -1,30 +1,53 @@
-// src/components/ActivityForm.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useActivityContext } from '../../context/ActivityContext';
 
 interface ActivityFormProps {
   itinerarioId: string;
+  currentActivity: Actividad | null; // Para permitir edición
+  onClose: () => void; // Callback para cerrar el modal
 }
 
-const ActivityForm: React.FC<ActivityFormProps> = ({ itinerarioId }) => {
-  const { addActividad } = useActivityContext();
+interface Actividad {
+  _id: string;
+  nombre: string;
+  fecha: string;
+  lugar: string;
+}
+
+const ActivityForm: React.FC<ActivityFormProps> = ({ itinerarioId, currentActivity, onClose }) => {
+  const { addActividad, updateActividad } = useActivityContext();
   const [nombre, setNombre] = useState<string>('');
   const [fecha, setFecha] = useState<string>('');
   const [lugar, setLugar] = useState<string>('');
 
+  useEffect(() => {
+    if (currentActivity) {
+      setNombre(currentActivity.nombre);
+      setFecha(currentActivity.fecha);
+      setLugar(currentActivity.lugar);
+    } else {
+      setNombre('');
+      setFecha('');
+      setLugar('');
+    }
+  }, [currentActivity]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Crear objeto actividad sin _id, que se generará en el backend
-    const nuevaActividad = { nombre, fecha, lugar };
+    // Crear objeto actividad
+    const actividadData = { nombre, fecha, lugar };
 
-    // Llamar a la función del contexto para agregar la actividad
-    await addActividad(itinerarioId, nuevaActividad);
+    if (currentActivity) {
+      // Editar actividad existente
+      await updateActividad(itinerarioId, currentActivity._id, actividadData);
+    } else {
+      // Crear nueva actividad
+      await addActividad(itinerarioId, actividadData);
+    }
 
-    // Limpiar el formulario
-    setNombre('');
-    setFecha('');
-    setLugar('');
+    // Limpiar el formulario y cerrar el modal
+    onClose();
   };
 
   return (
@@ -59,7 +82,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ itinerarioId }) => {
           required
         />
       </div>
-      <button type="submit">Agregar Actividad</button>
+      <button type="submit">{currentActivity ? 'Actualizar Actividad' : 'Agregar Actividad'}</button>
     </form>
   );
 };
