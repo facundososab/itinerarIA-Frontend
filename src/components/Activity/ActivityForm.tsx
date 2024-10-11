@@ -1,56 +1,67 @@
-// src/components/ActividadForm.tsx
-import React, { useState, useEffect } from 'react';
-import { crearActividad, actualizarActividad } from '../Activity/ActivityService';
+// src/components/ActivityForm.tsx
+import React, { useState } from 'react';
+import { useActivityContext } from '../../context/ActivityContext';
 
-interface ActividadFormProps {
-  actividad?: any;
-  onSave: () => void;
+interface ActivityFormProps {
+  itinerarioId: string;
 }
 
-const ActividadForm: React.FC<ActividadFormProps> = ({ actividad, onSave }) => {
-  const [nombre, setNombre] = useState(actividad?.nombre || '');    
-  const [fecha, setFecha] = useState(actividad?.fecha || '');
-  const [lugar, setLugar] = useState(actividad?.lugar || '');
-  // falta agregar el resto de los atributos de la entidad Actividad
+const ActivityForm: React.FC<ActivityFormProps> = ({ itinerarioId }) => {
+  const { addActividad } = useActivityContext();
+  const [nombre, setNombre] = useState<string>('');
+  const [fecha, setFecha] = useState<string>('');
+  const [lugar, setLugar] = useState<string>('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const actividadData = { nombre, fecha, lugar };
 
-    if (actividad) {
-      await actualizarActividad(actividad._id, actividadData);
-    } else {
-      await crearActividad(actividadData);
-    }
+    // Crear objeto actividad sin _id, que se generará en el backend
+    const nuevaActividad = { nombre, fecha, lugar };
 
-    onSave();
+    // Llamar a la función del contexto para agregar la actividad
+    await addActividad(itinerarioId, nuevaActividad);
+
+    // Limpiar el formulario
+    setNombre('');
+    setFecha('');
+    setLugar('');
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        placeholder="Nombre de la actividad"
-        required
-      />
-      <input
-        type="date"
-        value={fecha}
-        onChange={(e) => setFecha(e.target.value)}
-        required
-      />
-      <input
-        type="text"
-        value={lugar}
-        onChange={(e) => setLugar(e.target.value)}
-        placeholder="Lugar"
-        required
-      />
-      <button type="submit">{actividad ? 'Actualizar' : 'Crear'}</button>
+      <div>
+        <label htmlFor="nombre">Nombre de la Actividad:</label>
+        <input
+          type="text"
+          id="nombre"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="fecha">Fecha:</label>
+        <input
+          type="date"
+          id="fecha"
+          value={fecha}
+          onChange={(e) => setFecha(e.target.value)}
+          required
+        />
+      </div>
+      <div>
+        <label htmlFor="lugar">Lugar:</label>
+        <input
+          type="text"
+          id="lugar"
+          value={lugar}
+          onChange={(e) => setLugar(e.target.value)}
+          required
+        />
+      </div>
+      <button type="submit">Agregar Actividad</button>
     </form>
   );
 };
 
-export default ActividadForm;
+export default ActivityForm;
