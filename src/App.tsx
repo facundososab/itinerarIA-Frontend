@@ -15,14 +15,14 @@ import { PlaceProvider } from "./context/PlaceContext.tsx";
 import MyAccountPage from "./pages/MyAccountPage.tsx";
 import PreferencePage from "./pages/PreferencesPage.tsx";
 import { PreferenceProvider } from "./context/PreferenceContext.tsx";
-import { ActivityProvider } from "./context/ActivityContext.tsx";
+import { ActivitiesProvider } from "./context/ActivityContext.tsx";
 
 function App() {
   return (
     <div>
       <AuthProvider>
         <ItineraryProvider>
-          <ActivityProvider> 
+          <ActivitiesProvider> 
             <PlaceProvider>
               <PreferenceProvider>
                 <BrowserRouter>
@@ -46,7 +46,7 @@ function App() {
                 </BrowserRouter>
               </PreferenceProvider>
             </PlaceProvider>
-          </ActivityProvider> 
+          </ActivitiesProvider> 
         </ItineraryProvider>
       </AuthProvider>
     </div>

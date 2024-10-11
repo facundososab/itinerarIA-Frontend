@@ -1,72 +1,148 @@
-// src/context/ActivityContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { obtenerActividades, crearActividad, eliminarActividad, actualizarActividad } from '../components/Activity/ActivityService'; // Asegúrate de importar todas las funciones del servicio
-
-interface Actividad {
-  _id: string;
-  nombre: string;
-  fecha: string;
-  lugar: string;
-}
-
-interface ActivityContextType {
-  actividades: Actividad[];
-  fetchActividades: (itinerarioId: string) => Promise<void>;
-  addActividad: (itinerarioId: string, actividad: Omit<Actividad, '_id'>) => Promise<void>;
-  updateActividad: (itinerarioId: string, actividad: Actividad) => Promise<void>; // Nueva función para editar actividades
-  deleteActividad: (itinerarioId: string, actividadId: string) => Promise<void>;
-}
-
-const ActivityContext = createContext<ActivityContextType | undefined>(undefined);
-
-export const ActivityProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [actividades, setActividades] = useState<Actividad[]>([]);
-
-  // Función para obtener las actividades de un itinerario
-  const fetchActividades = async (itinerarioId: string) => {
-    const data = await obtenerActividades(itinerarioId);
-    setActividades(data);
-  };
-
-  // Función para agregar una nueva actividad
-  const addActividad = async (itinerarioId: string, actividad: Omit<Actividad, '_id'>) => {
-    const nuevaActividad = await crearActividad(itinerarioId, actividad);
-    setActividades((prev) => [...prev, nuevaActividad]);
-  };
-
-  // Función para actualizar una actividad existente
-  const updateActividad = async (itinerarioId: string, actividad: Actividad) => {
-    const actividadActualizada = await actualizarActividad(itinerarioId, actividad._id, actividad);
-    setActividades((prev) =>
-      prev.map((act) => (act._id === actividadActualizada._id ? actividadActualizada : act))
-    );
-  };
-
-  // Función para eliminar una actividad
-  const deleteActividad = async (itinerarioId: string, actividadId: string) => {
-    await eliminarActividad(itinerarioId, actividadId);
-    setActividades((prev) => prev.filter((actividad) => actividad._id !== actividadId));
-  };
-
-  return (
-    <ActivityContext.Provider
-      value={{
-        actividades,
-        fetchActividades,
-        addActividad,
-        updateActividad, // Incluimos la función de actualizar
-        deleteActividad,
-      }}
-    >
-      {children}
-    </ActivityContext.Provider>
-  );
-};
-
-export const useActivityContext = () => {
-  const context = useContext(ActivityContext);
-  if (!context) {
-    throw new Error('useActivityContext debe ser usado dentro de un ActivityProvider');
+import {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+  } from 'react'
+  import Activity from '../interfaces/Activity.ts'
+  import {
+    createActivityRequest,
+    deleteActivityRequest,
+    getAllActivitiesRequest,
+    getActivityRequest,
+    updateActivityRequest,
+  } from '../auth/activity.ts'
+  import { ObjectId } from '@mikro-orm/mongodb'
+  import { useCallback } from 'react'
+  
+  export const ActivitiesContext = createContext({
+    activities: [] as Activity[],
+    setActivities: (_activities: Activity[]) => {},
+    activity: null as Activity | null,
+    setActivity: (_activity: Activity) => {},
+    currentActivity: null as Activity | null,
+    setCurrentActivity: (_currentActivity: Activity) => {},
+    getAllActivities: () => {},
+    getOneActivity: (_id: ObjectId) => {},
+    createActivity: (_activity: Activity) => {},
+    updateActivity: (_activity: Activity) => {},
+    deleteActivity: (_id: ObjectId) => {},
+    activityErrors: [],
+    setActivityErrors: (_activityErrors: []) => {},
+  })
+  
+  export const useActivity = () => {
+    const context = useContext(ActivitiesContext)
+    if (!context) {
+      throw new Error(
+        'useActivities must be used within a ActivitiesProvider'
+      )
+    }
+    return context
   }
-  return context;
-};
+  
+  export function ActivitiesProvider({
+    children,
+  }: {
+    children: ReactNode
+  }) {
+    const [activities, setActivities] = useState<Activity[]>(
+      []
+    )
+  
+    const [activity, setActivity] =
+      useState<Activity | null>(null)
+  
+    const [currentActivity, setCurrentActivity] =
+      useState<Activity | null>(null)
+    const handleNewActivity = useCallback(
+        (activity: Activity) => {
+          setCurrentActivity(activity);
+          console.log("entra al handleNewActivity");
+        },
+        [activities]
+      );
+  
+    const [activityErrors, setActivityErrors] = useState<[]>([])
+  
+    const getAllActivities = async () => {
+      try {
+        const res = await getAllActivitiesRequest()
+        setActivities(res.data.data)
+      } catch (err: any) {
+        const res = await getAllActivitiesRequest()
+        setActivities(res.data.data)
+      }
+    }
+  
+    const getOneActivity = async (id: ObjectId) => {
+      try {
+        const res = await getActivityRequest(id)
+        setActivity(res.data.data)
+      } catch (err: any) {
+        setActivityErrors(err.response.data.message)
+      }
+    }
+  
+    const createActivity = async (activity: Activity) => {
+      try {
+        const res = await createActivityRequest(activity)
+        activities.push(res.data.data)
+        handleNewActivity(res.data.data);
+      } catch (err: any) {
+        setActivityErrors(err.response.data.message)
+      }
+    }
+  
+    const updateActivity = async (activity: Activity) => {
+      try {
+        const res = await updateActivityRequest(activity)
+        setActivities([...activities, res.data.data])
+      } catch (err: any) {
+        setActivityErrors(err.response.data.message)
+      }
+    }
+  
+    const deleteActivity = async (id: ObjectId) => {
+      try {
+        const res = await deleteActivityRequest(id)
+        setActivity(res.data.data)
+      } catch (err: any) {
+        setActivityErrors(err.response.data.message)
+      }
+    }
+  
+    //Elimino msj despues de 2 segundos
+    useEffect(() => {
+      if (activityErrors.length > 0) {
+        const timer = setTimeout(() => {
+          setActivityErrors([])
+        }, 2000)
+        return () => clearTimeout(timer)
+      }
+    }, [activityErrors])
+  
+    return (
+      <ActivitiesContext.Provider
+        value={{
+          activities,
+          setActivities,
+          getAllActivities,
+          activity,
+          setActivity,
+          getOneActivity,
+          createActivity,
+          updateActivity,
+          deleteActivity,
+          currentActivity,
+          setCurrentActivity,
+          activityErrors,
+          setActivityErrors,
+        }}
+      >
+        {children}
+      </ActivitiesContext.Provider>
+    )
+  }
+  

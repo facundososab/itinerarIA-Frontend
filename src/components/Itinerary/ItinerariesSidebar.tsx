@@ -22,7 +22,7 @@ export default function ItinerariesSidebar() {
   const { places, getPlaces } = usePlace();
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
+      getPlaces(); //Método del contexto
     };
 
     loadPlaces();
