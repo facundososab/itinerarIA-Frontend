@@ -1,4 +1,3 @@
-// src/components/ActividadList.tsx
 import React, { useState, useEffect } from 'react';
 import { obtenerActividades, eliminarActividad } from '../Activity/ActivityService';
 

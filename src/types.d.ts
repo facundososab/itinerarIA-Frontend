@@ -5,3 +5,9 @@ export type ItineraryDay = {
   activities: string[]
 }
 
+export interface Actividad {
+  _id: string;
+  nombre: string;
+  fecha: string;
+  lugar: string;
+}
