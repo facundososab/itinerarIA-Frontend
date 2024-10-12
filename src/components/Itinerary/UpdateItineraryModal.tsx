@@ -41,11 +41,13 @@ function UpdateItineraryModal({
   });
 
   useEffect(() => {
-    setValue("title", itineraryToUpdate.title);
-    setValue("description", itineraryToUpdate.description);
-    setValue("duration", itineraryToUpdate.duration);
-    setValue("place", itineraryToUpdate.place);
-    setValue("preferences", itineraryToUpdate.preferences);
+    if (itineraryToUpdate) {
+      setValue("title", itineraryToUpdate.title);
+      setValue("description", itineraryToUpdate.description);
+      setValue("duration", itineraryToUpdate.duration);
+      setValue("place", itineraryToUpdate.place);
+      setValue("preferences", itineraryToUpdate.preferences);
+    }
   }, [itineraryToUpdate]);
   // if (loadingPlaces) return <div>Loading...</div>;
   return (

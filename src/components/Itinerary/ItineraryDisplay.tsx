@@ -1,26 +1,80 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useItinerary } from "../../context/ItineraryContext";
 import { useActivity } from "../../context/ActivityContext";
-import Activity from "../../interfaces/Activity";
 import { NewActivityButton } from "../Activity/NewActivityButton";
+import ActivityForm from "../Activity/ActivityForm";
+import { EditIcon, TrashIcon } from "lucide-react";
+import DeleteWarningModal from "../DeleteWarningModal.tsx";
+import { createPortal } from "react-dom";
+import { ObjectId } from "@mikro-orm/mongodb";
+import Activity from "../../interfaces/Activity.ts";
+import UpdateActivityModal from "../Activity/UpdateActivityModal.tsx";
 
 export function ItineraryDisplay() {
   const { CurrentItinerary } = useItinerary();
-  const {getAllActivities,activities} = useActivity();
+  const {
+    getAllActivities,
+    activities,
+    deleteActivity,
+    createActivity,
+    updateActivity,
+  } = useActivity();
+  const [showActivityForm, setShowActivityForm] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [activityToUpdate, setActivityToUpdate] = useState<
+    Activity | undefined
+  >(undefined);
+  const [activityToDelete, setActivityToDelete] = useState<ObjectId | null>(
+    null
+  );
+  const [filteredActivities, setFilteredActivities] = useState<
+    Activity[] | null
+  >(null);
 
+  const onDelete = (activityId: ObjectId) => {
+    console.log("Deleting activity", activityId);
+    deleteActivity(activityId);
+    setShowDeleteModal(false);
+  };
 
-useEffect(() => {
-      const loadActivities = async () => {
-        getAllActivities();
-        console.log(activities);
-      };
-  
-      loadActivities();
+  const onUpdate = (data: Activity) => {
+    updateActivity(data);
+    setShowUpdateModal(false);
+    loadActivities();
+  };
+  const loadActivities = useCallback(async () => {
+    if (CurrentItinerary) {
+      await getAllActivities();
+    }
+  }, [CurrentItinerary, getAllActivities]);
+
+  useEffect(() => {
+    loadActivities();
   }, []);
 
+  useEffect(() => {
+    if (CurrentItinerary && activities) {
+      setFilteredActivities(
+        activities.filter(
+          (activity) =>
+            activity.itinerary?.id?.toString() ===
+            CurrentItinerary.id?.toString()
+        )
+      );
+    }
+  }, [CurrentItinerary, activities]);
 
-
-
+  const handleCreateActivity = async (newActivity: Activity) => {
+    if (CurrentItinerary) {
+      await createActivity({
+        ...newActivity,
+        itinerary: CurrentItinerary.id,
+      } as Activity);
+      setShowActivityForm(false);
+      loadActivities();
+    }
+  };
   return (
     <div className="space-y-4 p-4">
       {/* Información del itinerario */}
@@ -29,34 +83,92 @@ useEffect(() => {
       <p className="text-gray-600">{CurrentItinerary?.place.nombre}</p>
 
       {/* Botón para agregar nueva actividad */}
-      <NewActivityButton />
+      <NewActivityButton onClick={() => setShowActivityForm(true)} />
+
+      {/* Modal para crear nueva actividad */}
+      {showActivityForm && (
+        <ActivityForm
+          onClose={() => setShowActivityForm(false)}
+          onSubmit={handleCreateActivity}
+          itineraryPlace={CurrentItinerary?.place || undefined}
+        />
+      )}
 
       {/* Listado de actividades asociadas al itinerario */}
       <div>
         <h3 className="text-xl font-bold">Actividades</h3>
-        {activities.length > 0 ? (
+        {filteredActivities?.length ? (
           <ul>
-            {activities.map((actividad) => (
-              <li key={actividad.name} className="flex justify-between items-center">
+            {filteredActivities.map((activity) => (
+              <li
+                key={activity.id.toString()}
+                className="flex justify-between items-center py-2"
+              >
                 <div>
+                  <h4 className="font-semibold">{activity.name}</h4>
+                  <p className="text-sm text-gray-600">
+                    {activity.description}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {activity.outdoor ? "Outdoor" : "Indoor"} |{" "}
+                    {activity.transport
+                      ? "Transport needed"
+                      : "No transport needed"}
+                  </p>
+                  <p className="font-semibold">
+                    {activity.place.nombre} - {activity.place.pais}
+                  </p>
+                </div>
+                <div className="flex space-x-2">
                   <button
-                    className="text-blue-500 mr-2"
-                    //onClick={() => handleEdit(actividad)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowUpdateModal(true);
+                      setActivityToUpdate(activity);
+                    }}
+                    className="p-1.5 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 group"
                   >
-                    Modificar
+                    <EditIcon className="h-4 w-4 text-white group-hover:scale-110 transition-transform duration-200" />
                   </button>
+                  {showUpdateModal &&
+                    createPortal(
+                      <UpdateActivityModal
+                        onClose={() => setShowUpdateModal(false)}
+                        onUpdate={onUpdate}
+                        activity={activityToUpdate}
+                        text="Update activity"
+                      />,
+                      document.body
+                    )}
+
                   <button
-                    className="text-red-500"
-                    //onClick={() => deleteActividad(CurrentItinerary._id, actividad._id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDeleteModal(true);
+                      setActivityToDelete(activity.id);
+                    }}
+                    className="p-1.5 rounded-full bg-red-500 hover:bg-red-600 transition-colors duration-200 group"
                   >
-                    Eliminar
+                    <TrashIcon className="h-4 w-4 text-white group-hover:scale-110 transition-transform duration-200" />
                   </button>
+                  {showDeleteModal &&
+                    createPortal(
+                      <DeleteWarningModal
+                        onClose={() => setShowDeleteModal(false)}
+                        onDelete={onDelete}
+                        id={activityToDelete}
+                        text="Are you sure you want to delete this itinerary?"
+                      />,
+                      document.body
+                    )}
                 </div>
               </li>
             ))}
           </ul>
         ) : (
-          <p>No hay actividades para este itinerario.</p>
+          <p className="text-gray-500 italic">
+            No activities found for this itinerary.
+          </p>
         )}
       </div>
     </div>

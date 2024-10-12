@@ -8,8 +8,8 @@ export default interface Activity {
     description: string;
     outdoor: boolean;
     transport:boolean;
-    schedule:TimeRanges;
+    schedule:string;
     place: Place;
-    itinerary: Itinerary;
+    itinerary: ObjectId;
     //opinions: Opinion[];
 }

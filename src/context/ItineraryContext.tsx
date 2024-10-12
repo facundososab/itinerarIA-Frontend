@@ -11,6 +11,7 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { ReactNode } from "react";
 import { useCallback } from "react";
 import { useAuth } from "./AuthContext.tsx";
+import Activity from "../interfaces/Activity.ts";
 
 export const ItineraryContext = createContext({
   itineraries: null as Itinerary[] | null,
@@ -23,6 +24,8 @@ export const ItineraryContext = createContext({
   CurrentItinerary: null as Itinerary | null,
   handleNewItinerary: (_itinerary: Itinerary) => {},
   handleSelectItinerary: (_id: ObjectId) => {},
+  activities: null as Activity[] | null,
+  setActivities: (_activities: Activity[]) => {},
 });
 
 export const useItinerary = () => {
@@ -37,6 +40,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   const [CurrentItinerary, setCurrentItinerary] = useState<Itinerary | null>(
     null
   );
+  const [activities, setActivities] = useState<Activity[] | null>(null); // creo las actividades del itinerario
   //creo handler para que cuando se cree un nuevo itinerario se seleccione automaticamente
   const handleNewItinerary = useCallback(
     (itinerary: Itinerary) => {
@@ -136,6 +140,8 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
         CurrentItinerary,
         handleNewItinerary,
         handleSelectItinerary,
+        activities,
+        setActivities,
       }}
     >
       {children}
