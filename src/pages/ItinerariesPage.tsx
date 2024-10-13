@@ -1,12 +1,12 @@
-import ItinerariesSidebar from "../components/Itinerary/ItinerariesSidebar.tsx";
-import { ItineraryDisplay } from "../components/Itinerary/ItineraryDisplay.tsx";
+import ItinerariesSidebar from '../components/Itinerary/ItinerariesSidebar.tsx'
+import { ItineraryDisplay } from '../components/Itinerary/ItineraryDisplay.tsx'
 import {
   //ItineraryProvider,
   useItinerary,
-} from "../context/ItineraryContext.tsx";
+} from '../context/ItineraryContext.tsx'
 
 export default function ItinerariesPage() {
-  const { CurrentItinerary } = useItinerary();
+  const { CurrentItinerary } = useItinerary()
   return (
     <div className="flex h-full bg-raisin-black-2">
       <ItinerariesSidebar />
@@ -22,5 +22,5 @@ export default function ItinerariesPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

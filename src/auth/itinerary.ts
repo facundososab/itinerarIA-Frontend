@@ -1,4 +1,4 @@
-import axios from './axios'
+import axios from './axios.ts'
 import Itinerary from '../interfaces/Itinerary'
 import { ObjectId } from "@mikro-orm/mongodb";
 

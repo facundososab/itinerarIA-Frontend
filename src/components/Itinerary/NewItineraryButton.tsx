@@ -24,7 +24,10 @@ export function NewItineraryButton() {
 }
 
 //modularizo la creacion de un nuevo objeto. Se le pasa el texto del boton y el componente que se va a renderizar al apretarlo
-export function NewButton(text: string, Component: React.ComponentType<{ onClose: () => void }>) {
+export function NewButton(
+  text: string,
+  Component: React.ComponentType<{ onClose: () => void }>
+) {
   const [showModal, setShowModal] = useState(false)
   return (
     <>

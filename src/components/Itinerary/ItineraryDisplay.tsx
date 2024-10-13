@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { useItinerary } from "../../context/ItineraryContext.tsx";
+import { useEffect } from 'react'
+import { useItinerary } from '../../context/ItineraryContext.tsx'
 
 export function ItineraryDisplay() {
-  const { CurrentItinerary } = useItinerary();
+  const { CurrentItinerary } = useItinerary()
   useEffect(() => {
     // console.log(CurrentItinerary);
-  }, [CurrentItinerary]);
+  }, [CurrentItinerary])
 
   return (
     <div className="space-y-4 p-4">
@@ -13,5 +13,5 @@ export function ItineraryDisplay() {
       <p className="text-gray-600">{CurrentItinerary?.description}:</p>
       <p className="text-gray-600">{CurrentItinerary?.place.nombre}</p>
     </div>
-  );
+  )
 }

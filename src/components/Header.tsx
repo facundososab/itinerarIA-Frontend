@@ -48,7 +48,7 @@ function Header() {
 
   return (
     <>
-      <div>
+      <div className="sticky top-0 z-50">
         <header className="bg-raisin-black shadow-sm py-2">
           <nav
             className={

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import Itinerary from '../../interfaces/Itinerary'
 import { useItinerary } from '../../context/ItineraryContext'
