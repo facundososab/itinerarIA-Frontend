@@ -6,7 +6,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
 import { PlaceForm } from "./PlaceForm.tsx";
 import { ObjectId } from "@mikro-orm/mongodb";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 import { TrashIcon } from "@heroicons/react/24/outline";
 
 export function PlaceCard({ place }: { place: Place }) {

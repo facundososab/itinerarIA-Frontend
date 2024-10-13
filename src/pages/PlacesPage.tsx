@@ -4,7 +4,7 @@ import { PlusCircleIcon, PencilIcon, TrashIcon } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { PlaceForm } from '../components/Place/PlaceForm'
 import { ObjectId } from '@mikro-orm/mongodb'
-import DeleteWarningModal from '../components/DeleteWarningModal'
+import DeleteWarningModal from '../components/shared/DeleteWarningModal'
 
 export function PlacesPage() {
   const { places, deletePlace, setCurrentPlace, setPlaces, getPlaces } =
