@@ -9,6 +9,8 @@ import { createPortal } from "react-dom";
 import { ObjectId } from "@mikro-orm/mongodb";
 import Activity from "../../interfaces/Activity.ts";
 import UpdateActivityModal from "../Activity/UpdateActivityModal.tsx";
+import { usePlace } from "../../context/PlaceContext.tsx";
+import Place from "../../interfaces/Place.ts";
 
 export function ItineraryDisplay() {
   const { CurrentItinerary } = useItinerary();
@@ -19,6 +21,7 @@ export function ItineraryDisplay() {
     createActivity,
     updateActivity,
   } = useActivity();
+  const { getPlaces, places } = usePlace();
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -28,9 +31,25 @@ export function ItineraryDisplay() {
   const [activityToDelete, setActivityToDelete] = useState<ObjectId | null>(
     null
   );
+  const [itineraryPlace, setItineraryPlace] = useState<Place | undefined>(
+    undefined
+  );
   const [filteredActivities, setFilteredActivities] = useState<
     Activity[] | null
   >(null);
+
+  useEffect(() => {
+    const loadPlaces = async () => {
+      getPlaces();
+    };
+
+    loadPlaces();
+    setItineraryPlace(
+      places?.find(
+        (place) => place.id?.toString() === CurrentItinerary?.place?.toString()
+      )
+    );
+  }, [CurrentItinerary]);
 
   const onDelete = (activityId: ObjectId) => {
     console.log("Deleting activity", activityId);
@@ -44,6 +63,7 @@ export function ItineraryDisplay() {
     loadActivities();
   };
   const loadActivities = useCallback(async () => {
+    console.log(CurrentItinerary);
     if (CurrentItinerary) {
       await getAllActivities();
     }
@@ -79,8 +99,10 @@ export function ItineraryDisplay() {
     <div className="space-y-4 p-4">
       {/* Información del itinerario */}
       <h2 className="text-2xl font-bold">{CurrentItinerary?.title}</h2>
-      <p className="text-gray-600">{CurrentItinerary?.description}</p>
-      <p className="text-gray-600">{CurrentItinerary?.place.nombre}</p>
+      <p className="text-gray-600">
+        Description: {CurrentItinerary?.description}
+      </p>
+      <p className="text-gray-600">Place: {itineraryPlace?.nombre}</p>
 
       {/* Botón para agregar nueva actividad */}
       <NewActivityButton onClick={() => setShowActivityForm(true)} />

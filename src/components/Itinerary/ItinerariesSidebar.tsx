@@ -75,8 +75,7 @@ export default function ItinerariesSidebar() {
             </div>
             <div className="flex space-x-2">
               <button
-                onClick={(e) => {
-                  e.stopPropagation();
+                onClick={() => {
                   setShowUpdateModal(true);
                   setItineraryToUpdate(itinerary.id);
                 }}

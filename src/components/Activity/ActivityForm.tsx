@@ -176,8 +176,8 @@ export default function ActivityForm({
                     message: "Schedule must be at least 3 characters long",
                   },
                   maxLength: {
-                    value: 20,
-                    message: "Schedule must be at most 100 characters long",
+                    value: 25,
+                    message: "Schedule must be at most 25 characters long",
                   },
                   required: "Schedule is required",
                 })}
