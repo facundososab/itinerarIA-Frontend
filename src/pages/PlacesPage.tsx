@@ -1,5 +1,6 @@
 import { PlacesDisplay } from '../components/Place/PlacesDisplay.tsx'
-import { NewPlaceButton } from '../components/Place/NewPlaceButton.tsx'
+import NewPlaceForm from '../components/Place/NewPlaceForm.tsx'
+import { NewButton } from '../components/shared/NewButton.tsx'
 
 export default function PlacesPage() {
   return (
@@ -14,7 +15,7 @@ export default function PlacesPage() {
                   Places
                 </h1>
               </div>
-              <NewPlaceButton />
+              <NewButton text="Add a new Place" NewForm={NewPlaceForm} />
             </div>
           </div>
         </header>
