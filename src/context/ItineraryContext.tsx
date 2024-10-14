@@ -59,12 +59,12 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   );
 
   const handleSelectItinerary = (id: ObjectId) => {
-    // console.log(id, itineraries, "itinerario seleccionado");
+    console.log(id, itineraries, "itinerario seleccionado");
 
     const selectedItinerary = itineraries?.find(
       (itinerary) => itinerary.id === id
     );
-    // console.log(selectedItinerary);
+    console.log(selectedItinerary);
     selectedItinerary ? setCurrentItinerary(selectedItinerary) : null;
   };
 
