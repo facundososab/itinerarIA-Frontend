@@ -17,42 +17,41 @@ export default function ItinerariesSidebar() {
     handleSelectItinerary,
     deleteItinerary,
     updateItinerary,
-  } = useItinerary();
+  } = useItinerary()
 
   const { itineraries } = useAuth();
   const { places, getPlaces } = usePlace();
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
-    };
+      getPlaces()
+    }
 
-    loadPlaces();
-  }, []);
-
+    loadPlaces()
+  }, []) //para traerme los lugares desde el backend y que se muestren en el select del modal de Update
   useEffect(() => {
-    console.log(itineraries, "itineraries en useeffect");
-    itineraries ? setItineraries(itineraries) : null;
-  }, [itineraries]);
+    console.log(itineraries, 'itineraries en useeffect')
+    itineraries ? setItineraries(itineraries) : null
+  }, [itineraries])
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [itineraryToDelete, setItineraryToDelete] = useState<ObjectId | null>(
     null
-  );
+  )
   const [itineraryToUpdate, setItineraryToUpdate] = useState<
     ObjectId | undefined
-  >(undefined);
+  >(undefined)
 
   const onDelete = (itineraryId: ObjectId) => {
-    deleteItinerary(itineraryId);
-    setShowDeleteModal(false);
-  };
+    deleteItinerary(itineraryId)
+    setShowDeleteModal(false)
+  }
 
   const onUpdate = (data: Itinerary) => {
-    updateItinerary(data);
-    setShowUpdateModal(false);
-  };
+    updateItinerary(data)
+    setShowUpdateModal(false)
+  }
 
   return (
     <div className="w-64 bg-onyx h-screen flex flex-col">
@@ -75,7 +74,8 @@ export default function ItinerariesSidebar() {
             </div>
             <div className="flex space-x-2">
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation() // Evita que el clic en el botón seleccione el itinerario
                   setShowUpdateModal(true);
                   setItineraryToUpdate(itinerary.id);
                 }}
@@ -120,5 +120,5 @@ export default function ItinerariesSidebar() {
         ))}
       </div>
     </div>
-  );
+  )
 }

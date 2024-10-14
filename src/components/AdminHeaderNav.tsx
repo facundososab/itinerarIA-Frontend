@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom'
 
 export const AdminHeaderNav = () => {
   return (
@@ -6,7 +6,7 @@ export const AdminHeaderNav = () => {
       <NavLink
         to="/externalServices"
         className={({ isActive }) =>
-          isActive ? "text-indigo-600" : "text-indigo-300"
+          isActive ? 'text-indigo-600' : 'text-indigo-300'
         }
       >
         External Services
@@ -14,7 +14,7 @@ export const AdminHeaderNav = () => {
       <NavLink
         to="/lugares"
         className={({ isActive }) =>
-          isActive ? "text-indigo-600" : "text-indigo-300"
+          isActive ? 'text-indigo-600' : 'text-indigo-300'
         }
       >
         Places
@@ -22,11 +22,19 @@ export const AdminHeaderNav = () => {
       <NavLink
         to="/preferences"
         className={({ isActive }) =>
-          isActive ? "text-indigo-600" : "text-indigo-300"
+          isActive ? 'text-indigo-600' : 'text-indigo-300'
         }
       >
         Preferences
       </NavLink>
+      <NavLink
+        to="/favorites"
+        className={({ isActive }) =>
+          isActive ? 'text-indigo-600' : 'text-indigo-300'
+        }
+      >
+        Favorites
+      </NavLink>
     </>
-  );
-};
+  )
+}

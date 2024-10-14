@@ -194,5 +194,5 @@ export function ItineraryDisplay() {
         )}
       </div>
     </div>
-  );
+  )
 }

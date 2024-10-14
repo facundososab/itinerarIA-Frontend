@@ -20,8 +20,6 @@ export const ExternalServicesContext = createContext({
   setExternalServices: (_externalServices: ExternalService[]) => {},
   externalService: null as ExternalService | null,
   setExternalService: (_externalService: ExternalService) => {},
-  currentExternalService: null as ExternalService | null,
-  setCurrentExternalService: (_currentExternalService: ExternalService) => {},
   getAllExternalServices: () => {},
   getOneExternalService: (_id: ObjectId) => {},
   createExternalService: (_externalService: ExternalService) => {},
@@ -49,11 +47,7 @@ export function ExternalServicesProvider({
   const [externalServices, setExternalServices] = useState<ExternalService[]>(
     []
   )
-
   const [externalService, setExternalService] =
-    useState<ExternalService | null>(null)
-
-  const [currentExternalService, setCurrentExternalService] =
     useState<ExternalService | null>(null)
 
   const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([])
@@ -63,8 +57,7 @@ export function ExternalServicesProvider({
       const res = await getAllExternalServicesRequest()
       setExternalServices(res.data.data)
     } catch (err: any) {
-      const res = await getAllExternalServicesRequest()
-      setExternalServices(res.data.data)
+      setExternalServiceErrors(err.response.data.message)
     }
   }
 
@@ -126,8 +119,6 @@ export function ExternalServicesProvider({
         createExternalService,
         updateExternalService,
         deleteExternalService,
-        currentExternalService,
-        setCurrentExternalService,
         externalServiceErrors,
         setExternalServiceErrors,
       }}
