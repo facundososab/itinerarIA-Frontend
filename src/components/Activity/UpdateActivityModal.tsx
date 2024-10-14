@@ -3,17 +3,20 @@ import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
 import { useEffect } from "react";
 import { useActivity } from "../../context/ActivityContext.tsx";
+import Place from "../../interfaces/Place.ts";
 
 function UpdateActivityModal({
   onClose,
   onUpdate,
   activity,
   text,
+  itineraryPlace,
 }: {
   onClose: () => void;
   onUpdate: (data: Activity) => void;
   activity: Activity | undefined;
   text: string;
+  itineraryPlace: Place | undefined;
 }) {
   const {
     register,
@@ -30,6 +33,7 @@ function UpdateActivityModal({
     const activityUpdate: Activity = {
       ...data,
       id: activityToUpdate.id,
+      place: itineraryPlace || ({} as Place),
     };
     if (!activity) return null;
     onUpdate(activityUpdate);
@@ -42,7 +46,7 @@ function UpdateActivityModal({
     setValue("outdoor", activityToUpdate.outdoor);
     setValue("transport", activityToUpdate.transport);
     setValue("schedule", activityToUpdate.schedule);
-  }, [activityToUpdate]);
+  }, [activities, activityToUpdate]);
   // if (loadingPlaces) return <div>Loading...</div>;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">

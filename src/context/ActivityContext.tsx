@@ -28,7 +28,7 @@ export const ActivitiesContext = createContext({
   createActivity: (_activity: Activity) => {},
   updateActivity: (_activity: Activity) => {},
   deleteActivity: (_id: ObjectId) => {},
-  activityErrors: [],
+  activityErrors: [] as string[],
   setActivityErrors: (_activityErrors: []) => {},
 });
 
@@ -57,12 +57,13 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
     [activities]
   );
 
-  const [activityErrors, setActivityErrors] = useState<[]>([]);
+  const [activityErrors, setActivityErrors] = useState([]);
 
   const getAllActivities = async () => {
     try {
       const res = await getAllActivitiesRequest();
       setActivities(res.data.data);
+      setActivityErrors([]);
     } catch (err: any) {
       setActivityErrors(err.response.data.message);
       console.log(err.response.data.message);
@@ -81,12 +82,17 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
   const createActivity = async (activity: Activity) => {
     try {
       const res = await createActivityRequest(activity);
-      setActivities([...activities, res.data.data]);
-      handleNewActivity(res.data.data);
-      console.log(activities);
+      if (res.status === 201) {
+        setActivities([...activities, res.data.data]);
+        handleNewActivity(res.data.data);
+        console.log(activities);
+        setActivityErrors([]);
+      }
     } catch (err: any) {
-      setActivityErrors(err.response.data.message);
-      console.log(err);
+      const errorData = err.response.data.message;
+      setActivityErrors(errorData);
+      console.log(errorData);
+      console.log(activityErrors);
     }
   };
 
@@ -99,8 +105,12 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
       );
       activities ? setActivities(newActivities as Activity[]) : null;
       handleNewActivity(activityUpdated);
+      console.log(res);
+      setActivityErrors([]);
     } catch (err: any) {
+      console.log(err.response.data.message);
       setActivityErrors(err.response.data.message);
+      console.log(activityErrors);
     }
   };
 
