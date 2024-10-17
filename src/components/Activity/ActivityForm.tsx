@@ -116,7 +116,7 @@ export default function ActivityForm({
               {...register("description", {
                 minLength: {
                   value: 10,
-                  message: "Description must be at least 3 characters long",
+                  message: "Description must be at least 10 characters long",
                 },
                 maxLength: {
                   value: 100,

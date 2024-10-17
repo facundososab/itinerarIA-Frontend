@@ -1,7 +1,7 @@
-import { PencilIcon, TrashIcon } from 'lucide-react'
-import ExternalService from '../../interfaces/ExternalService.ts'
-import { ObjectId } from '@mikro-orm/mongodb'
-import Place from '../../interfaces/Place.ts'
+import { PencilIcon, TrashIcon } from "lucide-react";
+import ExternalService from "../../interfaces/ExternalService.ts";
+import { ObjectId } from "@mikro-orm/mongodb";
+import Place from "../../interfaces/Place.ts";
 
 export default function ExternalServiceRow({
   service,
@@ -13,14 +13,14 @@ export default function ExternalServiceRow({
   setExternalServiceToDelete,
   places,
 }: {
-  service: ExternalService
-  places: Place[] | []
-  editingService: ExternalService | null
-  setEditingService: (service: ExternalService | null) => void
-  handleUpdate: () => void
-  handleEdit: (service: ExternalService) => void
-  setShowModal: (show: boolean) => void
-  setExternalServiceToDelete: (id: ObjectId) => void
+  service: ExternalService;
+  places: Place[] | [];
+  editingService: ExternalService | null;
+  setEditingService: (service: ExternalService | null) => void;
+  handleUpdate: () => void;
+  handleEdit: (service: ExternalService) => void;
+  setShowModal: (show: boolean) => void;
+  setExternalServiceToDelete: (id: ObjectId) => void;
 }) {
   return (
     <tr key={service.id.toString()} className="border-b border-[#393a41]">
@@ -196,8 +196,8 @@ export default function ExternalServiceRow({
             </button>
             <button
               onClick={() => {
-                setShowModal(true)
-                setExternalServiceToDelete(service.id)
+                setShowModal(true);
+                setExternalServiceToDelete(service.id);
               }}
               className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
             >
@@ -207,5 +207,5 @@ export default function ExternalServiceRow({
         )}
       </td>
     </tr>
-  )
+  );
 }

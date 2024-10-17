@@ -305,7 +305,6 @@ export default function InputNewItinerary({
               Add Person
             </button>
           </div>
-
           <div>
             <button
               type="submit"

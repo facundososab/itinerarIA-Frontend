@@ -1,6 +1,7 @@
 import { ObjectId } from "@mikro-orm/mongodb";
 import Place from "./Place.ts";
 import Itinerary from "./Itinerary.ts";
+import Opinion from "./Opinion.ts";
 
 export default interface Activity {
     id: ObjectId;
@@ -11,5 +12,5 @@ export default interface Activity {
     schedule:string;
     place: Place;
     itinerary: ObjectId;
-    //opinions: Opinion[];
+    opinions: Opinion[];
 }
