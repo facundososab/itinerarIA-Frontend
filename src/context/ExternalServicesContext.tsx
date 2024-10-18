@@ -11,6 +11,7 @@ import {
   deleteExternalServiceRequest,
   getAllExternalServicesRequest,
   getExternalServiceRequest,
+  getExternalServicesByPlaceRequest,
   updateExternalServiceRequest,
 } from '../auth/externalService.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
@@ -21,6 +22,7 @@ export const ExternalServicesContext = createContext({
   externalService: null as ExternalService | null,
   setExternalService: (_externalService: ExternalService) => {},
   getAllExternalServices: () => {},
+  getAllExternalServicesByPlace: (_id: ObjectId) => {},
   getOneExternalService: (_id: ObjectId) => {},
   createExternalService: (_externalService: ExternalService) => {},
   updateExternalService: (_externalService: ExternalService) => {},
@@ -57,6 +59,18 @@ export function ExternalServicesProvider({
       const res = await getAllExternalServicesRequest()
       setExternalServices(res.data.data)
     } catch (err: any) {
+      setExternalServiceErrors(err.response.data.message)
+    }
+  }
+
+  const getAllExternalServicesByPlace = async (id: ObjectId) => {
+    try {
+      console.log(id, 'id')
+      const res = await getExternalServicesByPlaceRequest(id)
+      console.log(res.data.data)
+      setExternalServices(res.data.data)
+    } catch (err: any) {
+      console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
     }
   }
@@ -116,6 +130,7 @@ export function ExternalServicesProvider({
         externalService,
         setExternalService,
         getOneExternalService,
+        getAllExternalServicesByPlace,
         createExternalService,
         updateExternalService,
         deleteExternalService,

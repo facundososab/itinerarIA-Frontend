@@ -1,10 +1,9 @@
 import { ExternalServicesDisplay } from '../components/ExternalServices/ExternalServicesDisplay.tsx'
 import { NewExternalServiceButton } from '../components/ExternalServices/NewExternalServiceButton.tsx'
-import { ExternalServicesProvider } from '../context/ExternalServicesContext.tsx'
 
 export default function ExternalServicesPage() {
   return (
-    <ExternalServicesProvider>
+    <>
       <hr className="border-[#2f3037]" />
       <main className="min-h-screen bg-raisin-black text-indigo-100">
         <header className="shadow-md">
@@ -21,6 +20,6 @@ export default function ExternalServicesPage() {
         </header>
         <ExternalServicesDisplay />
       </main>
-    </ExternalServicesProvider>
+    </>
   )
 }

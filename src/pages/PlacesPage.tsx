@@ -19,7 +19,9 @@ export function PlacesPage() {
     }
 
     loadPlaces()
-  }, []) //Sin esto los lugares no se cargan en la tabla la primera vez que se renderiza la pagina
+  }, [])
+
+  //Sin esto los lugares no se cargan en la tabla la primera vez que se renderiza la pagina
   useEffect(() => {
     console.log('places', places)
     places ? setPlaces(places) : null

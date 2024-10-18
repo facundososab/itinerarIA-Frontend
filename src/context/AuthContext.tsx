@@ -9,7 +9,6 @@ import {
 import User from '../interfaces/User.ts'
 import Itinerary from '../interfaces/Itinerary.ts'
 import Cookies from 'js-cookie'
-import Participant from '../interfaces/Participant.ts'
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -36,7 +35,6 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User | null>(null)
   const [itineraries, setItineraries] = useState<Itinerary[]>([]) //cambie [] por null,cambiar si hay algun error
-  const [favorites, setFavorites] = useState<Participant[]>([])
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [authErrors, setAuthErrors] = useState([])
   const [isLoading, setLoading] = useState(true)
@@ -45,7 +43,6 @@ export const AuthProvider = ({ children }: any) => {
       const res = await registerRequest(user)
       setUser(res.data.data)
       setItineraries(res.data.data.itineraries)
-      setFavorites(res.data.data.participants)
       setIsAuthenticated(true)
       setAuthErrors([])
     } catch (err: any) {
@@ -60,7 +57,6 @@ export const AuthProvider = ({ children }: any) => {
       console.log(res.data.data.usuario, 'res.data.data.usuario')
       setUser(res.data.data.usuario)
       setItineraries(res.data.data.usuario.itineraries)
-      setFavorites(res.data.data.usuario.participants)
       setIsAuthenticated(true)
       setAuthErrors([])
     } catch (err: any) {

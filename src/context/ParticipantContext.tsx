@@ -48,7 +48,6 @@ export function ParticipantProvider({ children }: { children: ReactNode }) {
   const createParticipant = async (participant: Participant) => {
     try {
       const res = await createParticipantRequest(participant)
-      console.log(res.data.data)
       setParticipants([...participants, res.data.data])
     } catch (err: any) {
       setParticipantErrors(err.response.data.message)
@@ -58,7 +57,6 @@ export function ParticipantProvider({ children }: { children: ReactNode }) {
   const createFavoriteParticipant = async (participant: Participant) => {
     try {
       const res = await createFavoriteParticipantRequest(participant)
-      console.log(res.data.data)
       setParticipants([...participants, res.data.data])
     } catch (err: any) {
       setParticipantErrors(err.response.data.message)
@@ -85,7 +83,6 @@ export function ParticipantProvider({ children }: { children: ReactNode }) {
 
   const updateParticipant = async (participant: Participant) => {
     try {
-      console.log(participant, 'participant updating')
       const res = await updateParticipantRequest(participant)
       const updatedParticipants = participants?.map((p) =>
         p.id === res.data.data.id ? res.data.data : p
@@ -93,7 +90,6 @@ export function ParticipantProvider({ children }: { children: ReactNode }) {
       setParticipants(updatedParticipants)
       setParticipant(res.data.data)
     } catch (err: any) {
-      console.log(err)
       setParticipantErrors(err.response.data.message)
     }
   }

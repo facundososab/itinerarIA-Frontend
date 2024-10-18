@@ -10,6 +10,10 @@ export const getAllExternalServicesRequest = async () => {
   return instance.get("/externalServices");
 }
 
+export const getExternalServicesByPlaceRequest = async (id: ObjectId) => {
+  return instance.get(`/externalServices/findByPlace/${id}`);
+}
+
 export const getExternalServiceRequest = async (id: ObjectId) => {
   return instance.get(`/externalServices/${id}`);
 }

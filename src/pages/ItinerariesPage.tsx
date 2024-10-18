@@ -1,12 +1,25 @@
+import { useEffect } from 'react'
 import ItinerariesSidebar from '../components/Itinerary/ItinerariesSidebar.tsx'
 import { ItineraryDisplay } from '../components/Itinerary/ItineraryDisplay.tsx'
 import {
   //ItineraryProvider,
   useItinerary,
 } from '../context/ItineraryContext.tsx'
+import { useAuth } from '../context/AuthContext.tsx'
 
 export default function ItinerariesPage() {
-  const { CurrentItinerary } = useItinerary()
+  const { user } = useAuth()
+  const { CurrentItinerary, getItineraries } = useItinerary()
+
+  useEffect(() => {
+    const loadItineraries = async () => {
+      if (user) {
+        getItineraries(user.id)
+      }
+    }
+    loadItineraries()
+  }, [])
+
   return (
     <div className="flex h-full bg-raisin-black-2">
       <ItinerariesSidebar />

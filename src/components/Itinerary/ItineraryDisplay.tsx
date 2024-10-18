@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { useItinerary } from "../../context/ItineraryContext";
-import { useActivity } from "../../context/ActivityContext";
-import { NewActivityButton } from "../Activity/NewActivityButton";
-import ActivityForm from "../Activity/ActivityForm";
+import { useCallback, useEffect, useState } from 'react'
+import { useItinerary } from '../../context/ItineraryContext'
+import { useActivity } from '../../context/ActivityContext'
+import { NewActivityButton } from '../Activity/NewActivityButton'
+import ActivityForm from '../Activity/ActivityForm'
 import {
   Search,
   Compass,
@@ -11,82 +11,91 @@ import {
   MapPin,
   Edit2,
   Trash2,
-} from "lucide-react";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
+} from 'lucide-react'
+import DeleteWarningModal from '../DeleteWarningModal.tsx'
 //import { createPortal } from "react-dom";
-import { ObjectId } from "@mikro-orm/mongodb";
-import Activity from "../../interfaces/Activity.ts";
-import UpdateActivityModal from "../Activity/UpdateActivityModal.tsx";
-import { usePlace } from "../../context/PlaceContext.tsx";
+import { ObjectId } from '@mikro-orm/mongodb'
+import Activity from '../../interfaces/Activity.ts'
+import UpdateActivityModal from '../Activity/UpdateActivityModal.tsx'
+import { usePlace } from '../../context/PlaceContext.tsx'
+import ExternalServicesModal from './ExternalServicesModal.tsx'
+import { createPortal } from 'react-dom'
+import ParticipantsModal from './ParticipantsModal.tsx'
 
 export function ItineraryDisplay() {
-  const { CurrentItinerary } = useItinerary();
+  const { CurrentItinerary } = useItinerary()
+
   const {
     getAllActivities,
     activities,
     deleteActivity,
     createActivity,
     updateActivity,
-  } = useActivity();
-  const { getPlaces, places } = usePlace();
-  const [showActivityForm, setShowActivityForm] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  } = useActivity()
+
+  const { getPlaces, places } = usePlace()
+
+  const [showActivityForm, setShowActivityForm] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [activityToUpdate, setActivityToUpdate] = useState<
     Activity | undefined
-  >(undefined);
+  >(undefined)
   const [activityToDelete, setActivityToDelete] = useState<ObjectId | null>(
     null
-  );
+  )
 
   const [filteredActivities, setFilteredActivities] = useState<
     Activity[] | null
-  >(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPlace, setSelectedPlace] = useState<string>("");
-  const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null);
-  const [transportFilter, setTransportFilter] = useState<boolean | null>(null);
-  const [scheduleFilter, setScheduleFilter] = useState<string>("");
+  >(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedPlace, setSelectedPlace] = useState<string>('')
+  const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null)
+  const [transportFilter, setTransportFilter] = useState<boolean | null>(null)
+  const [scheduleFilter, setScheduleFilter] = useState<string>('')
+
+  const [participantsModal, setParticipantsModal] = useState(false)
+  const [externalServicesModal, setExternalServicesModal] = useState(false)
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
-    };
+      getPlaces()
+    }
 
-    loadPlaces();
-  }, [CurrentItinerary]);
+    loadPlaces()
+  }, [CurrentItinerary])
 
   const onDelete = (activityId: ObjectId) => {
-    console.log("Deleting activity", activityId);
-    deleteActivity(activityId);
-    setShowDeleteModal(false);
-  };
+    console.log('Deleting activity', activityId)
+    deleteActivity(activityId)
+    setShowDeleteModal(false)
+  }
 
   const onUpdate = (data: Activity) => {
     if (CurrentItinerary) {
-      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
-      updateActivity({ ...updatedActivity } as Activity);
+      const updatedActivity = { ...data, itinerary: CurrentItinerary.id }
+      updateActivity({ ...updatedActivity } as Activity)
     }
-    setShowUpdateModal(false);
-    loadActivities();
-  };
+    setShowUpdateModal(false)
+    loadActivities()
+  }
 
   const loadActivities = useCallback(async () => {
     if (CurrentItinerary) {
-      await getAllActivities();
+      await getAllActivities()
     }
-  }, [CurrentItinerary, getAllActivities]);
+  }, [CurrentItinerary, getAllActivities])
 
   useEffect(() => {
-    loadActivities();
-  }, []);
+    loadActivities()
+  }, [])
 
   useEffect(() => {
     if (CurrentItinerary && activities) {
       let filtered = activities.filter(
         (activity) =>
           activity.itinerary?.id?.toString() === CurrentItinerary.id?.toString()
-      );
+      )
 
       if (searchTerm) {
         filtered = filtered.filter(
@@ -95,44 +104,44 @@ export function ItineraryDisplay() {
             activity.description
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
-        );
+        )
       }
 
       if (selectedPlace) {
         filtered = filtered.filter(
           (activity) => activity.place.id.toString() === selectedPlace
-        );
+        )
       }
 
       if (outdoorFilter !== null) {
         filtered = filtered.filter(
           (activity) => activity.outdoor === outdoorFilter
-        );
+        )
       }
 
       if (transportFilter !== null) {
         filtered = filtered.filter(
           (activity) => activity.transport === transportFilter
-        );
+        )
       }
 
       if (scheduleFilter) {
         filtered = filtered.filter((activity) => {
-          const activityTime = new Date(activity.schedule).getHours();
+          const activityTime = new Date(activity.schedule).getHours()
           switch (scheduleFilter) {
-            case "morning":
-              return activityTime >= 6 && activityTime < 12;
-            case "afternoon":
-              return activityTime >= 12 && activityTime < 18;
-            case "evening":
-              return activityTime >= 18 || activityTime < 6;
+            case 'morning':
+              return activityTime >= 6 && activityTime < 12
+            case 'afternoon':
+              return activityTime >= 12 && activityTime < 18
+            case 'evening':
+              return activityTime >= 18 || activityTime < 6
             default:
-              return true;
+              return true
           }
-        });
+        })
       }
 
-      setFilteredActivities(filtered);
+      setFilteredActivities(filtered)
     }
   }, [
     CurrentItinerary,
@@ -142,35 +151,54 @@ export function ItineraryDisplay() {
     outdoorFilter,
     transportFilter,
     scheduleFilter,
-  ]);
+  ])
 
   const handleCreateActivity = async (newActivity: Activity) => {
     if (CurrentItinerary) {
       await createActivity({
         ...newActivity,
         itinerary: CurrentItinerary.id,
-      } as Activity);
-      setShowActivityForm(false);
-      loadActivities();
+      } as Activity)
+      setShowActivityForm(false)
+      loadActivities()
     }
-  };
+  }
 
   return (
     <div className="space-y-6 p-6 bg-[#1c1c21] rounded-lg shadow-lg">
-      <div className="border-b border-gray-700 pb-4">
-        <h2 className="text-3xl font-bold text-indigo-300 mb-2">
-          {CurrentItinerary?.title}
-        </h2>
-        <p className="text-gray-400">{CurrentItinerary?.description}</p>
-        <p className="text-gray-400 flex items-center mt-2">
-          <MapPin size={16} className="mr-2 text-indigo-400" />
-          {
-            places.find(
-              (place) =>
-                place.id?.toString() === CurrentItinerary?.place?.toString()
-            )?.nombre
-          }{" "}
-        </p>
+      <div className="flex border-b border-gray-700 pb-4 justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-indigo-300 mb-2">
+            {CurrentItinerary?.title}
+          </h2>
+          <p className="text-gray-400">{CurrentItinerary?.description}</p>
+          <p className="text-gray-400 flex items-center mt-2">
+            <MapPin size={16} className="mr-2 text-indigo-400" />
+            {
+              places.find(
+                (place) =>
+                  place.id?.toString() === CurrentItinerary?.place?.toString()
+              )?.nombre
+            }{' '}
+          </p>
+        </div>
+        <div className="flex flex-col space-y-2 w-1/5">
+          <button
+            onClick={() => setParticipantsModal(true)}
+            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <span className="font-medium text-sm">View Participants</span>
+          </button>
+          <button
+            onClick={() => {
+              setExternalServicesModal(true)
+              console.log(externalServicesModal)
+            }}
+            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <span className="font-medium text-sm">View External Services</span>
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-between items-center">
@@ -209,10 +237,10 @@ export function ItineraryDisplay() {
           </div>
           <div className="flex space-x-4">
             <select
-              value={outdoorFilter === null ? "" : outdoorFilter.toString()}
+              value={outdoorFilter === null ? '' : outdoorFilter.toString()}
               onChange={(e) =>
                 setOutdoorFilter(
-                  e.target.value === "" ? null : e.target.value === "true"
+                  e.target.value === '' ? null : e.target.value === 'true'
                 )
               }
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -222,10 +250,10 @@ export function ItineraryDisplay() {
               <option value="false">Indoor</option>
             </select>
             <select
-              value={transportFilter === null ? "" : transportFilter.toString()}
+              value={transportFilter === null ? '' : transportFilter.toString()}
               onChange={(e) =>
                 setTransportFilter(
-                  e.target.value === "" ? null : e.target.value === "true"
+                  e.target.value === '' ? null : e.target.value === 'true'
                 )
               }
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -263,19 +291,19 @@ export function ItineraryDisplay() {
                     <div className="flex space-x-4 text-sm text-gray-500">
                       <span className="flex items-center">
                         <Compass size={16} className="mr-1 text-indigo-400" />
-                        {activity.outdoor ? "Outdoor" : "Indoor"}
+                        {activity.outdoor ? 'Outdoor' : 'Indoor'}
                       </span>
                       <span className="flex items-center">
                         <Truck size={16} className="mr-1 text-indigo-400" />
                         {activity.transport
-                          ? "Transport needed"
-                          : "No transport"}
+                          ? 'Transport needed'
+                          : 'No transport'}
                       </span>
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1 text-indigo-400" />
                         {new Date(
                           activity.schedule
-                        ).toLocaleTimeString()} -{" "}
+                        ).toLocaleTimeString()} -{' '}
                         {new Date(activity.schedule).toLocaleTimeString()}
                       </span>
                     </div>
@@ -290,8 +318,8 @@ export function ItineraryDisplay() {
                   <div className="flex space-x-2">
                     <button
                       onClick={() => {
-                        setShowUpdateModal(true);
-                        setActivityToUpdate(activity);
+                        setShowUpdateModal(true)
+                        setActivityToUpdate(activity)
                       }}
                       className="p-2 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
                       aria-label="Edit activity"
@@ -300,8 +328,8 @@ export function ItineraryDisplay() {
                     </button>
                     <button
                       onClick={() => {
-                        setShowDeleteModal(true);
-                        setActivityToDelete(activity.id);
+                        setShowDeleteModal(true)
+                        setActivityToDelete(activity.id)
                       }}
                       className="p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200"
                       aria-label="Delete activity"
@@ -346,6 +374,24 @@ export function ItineraryDisplay() {
           text="Are you sure you want to delete this activity?"
         />
       )}
+
+      {participantsModal &&
+        createPortal(
+          <ParticipantsModal
+            onClose={() => setParticipantsModal(false)}
+            participants={CurrentItinerary?.participants || []}
+          />,
+          document.body
+        )}
+
+      {externalServicesModal &&
+        createPortal(
+          <ExternalServicesModal
+            onClose={() => setExternalServicesModal(false)}
+            idLugar={CurrentItinerary?.place?.id || undefined}
+          />,
+          document.body
+        )}
     </div>
-  );
+  )
 }
