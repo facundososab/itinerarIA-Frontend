@@ -11,13 +11,23 @@ import {
   MapPin,
   Edit2,
   Trash2,
+  MessageSquareMore,
+  Eye,
 } from 'lucide-react'
 import DeleteWarningModal from '../DeleteWarningModal.tsx'
 //import { createPortal } from "react-dom";
 import { ObjectId } from '@mikro-orm/mongodb'
 import Activity from '../../interfaces/Activity.ts'
 import UpdateActivityModal from '../Activity/UpdateActivityModal.tsx'
+import ExternalServicesModal from './ExternalServicesModal.tsx'
+import { createPortal } from 'react-dom'
+import ParticipantsModal from './ParticipantsModal.tsx'
 import { usePlace } from '../../context/PlaceContext.tsx'
+import { useAuth } from '../../context/AuthContext.tsx'
+import { useOpinion } from '../../context/OpinionContext.tsx'
+import Opinion from '../../interfaces/Opinion.ts'
+import OpinionForm from '../Opinion/OpinionForm.tsx'
+import OpinionsDisplay from '../Opinion/OpinionsModal.tsx'
 
 export function ItineraryDisplay() {
   const { CurrentItinerary } = useItinerary()
@@ -29,10 +39,13 @@ export function ItineraryDisplay() {
     createActivity,
     updateActivity,
   } = useActivity()
+  const { user } = useAuth()
+  const { createOpinion, getAllOpinions, opinions } = useOpinion()
   const { getPlaces, places } = usePlace()
   const [showActivityForm, setShowActivityForm] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
+
   const [activityToUpdate, setActivityToUpdate] = useState<
     Activity | undefined
   >(undefined)
@@ -48,6 +61,15 @@ export function ItineraryDisplay() {
   const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null)
   const [transportFilter, setTransportFilter] = useState<boolean | null>(null)
   const [scheduleFilter, setScheduleFilter] = useState<string>('')
+  const [showOpinionModal, setShowOpinionModal] = useState(false)
+  const [activityForOpinion, setActivityForOpinion] = useState<Activity | null>(
+    null
+  )
+  const [showOpinionsModal, setShowOpinionsModal] = useState(false)
+  const [participantsModal, setParticipantsModal] = useState(false)
+  const [externalServicesModal, setExternalServicesModal] = useState(false)
+  const [selectedActivityOpinions, setSelectedActivityOpinions] =
+    useState<Activity | null>(null)
 
   useEffect(() => {
     const loadPlaces = async () => {
@@ -61,6 +83,10 @@ export function ItineraryDisplay() {
     console.log('Deleting activity', activityId)
     deleteActivity(activityId)
     setShowDeleteModal(false)
+  }
+  const handleViewOpinions = (activity: Activity) => {
+    setSelectedActivityOpinions(activity)
+    setShowOpinionsModal(true)
   }
 
   const onUpdate = (data: Activity) => {
@@ -81,8 +107,13 @@ export function ItineraryDisplay() {
   const loadOpinions = useCallback(async () => {
     await getAllOpinions()
   }, [getAllOpinions, opinions])
+
   useEffect(() => {
-    loadActivities()
+    async function loadData() {
+      await loadActivities()
+      await loadOpinions()
+    }
+    loadData()
   }, [])
 
   useEffect(() => {
@@ -150,7 +181,7 @@ export function ItineraryDisplay() {
 
   const handleCreateActivity = async (newActivity: Activity) => {
     if (CurrentItinerary) {
-      await createActivity({
+      createActivity({
         ...newActivity,
         itinerary: CurrentItinerary.id,
       } as Activity)
@@ -159,22 +190,54 @@ export function ItineraryDisplay() {
     }
   }
 
+  const handleCreateOpinion = async (opinion: Opinion) => {
+    console.log(opinion)
+    if (activityForOpinion) {
+      createOpinion({
+        ...opinion,
+        actividad: activityForOpinion.id,
+        usuario: user?.id,
+      } as Opinion)
+      setShowOpinionModal(false)
+      loadOpinions()
+    }
+  }
+
   return (
     <div className="space-y-6 p-6 bg-[#1c1c21] rounded-lg shadow-lg">
-      <div className="border-b border-gray-700 pb-4">
-        <h2 className="text-3xl font-bold text-indigo-300 mb-2">
-          {CurrentItinerary?.title}
-        </h2>
-        <p className="text-gray-400">{CurrentItinerary?.description}</p>
-        <p className="text-gray-400 flex items-center mt-2">
-          <MapPin size={16} className="mr-2 text-indigo-400" />
-          {
-            places.find(
-              (place) =>
-                place.id?.toString() === CurrentItinerary?.place?.toString()
-            )?.nombre
-          }{' '}
-        </p>
+      <div className="flex border-b border-gray-700 pb-4 justify-between">
+        <div>
+          <h2 className="text-3xl font-bold text-indigo-300 mb-2">
+            {CurrentItinerary?.title}
+          </h2>
+          <p className="text-gray-400">{CurrentItinerary?.description}</p>
+          <p className="text-gray-400 flex items-center mt-2">
+            <MapPin size={16} className="mr-2 text-indigo-400" />
+            {
+              places.find(
+                (place) =>
+                  place.id?.toString() === CurrentItinerary?.place?.toString()
+              )?.nombre
+            }{' '}
+          </p>
+        </div>
+        <div className="flex flex-col space-y-2 w-1/5">
+          <button
+            onClick={() => setParticipantsModal(true)}
+            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <span className="font-medium text-sm">View Participants</span>
+          </button>
+          <button
+            onClick={() => {
+              setExternalServicesModal(true)
+              console.log(externalServicesModal)
+            }}
+            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <span className="font-medium text-sm">View External Services</span>
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col sm:flex-row justify-between items-center">
@@ -368,6 +431,30 @@ export function ItineraryDisplay() {
           onDelete={onDelete}
           id={activityToDelete}
           text="Are you sure you want to delete this activity?"
+        />
+      )}
+
+      {participantsModal &&
+        createPortal(
+          <ParticipantsModal
+            onClose={() => setParticipantsModal(false)}
+            participants={CurrentItinerary?.participants || []}
+          />,
+          document.body
+        )}
+
+      {externalServicesModal &&
+        createPortal(
+          <ExternalServicesModal
+            onClose={() => setExternalServicesModal(false)}
+            idLugar={CurrentItinerary?.place?.id || undefined}
+          />,
+          document.body
+        )}
+      {showOpinionModal && activityForOpinion && (
+        <OpinionForm
+          onClose={() => setShowOpinionModal(false)}
+          onSubmit={handleCreateOpinion}
         />
       )}
     </div>
