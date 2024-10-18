@@ -69,7 +69,7 @@ export default function ItinerariesSidebar() {
   }
 
   return (
-    <div className="w-64 bg-onyx h-screen flex flex-col">
+    <div className="w-full sm:w-64 md:w-72 lg:w-80 bg-onyx h-screen flex flex-col">
       <div className="p-4 space-y-4">
         <NewItineraryButton />
         <div className="relative">
@@ -92,6 +92,11 @@ export default function ItinerariesSidebar() {
         </div>
       </div>
       <div className="overflow-y-auto flex-grow">
+        {filteredItineraries?.length === 0 && (
+          <div className="p-4 text-gray-500 text-center">
+            No itineraries found for this place
+          </div>
+        )}
         {filteredItineraries?.map((itinerary, i) => (
           <div
             key={i}

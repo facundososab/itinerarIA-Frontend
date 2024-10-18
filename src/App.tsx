@@ -18,6 +18,7 @@ import { PreferenceProvider } from './context/PreferenceContext.tsx'
 import { ParticipantProvider } from './context/ParticipantContext.tsx'
 import ParticipantsPage from './pages/ParticipantsPage.tsx'
 import { ActivitiesProvider } from './context/ActivityContext.tsx'
+import { OpinionsProvider } from './context/OpinionContext.tsx'
 import { ExternalServicesProvider } from './context/ExternalServicesContext.tsx'
 
 function App() {
@@ -26,46 +27,48 @@ function App() {
       <AuthProvider>
         <ItineraryProvider>
           <ExternalServicesProvider>
-            <ActivitiesProvider>
-              <PlaceProvider>
-                <PreferenceProvider>
-                  <ParticipantProvider>
-                    <BrowserRouter>
-                      <Header />
-                      <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
-                        <Route element={<ProtectedRoute />}>
-                          <Route
-                            path="/itinerarios"
-                            element={<ItinerariesPage />}
-                          />
-                          <Route path="/lugares" element={<PlacesPage />} />
-                          <Route
-                            path="/externalServices"
-                            element={<ExternalServicesPage />}
-                          />
-                          <Route
-                            path="/preferences"
-                            element={<PreferencePage />}
-                          />
-                          <Route
-                            path="/myaccount"
-                            element={<MyAccountPage />}
-                          />
-                          <Route
-                            path="/favorites"
-                            element={<ParticipantsPage />}
-                          />
-                        </Route>
-                        <Route path="*" element={<NotFoundPage />} />
-                      </Routes>
-                    </BrowserRouter>
-                  </ParticipantProvider>
-                </PreferenceProvider>
-              </PlaceProvider>
-            </ActivitiesProvider>
+            <OpinionsProvider>
+              <ActivitiesProvider>
+                <PlaceProvider>
+                  <PreferenceProvider>
+                    <ParticipantProvider>
+                      <BrowserRouter>
+                        <Header />
+                        <Routes>
+                          <Route path="/" element={<HomePage />} />
+                          <Route path="/login" element={<LoginPage />} />
+                          <Route path="/register" element={<RegisterPage />} />
+                          <Route element={<ProtectedRoute />}>
+                            <Route
+                              path="/itinerarios"
+                              element={<ItinerariesPage />}
+                            />
+                            <Route path="/lugares" element={<PlacesPage />} />
+                            <Route
+                              path="/externalServices"
+                              element={<ExternalServicesPage />}
+                            />
+                            <Route
+                              path="/preferences"
+                              element={<PreferencePage />}
+                            />
+                            <Route
+                              path="/myaccount"
+                              element={<MyAccountPage />}
+                            />
+                            <Route
+                              path="/favorites"
+                              element={<ParticipantsPage />}
+                            />
+                          </Route>
+                          <Route path="*" element={<NotFoundPage />} />
+                        </Routes>
+                      </BrowserRouter>
+                    </ParticipantProvider>
+                  </PreferenceProvider>
+                </PlaceProvider>
+              </ActivitiesProvider>
+            </OpinionsProvider>
           </ExternalServicesProvider>
         </ItineraryProvider>
       </AuthProvider>
