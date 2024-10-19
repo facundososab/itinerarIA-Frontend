@@ -1,6 +1,6 @@
 import { X, Star, Edit2, Trash2 } from "lucide-react";
-import Activity from "../../interfaces/Activity";
-import Opinion from "../../interfaces/Opinion";
+import Activity from "../../interfaces/Activity.ts";
+import Opinion from "../../interfaces/Opinion.ts";
 import { useCallback, useEffect, useState } from "react";
 import { useOpinion } from "../../context/OpinionContext.tsx";
 import UpdateOpinionModal from "./UpdateOpinionModal.tsx";
