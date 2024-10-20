@@ -1,36 +1,36 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import User from "../interfaces/User";
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import User from '../interfaces/User'
 
 function RegisterForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<User>();
-  const navigate = useNavigate();
-  const { isAuthenticated, signup, authErrors } = useAuth();
+  } = useForm<User>()
+  const navigate = useNavigate()
+  const { isAuthenticated, signup, authErrors } = useAuth()
 
   const onSubmit = handleSubmit(async (values) => {
-    signup(values as User);
-  });
+    signup(values as User)
+  })
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/itinerarios");
+      navigate('/itinerarios')
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate])
 
   return (
-    <div className="min-h-full flex flex-col justify-center pb-12 sm:px-6 lg:px-8">
+    <div className="min-h-full flex flex-col justify-center pb-12 sm:px-6 lg:px-8 px-4">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-extrabold text-white">
           Register
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{" "}
+          Or{' '}
           <Link
             to="/login"
             className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -41,9 +41,9 @@ function RegisterForm() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-raisin-black py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-raisin-black py-8 px-4 shadow rounded-lg sm:px-10">
           {authErrors.length > 0 && (
-            <div className="bg-red-50 border-l-4 sm:rounded-lg border-red-400 p-4 mb-6">
+            <div className="bg-red-50 border-4 sm:rounded-lg border-red-400 p-4 mb-6">
               <div className="flex">
                 <div className="flex-shrink-0">
                   <svg
@@ -88,8 +88,8 @@ function RegisterForm() {
                 <input
                   id="username"
                   type="text"
-                  {...register("username", {
-                    required: "Username is required",
+                  {...register('username', {
+                    required: 'Username is required',
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -112,8 +112,8 @@ function RegisterForm() {
                 <input
                   id="password"
                   type="password"
-                  {...register("password", {
-                    required: "Password is required",
+                  {...register('password', {
+                    required: 'Password is required',
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -136,8 +136,8 @@ function RegisterForm() {
                 <input
                   id="nombres"
                   type="text"
-                  {...register("nombres", {
-                    required: "First name is required",
+                  {...register('nombres', {
+                    required: 'First name is required',
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -160,8 +160,8 @@ function RegisterForm() {
                 <input
                   id="apellidos"
                   type="text"
-                  {...register("apellidos", {
-                    required: "Last name is required",
+                  {...register('apellidos', {
+                    required: 'Last name is required',
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -184,7 +184,7 @@ function RegisterForm() {
                 <input
                   id="mail"
                   type="email"
-                  {...register("mail", { required: "Email is required" })}
+                  {...register('mail', { required: 'Email is required' })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.mail && (
@@ -206,8 +206,8 @@ function RegisterForm() {
                 <input
                   id="nroTelefono"
                   type="tel"
-                  {...register("nroTelefono", {
-                    required: "Phone number is required",
+                  {...register('nroTelefono', {
+                    required: 'Phone number is required',
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -230,8 +230,8 @@ function RegisterForm() {
                 <input
                   id="fechaNacimiento"
                   type="date"
-                  {...register("fechaNacimiento", {
-                    required: "Date of birth is required",
+                  {...register('fechaNacimiento', {
+                    required: 'Date of birth is required',
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -255,7 +255,7 @@ function RegisterForm() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default RegisterForm;
+export default RegisterForm
