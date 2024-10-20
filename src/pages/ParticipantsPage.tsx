@@ -4,7 +4,6 @@ import { ParticipantsDisplay } from '../components/Participants/ParticipantDispl
 export default function ParticipantsPage() {
   return (
     <>
-      <hr className="border-[#2f3037]" />
       <main className="min-h-screen bg-raisin-black text-indigo-100">
         <header className="shadow-md">
           <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-6">
@@ -18,7 +17,9 @@ export default function ParticipantsPage() {
             </div>
           </div>
         </header>
-        <ParticipantsDisplay />
+        <section aria-labelledby="participants-list">
+          <ParticipantsDisplay />
+        </section>
       </main>
     </>
   )

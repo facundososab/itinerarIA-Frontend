@@ -2,18 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.tsx'
 import { MapIcon, UserCircleIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
+import { ChevronDownIcon, LogOutIcon, UserIcon, MenuIcon } from 'lucide-react'
 import { AdminHeaderNav } from './AdminHeaderNav.tsx'
 
 function Header() {
   const { isAuthenticated, logout } = useAuth()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Referencia para el contenedor del menú desplegable
+  // Reference for the dropdown menu container
   const profileMenuRef = useRef<HTMLDivElement | null>(null)
 
   const toggleProfile = () => {
     setIsProfileOpen(!isProfileOpen)
+  }
+
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen)
   }
 
   useEffect(() => {
@@ -29,6 +34,7 @@ function Header() {
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'hidden') {
         setIsProfileOpen(false)
+        setIsMobileMenuOpen(false)
       }
     }
 
@@ -74,36 +80,47 @@ function Header() {
                   </NavLink>
                 </div>
 
-                {!isAuthenticated ? (
-                  <div className="hidden ml-10 space-x-8 lg:block">
-                    <NavLink
-                      to="/features"
-                      className={({ isActive }) =>
-                        isActive
-                          ? 'text-indigo-700 scale-105 hover:text-indigo-600'
-                          : 'text-indigo-300 hover:text-indigo-200'
-                      }
-                    >
-                      Features
-                    </NavLink>
-                    <NavLink
-                      to="/benefits"
-                      className={({ isActive }) =>
-                        isActive
-                          ? 'text-indigo-700 scale-105 hover:text-indigo-600'
-                          : 'text-indigo-300 hover:text-indigo-200'
-                      }
-                    >
-                      Benefits
-                    </NavLink>
-                  </div>
-                ) : (
-                  <div className="ml-10 space-x-8 lg:block">
+                {/* Mobile Menu Toggle */}
+                <button
+                  className="ml-2 text-indigo-300 hover:text-indigo-200 lg:hidden"
+                  onClick={toggleMobileMenu}
+                  aria-label="Toggle menu"
+                >
+                  <MenuIcon className="h-8 w-8" />
+                </button>
+
+                {/* Desktop Navigation */}
+                <div className="hidden ml-10 space-x-8 lg:flex">
+                  {!isAuthenticated ? (
+                    <>
+                      <NavLink
+                        to="/features"
+                        className={({ isActive }) =>
+                          isActive
+                            ? 'text-indigo-700 scale-105 hover:text-indigo-600'
+                            : 'text-indigo-300 hover:text-indigo-200'
+                        }
+                      >
+                        Features
+                      </NavLink>
+                      <NavLink
+                        to="/benefits"
+                        className={({ isActive }) =>
+                          isActive
+                            ? 'text-indigo-700 scale-105 hover:text-indigo-600'
+                            : 'text-indigo-300 hover:text-indigo-200'
+                        }
+                      >
+                        Benefits
+                      </NavLink>
+                    </>
+                  ) : (
                     <AdminHeaderNav />
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
+              {/* Authentication Links */}
               {!isAuthenticated ? (
                 <div className="flex items-center justify-end space-x-4 w-full ml-auto border-b border-indigo-500 lg:border-none">
                   <NavLink
@@ -147,14 +164,21 @@ function Header() {
                         <NavLink
                           to="/myaccount"
                           className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
-                          onClick={() => setIsProfileOpen(false)}
+                          onClick={() => {
+                            setIsProfileOpen(false)
+                            setIsMobileMenuOpen(false) // Close mobile menu when clicking
+                          }}
                         >
                           <UserIcon className="inline-block h-4 w-4 mr-2" />
                           My Account
                         </NavLink>
                         <NavLink
                           to="/login"
-                          onClick={() => logout()}
+                          onClick={() => {
+                            logout()
+                            setIsProfileOpen(false)
+                            setIsMobileMenuOpen(false) // Close mobile menu when logging out
+                          }}
                           className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
                         >
                           <LogOutIcon className="inline-block h-4 w-4 mr-2" />
@@ -167,6 +191,94 @@ function Header() {
               )}
             </div>
           </nav>
+
+          {/* Mobile Navigation Links */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden bg-[#1c1c21]">
+              <div className="flex flex-col space-y-2 px-4 py-2">
+                {!isAuthenticated ? (
+                  <>
+                    <NavLink
+                      to="/features"
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'text-indigo-700 hover:text-indigo-600'
+                          : 'text-indigo-300 hover:text-indigo-200'
+                      }
+                      onClick={toggleMobileMenu}
+                    >
+                      Features
+                    </NavLink>
+                    <NavLink
+                      to="/benefits"
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'text-indigo-700 hover:text-indigo-600'
+                          : 'text-indigo-300 hover:text-indigo-200'
+                      }
+                      onClick={toggleMobileMenu}
+                    >
+                      Benefits
+                    </NavLink>
+                  </>
+                ) : (
+                  <AdminHeaderNav mobile onClick={toggleMobileMenu} />
+                )}
+                {isAuthenticated && (
+                  <>
+                    <NavLink
+                      to="/myaccount"
+                      className="text-indigo-300 hover:text-indigo-200"
+                      onClick={() => {
+                        setIsProfileOpen(false)
+                        toggleMobileMenu()
+                      }}
+                    >
+                      My Account
+                    </NavLink>
+                    <NavLink
+                      to="/login"
+                      onClick={() => {
+                        logout()
+                        toggleMobileMenu()
+                      }}
+                      className="text-indigo-300 hover:text-indigo-200"
+                    >
+                      Log out
+                    </NavLink>
+                  </>
+                )}
+                {!isAuthenticated && (
+                  <div className="flex flex-col space-y-2">
+                    <NavLink
+                      id="login"
+                      to="/login"
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'text-indigo-700 py-2 scale-105 hover:text-indigo-600'
+                          : 'text-white py-2 hover:text-indigo-400'
+                      }
+                      onClick={toggleMobileMenu}
+                    >
+                      Sign in
+                    </NavLink>
+                    <NavLink
+                      id="register"
+                      to="/register"
+                      className={({ isActive }) =>
+                        isActive
+                          ? 'text-indigo-700 items-center py-2 px-4 border border-transparent rounded-md shadow-sm bg-indigo-600'
+                          : 'items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-indigo-600'
+                      }
+                      onClick={toggleMobileMenu}
+                    >
+                      Sign up {'->'}
+                    </NavLink>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </header>
       </div>
     </>

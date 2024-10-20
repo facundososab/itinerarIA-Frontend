@@ -28,48 +28,48 @@ export default function ExternalServiceRow({
   const validate = () => {
     const newErrors: { [key: string]: string } = {}
 
-    // Validación para tipoServicio
+    // Validation for serviceType
     if (!editingService?.tipoServicio) {
-      newErrors.tipoServicio = 'El tipo de servicio es requerido'
+      newErrors.serviceType = 'Service type is required'
     }
 
-    // Validación para nombre
+    // Validation for name
     if (!editingService?.nombre) {
-      newErrors.nombre = 'El nombre es requerido'
+      newErrors.name = 'Name is required'
     }
 
-    // Validación para descripcion
+    // Validation for description
     if (!editingService?.descripcion) {
-      newErrors.descripcion = 'La descripción es requerida'
+      newErrors.description = 'Description is required'
     }
 
-    // Validación para direccion
+    // Validation for address
     if (!editingService?.direccion) {
-      newErrors.direccion = 'La dirección es requerida'
+      newErrors.address = 'Address is required'
     }
 
-    // Validación para lugar
+    // Validation for place
     if (!editingService?.lugar) {
-      newErrors.lugar = 'El lugar es requerido'
+      newErrors.place = 'Place is required'
     }
 
-    // Validación para horario
+    // Validation for schedule
     if (!editingService?.horario) {
-      newErrors.horario = 'El horario es requerido'
+      newErrors.schedule = 'Schedule is required'
     }
 
-    // Validación para sitioWeb
+    // Validation for website
     const websiteRegex = /^www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/
     if (!editingService?.sitioWeb) {
-      newErrors.sitioWeb = 'El sitio web es requerido'
+      newErrors.website = 'Website is required'
     } else if (!websiteRegex.test(editingService.sitioWeb)) {
-      newErrors.sitioWeb =
-        'El formato del sitio web es inválido. Debe comenzar con "www." y tener un dominio válido.'
+      newErrors.website =
+        'Invalid website format. It must start with "www." and have a valid domain.'
     }
 
-    // Validación para telContacto
+    // Validation for contact phone
     if (!editingService?.telContacto) {
-      newErrors.telContacto = 'El teléfono de contacto es requerido'
+      newErrors.contactPhone = 'Contact phone is required'
     }
 
     setErrors(newErrors)
@@ -79,8 +79,8 @@ export default function ExternalServiceRow({
   const handleSave = () => {
     if (validate()) {
       handleUpdate()
-      setEditingService(null) // Limpiar el estado de edición
-      setErrors({}) // Limpiar errores
+      setEditingService(null) // Clear editing state
+      setErrors({}) // Clear errors
     }
   }
 
@@ -100,8 +100,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.tipoServicio && (
-              <p className="text-red-500 text-xs">{errors.tipoServicio}</p>
+            {errors.serviceType && (
+              <p className="text-red-500 text-xs">{errors.serviceType}</p>
             )}
           </>
         ) : (
@@ -122,8 +122,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.nombre && (
-              <p className="text-red-500 text-xs">{errors.nombre}</p>
+            {errors.name && (
+              <p className="text-red-500 text-xs">{errors.name}</p>
             )}
           </>
         ) : (
@@ -144,8 +144,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.descripcion && (
-              <p className="text-red-500 text-xs">{errors.descripcion}</p>
+            {errors.description && (
+              <p className="text-red-500 text-xs">{errors.description}</p>
             )}
           </>
         ) : (
@@ -166,8 +166,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.direccion && (
-              <p className="text-red-500 text-xs">{errors.direccion}</p>
+            {errors.address && (
+              <p className="text-red-500 text-xs">{errors.address}</p>
             )}
           </>
         ) : (
@@ -198,8 +198,8 @@ export default function ExternalServiceRow({
                   </option>
                 ))}
             </select>
-            {errors.lugar && (
-              <p className="text-red-500 text-xs">{errors.lugar}</p>
+            {errors.place && (
+              <p className="text-red-500 text-xs">{errors.place}</p>
             )}
           </>
         ) : (
@@ -220,8 +220,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.horario && (
-              <p className="text-red-500 text-xs">{errors.horario}</p>
+            {errors.schedule && (
+              <p className="text-red-500 text-xs">{errors.schedule}</p>
             )}
           </>
         ) : (
@@ -242,8 +242,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.sitioWeb && (
-              <p className="text-red-500 text-xs">{errors.sitioWeb}</p>
+            {errors.website && (
+              <p className="text-red-500 text-xs">{errors.website}</p>
             )}
           </>
         ) : (
@@ -264,8 +264,8 @@ export default function ExternalServiceRow({
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             />
-            {errors.telContacto && (
-              <p className="text-red-500 text-xs">{errors.telContacto}</p>
+            {errors.contactPhone && (
+              <p className="text-red-500 text-xs">{errors.contactPhone}</p>
             )}
           </>
         ) : (

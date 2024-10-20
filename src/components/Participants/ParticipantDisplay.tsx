@@ -22,20 +22,18 @@ export function ParticipantsDisplay() {
 
   useEffect(() => {
     const loadPreferences = async () => {
-      getPreferences()
+      await getPreferences()
     }
     loadPreferences()
   }, [])
 
   const { user } = useAuth()
-
   const userId = user?.id
 
-  //Cargar los participantes favoritos del usuario al montar el componente
   useEffect(() => {
     if (userId) {
       const loadParticipants = async () => {
-        getAllParticipants(userId)
+        await getAllParticipants(userId)
       }
       loadParticipants()
     }
@@ -49,7 +47,6 @@ export function ParticipantsDisplay() {
 
   const [showModal, setShowModal] = useState(false)
 
-  // Cerrar el formulario de edición si se hace clic fuera de él
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element | null
@@ -59,28 +56,23 @@ export function ParticipantsDisplay() {
     }
 
     document.addEventListener('mousedown', handleClickOutside)
-
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [editingParticipant])
 
   const handleEdit = (participant: Participant) => {
-    console.log(participant)
     setEditingParticipant(participant)
   }
 
   const onDelete = async (id: ObjectId) => {
     await deleteParticipant(id)
-    // Filtra el servicio eliminado del estado local
     setParticipants(participants.filter((participant) => participant.id !== id))
     setShowModal(false)
   }
 
   const handleUpdate = async () => {
-    console.log('hola')
     if (editingParticipant) {
-      console.log(editingParticipant.preferences)
       await updateParticipant(editingParticipant)
       setParticipants(
         participants.map((participant) =>
@@ -105,6 +97,8 @@ export function ParticipantsDisplay() {
                 viewBox="0 0 20 20"
                 fill="currentColor"
                 aria-hidden="true"
+                role="img"
+                aria-label="Error icon"
               >
                 <path
                   fillRule="evenodd"
@@ -129,32 +123,34 @@ export function ParticipantsDisplay() {
         </div>
       )}
 
-      <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
-        <thead className="bg-[#2f3037]">
-          <tr>
-            <th className="p-3 text-left">Name</th>
-            <th className="p-3 text-left">Age</th>
-            <th className="p-3 text-left">Disability</th>
-            <th className="p-3 text-left">Preferences</th>
-            <th className="p-3 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {participants?.map((participant) => (
-            <ParticipantRow
-              key={participant.id.toString()}
-              participant={participant}
-              editingParticipant={editingParticipant}
-              handleUpdate={handleUpdate}
-              handleEdit={handleEdit}
-              setShowModal={setShowModal}
-              setEditingParticipant={setEditingParticipant}
-              setParticipantToDelete={setParticipantToDelete}
-              preferences={preferences}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
+          <thead className="bg-[#2f3037]">
+            <tr>
+              <th className="p-3 text-left">Name</th>
+              <th className="p-3 text-left">Age</th>
+              <th className="p-3 text-left">Disability</th>
+              <th className="p-3 text-left">Preferences</th>
+              <th className="p-3 text-left">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {participants?.map((participant) => (
+              <ParticipantRow
+                key={participant.id.toString()}
+                participant={participant}
+                editingParticipant={editingParticipant}
+                handleUpdate={handleUpdate}
+                handleEdit={handleEdit}
+                setShowModal={setShowModal}
+                setEditingParticipant={setEditingParticipant}
+                setParticipantToDelete={setParticipantToDelete}
+                preferences={preferences}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {showModal &&
         createPortal(

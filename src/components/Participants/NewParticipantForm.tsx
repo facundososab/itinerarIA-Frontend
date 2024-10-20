@@ -57,7 +57,7 @@ export default function NewParticipantForm({
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-2">
       <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
         <button
           onClick={onClose}
@@ -147,6 +147,10 @@ export default function NewParticipantForm({
                   value: 0,
                   message: 'Age must be a positive number',
                 },
+                max: {
+                  value: 110,
+                  message: 'Age must be less than 110',
+                },
                 required: 'Age is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -188,7 +192,7 @@ export default function NewParticipantForm({
             >
               Preferences
             </label>
-            <div className="flex flex-wrap mt-2 space-x-2">
+            <div className="flex flex-wrap mt-2 gap-2">
               {preferences &&
                 preferences.map((preference) => {
                   const isSelected = selectedPreferences.includes(preference)
