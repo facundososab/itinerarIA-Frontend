@@ -86,6 +86,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
         setActivities([...activities, res.data.data]);
         handleNewActivity(res.data.data);
         console.log(activities);
+        console.log(res);
         setActivityErrors([]);
       }
     } catch (err: any) {
