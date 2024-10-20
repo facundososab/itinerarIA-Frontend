@@ -29,22 +29,22 @@ export default function ExternalServiceRow({
     const newErrors: { [key: string]: string } = {}
 
     // Validation for serviceType
-    if (!editingService?.tipoServicio) {
+    if (!editingService?.serviceType) {
       newErrors.serviceType = 'Service type is required'
     }
 
     // Validation for name
-    if (!editingService?.nombre) {
+    if (!editingService?.name) {
       newErrors.name = 'Name is required'
     }
 
     // Validation for description
-    if (!editingService?.descripcion) {
+    if (!editingService?.description) {
       newErrors.description = 'Description is required'
     }
 
     // Validation for address
-    if (!editingService?.direccion) {
+    if (!editingService?.adress) {
       newErrors.address = 'Address is required'
     }
 
@@ -54,21 +54,21 @@ export default function ExternalServiceRow({
     }
 
     // Validation for schedule
-    if (!editingService?.horario) {
+    if (!editingService?.schedule) {
       newErrors.schedule = 'Schedule is required'
     }
 
     // Validation for website
     const websiteRegex = /^www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/
-    if (!editingService?.sitioWeb) {
+    if (!editingService?.website) {
       newErrors.website = 'Website is required'
-    } else if (!websiteRegex.test(editingService.sitioWeb)) {
+    } else if (!websiteRegex.test(editingService.website)) {
       newErrors.website =
         'Invalid website format. It must start with "www." and have a valid domain.'
     }
 
     // Validation for contact phone
-    if (!editingService?.telContacto) {
+    if (!editingService?.phoneNumber) {
       newErrors.contactPhone = 'Contact phone is required'
     }
 
@@ -91,11 +91,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.tipoServicio}
+              value={editingService.serviceType}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  tipoServicio: e.target.value,
+                  serviceType: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -105,7 +105,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.tipoServicio
+          service.serviceType
         )}
       </td>
       <td className="p-3">
@@ -113,11 +113,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.nombre}
+              value={editingService.name}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  nombre: e.target.value,
+                  name: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -127,7 +127,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.nombre
+          service.name
         )}
       </td>
       <td className="p-3">
@@ -135,11 +135,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.descripcion}
+              value={editingService.description}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  descripcion: e.target.value,
+                  description: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -149,7 +149,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.descripcion
+          service.description
         )}
       </td>
       <td className="p-3">
@@ -157,11 +157,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.direccion}
+              value={editingService.adress}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  direccion: e.target.value,
+                  adress: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -171,7 +171,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.direccion
+          service.adress
         )}
       </td>
       <td className="p-3">
@@ -211,11 +211,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.horario}
+              value={editingService.schedule}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  horario: e.target.value,
+                  schedule: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -225,7 +225,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.horario
+          service.schedule
         )}
       </td>
       <td className="p-3">
@@ -233,11 +233,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.sitioWeb}
+              value={editingService.website}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  sitioWeb: e.target.value,
+                  website: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -247,7 +247,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.sitioWeb
+          service.website
         )}
       </td>
       <td className="p-3">
@@ -255,11 +255,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.telContacto}
+              value={editingService.phoneNumber}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  telContacto: e.target.value,
+                  phoneNumber: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -269,7 +269,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.telContacto
+          service.phoneNumber
         )}
       </td>
       <td className="p-3">

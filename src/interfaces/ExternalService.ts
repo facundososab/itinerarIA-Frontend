@@ -3,12 +3,12 @@ import Place from "./Place.ts";
 
 export default interface ExternalService {
     id: ObjectId,
-  tipoServicio: string,
-  nombre: string,
-  descripcion: string,
-  direccion: string,
-  horario?: string,
-  sitioWeb?: string,
-  telContacto?: string,
+  serviceType: string,
+  name: string,
+  description: string,
+  adress: string,
+  schedule?: string,
+  website?: string,
+  phoneNumber?: string,
   lugar: Place,
 }
