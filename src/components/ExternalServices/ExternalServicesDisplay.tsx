@@ -71,6 +71,7 @@ export function ExternalServicesDisplay() {
   }
 
   const handleUpdate = async () => {
+    console.log(editingService)
     if (editingService) {
       await updateExternalService(editingService)
       setExternalServices(

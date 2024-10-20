@@ -92,10 +92,10 @@ export default function ParticipantRow({
             onChange={(e) =>
               setEditingParticipant({
                 ...editingParticipant,
-                disability: e.target.value === 'true',
+                disability: e.target.value === 'true', // Esto convierte la cadena en un booleano
               })
             }
-            value={editingParticipant.disability.toString()}
+            value={editingParticipant.disability ? 'true' : 'false'} // Cambia a 'true' o 'false' como cadena
             className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
           >
             <option value="true">Yes</option>
@@ -107,6 +107,7 @@ export default function ParticipantRow({
           'No'
         )}
       </td>
+
       <td className="p-3">
         {editingParticipant?.id === participant.id ? (
           <div className="flex flex-wrap gap-2">

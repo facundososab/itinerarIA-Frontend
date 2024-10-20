@@ -164,9 +164,10 @@ export default function NewParticipantForm({
               Disability
             </label>
             <select
+              required
               id="disability"
               {...register('disability', {
-                required: 'Disability is required',
+                setValueAs: (value) => value === 'true', // Convierte el valor a booleano
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >

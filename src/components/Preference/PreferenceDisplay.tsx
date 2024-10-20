@@ -113,8 +113,7 @@ export function PreferenceDisplay() {
           <tr>
             <th className="p-3 text-left">Name</th>
             <th className="p-3 text-left">Description</th>
-            <th className="p-3 text-right">Actions</th>{' '}
-            {/* Cambiado a text-right */}
+            <th className="p-3 text-right">Actions</th>
           </tr>
         </thead>
         <tbody>
