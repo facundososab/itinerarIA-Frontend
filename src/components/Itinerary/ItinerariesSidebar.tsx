@@ -3,7 +3,10 @@ import { useItinerary } from "../../context/ItineraryContext.tsx";
 import { NewItineraryButton } from "./NewItineraryButton.tsx";
 import { CalendarIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
+
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
+
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Edit2 as EditIcon, MapPin, Filter } from "lucide-react";
 import Itinerary from "../../interfaces/Itinerary.ts";
