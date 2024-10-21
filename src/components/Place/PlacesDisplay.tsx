@@ -11,7 +11,7 @@ export function PlacesDisplay() {
     const {
         places,
         setPlaces,
-        getPlaces,
+        getAllPlaces,
         deletePlace,
         updatePlace,
         placeErrors,
@@ -20,10 +20,12 @@ export function PlacesDisplay() {
 
     useEffect(() => {
         const loadPlaces = async () => {
-            await getPlaces()
+            await getAllPlaces()
         }
         loadPlaces()
     }, [])
+
+
 
     const [editingPlace, setEditingPlace] = useState<Place | null>(
         null
@@ -53,7 +55,7 @@ export function PlacesDisplay() {
     // Cargar los lugares al montar el componente
     useEffect(() => {
         const loadPlaces = async () => {
-            await getPlaces()
+            await getAllPlaces()
         }
         loadPlaces()
     }, [])
@@ -81,7 +83,9 @@ export function PlacesDisplay() {
         }
     }
 
+
     return (
+        
         <article className="p-6 bg-[#1c1c21] text-indigo-100">
             {placeErrors.length > 0 && (
                 <div className="bg-red-900 border-l-4 border-red-500 p-4 mb-6">

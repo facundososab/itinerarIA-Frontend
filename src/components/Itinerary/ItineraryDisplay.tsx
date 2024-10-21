@@ -14,7 +14,7 @@ import {
   MessageSquareMore,
   Eye,
 } from "lucide-react";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 //import { createPortal } from "react-dom";
 import { ObjectId } from "@mikro-orm/mongodb";
 import Activity from "../../interfaces/Activity.ts";
@@ -41,7 +41,7 @@ export function ItineraryDisplay() {
   } = useActivity();
   const { user } = useAuth();
   const { createOpinion, getAllOpinions, opinions } = useOpinion();
-  const { getPlaces, places } = usePlace();
+  const { getAllPlaces, places } = usePlace();
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -73,7 +73,7 @@ export function ItineraryDisplay() {
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
+      getAllPlaces();
     };
 
     loadPlaces();

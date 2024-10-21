@@ -22,7 +22,7 @@ export const PlacesContext = createContext({
   setPlace: (_place: Place) => { },
   currentPlace: null as Place | null,
   setCurrentPlace: (_currentPlace: Place) => { },
-  getPlaces: () => { },
+  getAllPlaces: () => { },
   getOnePlace: (_id: ObjectId) => { },
   createPlace: (_place: Place) => { },
   updatePlace: (_place: Place) => { },
@@ -58,7 +58,7 @@ export function PlacesProvider({
 
   const [placeErrors, setPlaceErrors] = useState<[]>([])
 
-  const getPlaces = async () => {
+  const getAllPlaces = async () => {
     try {
       const res = await getAllPlacesRequest()
       setPlaces(res.data.data)
@@ -118,7 +118,7 @@ export function PlacesProvider({
       value={{
         places,
         setPlaces,
-        getPlaces,
+        getAllPlaces,
         place,
         setPlace,
         getOnePlace,

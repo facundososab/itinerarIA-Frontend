@@ -43,7 +43,7 @@ const validate = () => {
   if (!latitude) {
     newErrors.ubicacion_latitud = 'Latitude is required';
   } else if (!latitudeRegex.test(latitude.toString())) {
-    newErrors.ubicacion_latitud = 'Invalid latitude format (between -90 and 90 with up to six decimals)';
+    newErrors.ubicacion_latitud = 'Invalid latitude format (between -90 and 90 with six decimals)';
   }
 
   // Validación para longitud
@@ -53,7 +53,7 @@ const validate = () => {
   if (!longitude) {
     newErrors.ubicacion_longitud = 'Longitude is required';
   } else if (!longitudeRegex.test(longitude.toString())) {
-    newErrors.ubicacion_longitud = 'Invalid longitude format (between -180 and 180 with up to six decimals)';
+    newErrors.ubicacion_longitud = 'Invalid longitude format (between -180 and 180 with six decimals)';
   }
 
   //Validación para código postal

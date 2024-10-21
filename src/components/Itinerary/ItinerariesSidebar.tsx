@@ -22,7 +22,7 @@ export default function ItinerariesSidebar() {
   } = useItinerary();
   const { CurrentItinerary, itineraries } = useItinerary();
 
-  const { places, getPlaces } = usePlace();
+  const { places, getAllPlaces } = usePlace();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -40,7 +40,7 @@ export default function ItinerariesSidebar() {
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
+      getAllPlaces();
     };
     loadPlaces();
   }, [CurrentItinerary]);

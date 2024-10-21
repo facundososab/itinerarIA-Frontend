@@ -18,11 +18,11 @@ export function ExternalServicesDisplay() {
     externalServiceErrors,
   } = useExternalServices()
 
-  const { places, getPlaces } = usePlace()
+  const { places, getAllPlaces } = usePlace()
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getPlaces()
+      await getAllPlaces()
     }
     loadPlaces()
   }, [])

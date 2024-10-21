@@ -8,7 +8,7 @@ export const createPlaceRequest = (place: Place) => {
 
 
 export const getAllPlacesRequest = async () => {
-    return axios.get('/lugares')
+    return instance.get('/lugares')
 
 }
 
