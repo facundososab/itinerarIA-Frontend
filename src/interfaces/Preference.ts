@@ -4,5 +4,4 @@ export default interface Preference {
     id: ObjectId;
     name: string;
     description: string;
-    // participant: Participant;
 }

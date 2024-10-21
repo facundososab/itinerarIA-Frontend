@@ -30,13 +30,11 @@ export function ExternalServicesDisplay() {
   const [editingService, setEditingService] = useState<ExternalService | null>(
     null
   )
-
   const [externalServiceToDelete, setExternalServiceToDelete] =
     useState<ObjectId | null>(null)
-
   const [showModal, setShowModal] = useState(false)
 
-  // Cerrar el formulario de edición si se hace clic fuera de él
+  // Close editing form if clicked outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element | null
@@ -52,7 +50,7 @@ export function ExternalServicesDisplay() {
     }
   }, [editingService])
 
-  // Cargar los servicios externos al montar el componente
+  // Load external services on component mount
   useEffect(() => {
     const loadExternalServices = async () => {
       await getAllExternalServices()
@@ -66,14 +64,13 @@ export function ExternalServicesDisplay() {
 
   const onDelete = async (id: ObjectId) => {
     await deleteExternalService(id)
-    // Filtra el servicio eliminado del estado local
     setExternalServices(externalServices.filter((service) => service.id !== id))
     setShowModal(false)
   }
 
   const handleUpdate = async () => {
     if (editingService) {
-      await updateExternalService(editingService)
+      updateExternalService(editingService)
       setExternalServices(
         externalServices.map((service) =>
           service.id === editingService.id ? editingService : service
@@ -86,7 +83,10 @@ export function ExternalServicesDisplay() {
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
       {externalServiceErrors.length > 0 && (
-        <div className="bg-red-900 border-l-4 border-red-500 p-4 mb-6">
+        <div
+          className="bg-red-900 border-l-4 border-red-500 p-4 mb-6"
+          role="alert"
+        >
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -119,36 +119,58 @@ export function ExternalServicesDisplay() {
         </div>
       )}
 
-      <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
-        <thead className="bg-[#2f3037]">
-          <tr>
-            <th className="p-3 text-left">Type</th>
-            <th className="p-3 text-left">Name</th>
-            <th className="p-3 text-left">Description</th>
-            <th className="p-3 text-left">Address</th>
-            <th className="p-3 text-left">Place</th>
-            <th className="p-3 text-left">Schedule</th>
-            <th className="p-3 text-left">Website</th>
-            <th className="p-3 text-left">Phone number</th>
-            <th className="p-3 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {externalServices?.map((service) => (
-            <ExternalServiceRow
-              key={service.id.toString()}
-              service={service}
-              editingService={editingService}
-              handleUpdate={handleUpdate}
-              handleEdit={handleEdit}
-              setShowModal={setShowModal}
-              setEditingService={setEditingService}
-              setExternalServiceToDelete={setExternalServiceToDelete}
-              places={places}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        {' '}
+        {/* Add this div for horizontal scrolling */}
+        <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
+          <thead className="bg-[#2f3037]">
+            <tr>
+              <th className="p-3 text-left" scope="col">
+                Type
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Name
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Description
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Address
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Place
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Schedule
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Website
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Phone number
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {externalServices?.map((service) => (
+              <ExternalServiceRow
+                key={service.id.toString()}
+                service={service}
+                editingService={editingService}
+                handleUpdate={handleUpdate}
+                handleEdit={handleEdit}
+                setShowModal={setShowModal}
+                setEditingService={setEditingService}
+                setExternalServiceToDelete={setExternalServiceToDelete}
+                places={places}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {showModal &&
         createPortal(

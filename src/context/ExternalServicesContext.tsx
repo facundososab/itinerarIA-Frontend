@@ -11,6 +11,7 @@ import {
   deleteExternalServiceRequest,
   getAllExternalServicesRequest,
   getExternalServiceRequest,
+  getExternalServicesByPlaceRequest,
   updateExternalServiceRequest,
 } from '../auth/externalService.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
@@ -20,9 +21,8 @@ export const ExternalServicesContext = createContext({
   setExternalServices: (_externalServices: ExternalService[]) => {},
   externalService: null as ExternalService | null,
   setExternalService: (_externalService: ExternalService) => {},
-  currentExternalService: null as ExternalService | null,
-  setCurrentExternalService: (_currentExternalService: ExternalService) => {},
   getAllExternalServices: () => {},
+  getAllExternalServicesByPlace: (_id: ObjectId) => {},
   getOneExternalService: (_id: ObjectId) => {},
   createExternalService: (_externalService: ExternalService) => {},
   updateExternalService: (_externalService: ExternalService) => {},
@@ -49,11 +49,7 @@ export function ExternalServicesProvider({
   const [externalServices, setExternalServices] = useState<ExternalService[]>(
     []
   )
-
   const [externalService, setExternalService] =
-    useState<ExternalService | null>(null)
-
-  const [currentExternalService, setCurrentExternalService] =
     useState<ExternalService | null>(null)
 
   const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([])
@@ -63,8 +59,19 @@ export function ExternalServicesProvider({
       const res = await getAllExternalServicesRequest()
       setExternalServices(res.data.data)
     } catch (err: any) {
-      const res = await getAllExternalServicesRequest()
+      setExternalServiceErrors(err.response.data.message)
+    }
+  }
+
+  const getAllExternalServicesByPlace = async (id: ObjectId) => {
+    try {
+      console.log(id, 'id')
+      const res = await getExternalServicesByPlaceRequest(id)
+      console.log(res.data.data)
       setExternalServices(res.data.data)
+    } catch (err: any) {
+      console.log(err.response.data.message)
+      setExternalServiceErrors(err.response.data.message)
     }
   }
 
@@ -123,11 +130,10 @@ export function ExternalServicesProvider({
         externalService,
         setExternalService,
         getOneExternalService,
+        getAllExternalServicesByPlace,
         createExternalService,
         updateExternalService,
         deleteExternalService,
-        currentExternalService,
-        setCurrentExternalService,
         externalServiceErrors,
         setExternalServiceErrors,
       }}

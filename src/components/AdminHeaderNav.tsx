@@ -1,32 +1,47 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom'
 
-export const AdminHeaderNav = () => {
+interface AdminHeaderNavProps {
+  mobile?: boolean
+  onLinkClick?: () => void
+}
+
+export const AdminHeaderNav = ({
+  mobile,
+  onLinkClick,
+}: AdminHeaderNavProps) => {
+  const navItems = [
+    { to: '/externalServices', label: 'External Services' },
+    { to: '/lugares', label: 'Places' },
+    { to: '/preferences', label: 'Preferences' },
+    { to: '/favorites', label: 'Favorites' },
+  ]
+
   return (
-    <>
-      <NavLink
-        to="/externalServices"
-        className={({ isActive }) =>
-          isActive ? "text-indigo-600" : "text-indigo-300"
-        }
-      >
-        External Services
-      </NavLink>
-      <NavLink
-        to="/lugares"
-        className={({ isActive }) =>
-          isActive ? "text-indigo-600" : "text-indigo-300"
-        }
-      >
-        Places
-      </NavLink>
-      <NavLink
-        to="/preferences"
-        className={({ isActive }) =>
-          isActive ? "text-indigo-600" : "text-indigo-300"
-        }
-      >
-        Preferences
-      </NavLink>
-    </>
-  );
-};
+    <div
+      className={`${
+        mobile ? 'flex flex-col space-y-2' : 'lg:flex lg:space-x-8'
+      }`}
+    >
+      {navItems.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          className={({ isActive }) =>
+            `block px-3 py-2 rounded-md text-base font-medium 
+            ${
+              isActive
+                ? 'text-indigo-600 bg-indigo-100 bg-opacity-10'
+                : 'text-indigo-300 hover:text-indigo-100 hover:bg-indigo-700'
+            } 
+            transition-all duration-300 ease-in-out 
+            transform hover:scale-105 hover:shadow-lg 
+            focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50`
+          }
+          onClick={onLinkClick}
+        >
+          {item.label}
+        </NavLink>
+      ))}
+    </div>
+  )
+}

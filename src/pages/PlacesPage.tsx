@@ -1,6 +1,8 @@
+
 import { PlacesDisplay } from '../components/Place/PlacesDisplay.tsx'
 import NewPlaceForm from '../components/Place/NewPlaceForm.tsx'
 import { NewButton } from '../components/shared/NewButton.tsx'
+
 
 export default function PlacesPage() {
   return (

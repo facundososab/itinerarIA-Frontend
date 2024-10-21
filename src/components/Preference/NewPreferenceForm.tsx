@@ -21,7 +21,7 @@ export default function NewPreferenceForm({
   })
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-2">
       <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
         <button
           onClick={onClose}

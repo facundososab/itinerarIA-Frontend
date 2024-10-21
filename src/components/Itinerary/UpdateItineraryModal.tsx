@@ -3,8 +3,11 @@ import Itinerary from "../../interfaces/Itinerary.ts";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { useForm } from "react-hook-form";
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Place from "../../interfaces/Place.ts";
+import { useItinerary } from "../../context/ItineraryContext.tsx";
+import Activity from "../../interfaces/Activity.ts";
+import { useActivity } from "../../context/ActivityContext.tsx";
 
 function UpdateItineraryModal({
   onClose,
@@ -26,6 +29,11 @@ function UpdateItineraryModal({
     formState: { errors },
   } = useForm<Itinerary>();
   const { itineraries } = useAuth();
+  const { CurrentItinerary } = useItinerary();
+  const { getAllActivities, activities } = useActivity();
+  const [filteredActivities, setFilteredActivities] = useState<
+    Activity[] | null
+  >(null);
   const itineraryToUpdate = itineraries?.find(
     (itinerary) => itinerary.id === id
   );
@@ -39,13 +47,36 @@ function UpdateItineraryModal({
     onUpdate(itineraryUpdate);
     onClose();
   });
+  const loadActivities = useCallback(async () => {
+    console.log(CurrentItinerary);
+    if (CurrentItinerary) {
+      await getAllActivities();
+    }
+  }, [CurrentItinerary, getAllActivities]);
 
   useEffect(() => {
-    setValue("title", itineraryToUpdate.title);
-    setValue("description", itineraryToUpdate.description);
-    setValue("duration", itineraryToUpdate.duration);
-    setValue("place", itineraryToUpdate.place);
-    setValue("preferences", itineraryToUpdate.preferences);
+    loadActivities();
+  }, []);
+
+  useEffect(() => {
+    if (CurrentItinerary && activities) {
+      setFilteredActivities(
+        activities.filter(
+          (activity) =>
+            activity.itinerary?.id?.toString() ===
+            CurrentItinerary.id?.toString()
+        )
+      );
+    }
+  }, [CurrentItinerary, activities]);
+  useEffect(() => {
+    if (itineraryToUpdate) {
+      setValue("title", itineraryToUpdate.title);
+      setValue("description", itineraryToUpdate.description);
+      setValue("duration", itineraryToUpdate.duration);
+      setValue("place", itineraryToUpdate.place);
+      setValue("preferences", itineraryToUpdate.preferences);
+    }
   }, [itineraryToUpdate]);
   // if (loadingPlaces) return <div>Loading...</div>;
   return (
@@ -148,40 +179,45 @@ function UpdateItineraryModal({
               </p>
             )}
           </div>
-
-          <div>
-            <label
-              htmlFor="lugar"
-              className="block text-sm font-medium text-indigo-300"
-            >
-              Place
-            </label>
-            <select
-              id="lugar"
-              {...register("place", {
-                required: "Place is required",
-              })}
-              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option
-                value=""
+          {/*Renderizado condicional, si tiene actividades no se muestra el select*/}
+          {filteredActivities && filteredActivities.length === 0 && (
+            <div>
+              <label
+                htmlFor="lugar"
+                className="block text-sm font-medium text-indigo-300"
+              >
+                Place
+              </label>
+              <select
+                id="lugar"
+                {...register("place", {
+                  required: "Place is required",
+                })}
                 className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
-                Select a place
-              </option>
-              {places &&
-                places.map((place) => (
-                  <option key={place.id.toString()} value={place.id.toString()}>
-                    {place.nombre}
-                  </option>
-                ))}
-            </select>
-            {errors.place?.message && (
-              <p className="mt-1 text-sm text-red-400">
-                {errors.place.message}
-              </p>
-            )}
-          </div>
+                <option
+                  value=""
+                  className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  Select a place
+                </option>
+                {places &&
+                  places.map((place) => (
+                    <option
+                      key={place.id.toString()}
+                      value={place.id.toString()}
+                    >
+                      {place.nombre}
+                    </option>
+                  ))}
+              </select>
+              {errors.place?.message && (
+                <p className="mt-1 text-sm text-red-400">
+                  {errors.place.message}
+                </p>
+              )}
+            </div>
+          )}
 
           <div>
             <label

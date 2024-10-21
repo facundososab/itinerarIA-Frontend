@@ -1,23 +1,27 @@
-import axios from './axios'
+import instance from './axios.ts'
 import Itinerary from '../interfaces/Itinerary'
 import { ObjectId } from "@mikro-orm/mongodb";
 
 export const createItineraryRequest = (itinerary: Itinerary) => {
-  return axios.post('/itinerarios', itinerary)
+  return instance.post('/itinerarios', itinerary)
 }
 
 export const getItinerariesRequest = async (userId: ObjectId) => {
-  return axios.get(`/itinerarios/${userId}`)
+  return instance.get(`/itinerarios/${userId}`)
+}
+
+export const getItinerariesByUserRequest = async (userId: ObjectId) => {
+  return instance.get(`/itinerarios/user/${userId}`)
 }
 
 export const getItineraryRequest = async (id: ObjectId) => {
-  return axios.get(`/itinerarios/${id}`)
+  return instance.get(`/itinerarios/${id}`)
 }
 
 export const updateItineraryRequest = async (itinerary: Itinerary) => {
-  return axios.patch(`/itinerarios/${itinerary.id}`,itinerary )
+  return instance.patch(`/itinerarios/${itinerary.id}`,itinerary )
 }
 
 export const deleteItineraryRequest = (id: ObjectId) => {
-  return axios.delete(`/itinerarios/${id}`)
+  return instance.delete(`/itinerarios/${id}`)
 }
