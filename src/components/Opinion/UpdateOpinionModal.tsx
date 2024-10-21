@@ -30,7 +30,7 @@ function UpdateOpinionModal({
   const onEdit = handleSubmit((data) => {
     const opinionUpdate: Opinion = {
       ...data,
-      actividad: opinionToUpdate.actividad,
+      activity: opinionToUpdate.activity,
       usuario: opinionToUpdate.usuario,
     };
     if (!opinion) return null;

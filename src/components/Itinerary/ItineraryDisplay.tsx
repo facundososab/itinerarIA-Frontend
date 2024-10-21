@@ -195,7 +195,7 @@ export function ItineraryDisplay() {
     if (activityForOpinion) {
       createOpinion({
         ...opinion,
-        actividad: activityForOpinion.id,
+        activity: activityForOpinion.id,
         usuario: user?.id,
       } as Opinion);
       setShowOpinionForm(false);

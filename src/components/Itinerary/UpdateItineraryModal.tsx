@@ -179,7 +179,7 @@ function UpdateItineraryModal({
               </p>
             )}
           </div>
-          {/*Renderizado condicional, si tiene actividades no se muestra el select*/}
+          {/*Renderizado condicional, si tiene activities no se muestra el select*/}
           {filteredActivities && filteredActivities.length === 0 && (
             <div>
               <label

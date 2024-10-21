@@ -7,5 +7,5 @@ export default interface Opinion {
     calificacion: number;
     comentario: string;
     usuario: ObjectId;
-    actividad: ObjectId;
+    activity: ObjectId;
 }

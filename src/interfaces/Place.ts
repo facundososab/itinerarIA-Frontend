@@ -14,5 +14,5 @@ export default interface Place {
     provincia: string
     pais: string
     //serviciosExternos = ServicioExterno[]
-    //actividades = Actividad[]
+    //activities = Activity[]
 }

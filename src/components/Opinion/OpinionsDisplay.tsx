@@ -26,7 +26,7 @@ export default function OpinionsDisplay({
     setActivityOpinions(
       opinions.filter(
         (opinion) =>
-          opinion?.actividad?.id?.toString() === activity?.id?.toString()
+          opinion?.activity?.id?.toString() === activity?.id?.toString()
       )
     );
   }, [getAllOpinions]);
