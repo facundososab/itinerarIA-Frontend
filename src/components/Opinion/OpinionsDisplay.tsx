@@ -5,8 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useOpinion } from "../../context/OpinionContext.tsx";
 import UpdateOpinionModal from "./UpdateOpinionModal.tsx";
 import { ObjectId } from "@mikro-orm/mongodb";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
-
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 export default function OpinionsDisplay({
   onClose,
   activity,

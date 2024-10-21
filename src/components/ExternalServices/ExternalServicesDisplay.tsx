@@ -3,9 +3,10 @@ import { useExternalServices } from '../../context/ExternalServicesContext'
 import ExternalService from '../../interfaces/ExternalService'
 import { ObjectId } from '@mikro-orm/mongodb'
 import { createPortal } from 'react-dom'
-import DeleteExternalServiceWarningModal from './DeleteExternalServiceWarningModal.tsx'
+//import DeleteExternalServiceWarningModal from './DeleteExternalServiceWarningModal.tsx'
 import ExternalServiceRow from './ExternalServiceRow.tsx'
 import { usePlace } from '../../context/PlaceContext.tsx'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
 
 export function ExternalServicesDisplay() {
   const {
@@ -17,11 +18,11 @@ export function ExternalServicesDisplay() {
     externalServiceErrors,
   } = useExternalServices()
 
-  const { places, getPlaces } = usePlace()
+  const { places, getAllPlaces } = usePlace()
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getPlaces()
+      await getAllPlaces()
     }
     loadPlaces()
   }, [])
@@ -173,10 +174,11 @@ export function ExternalServicesDisplay() {
 
       {showModal &&
         createPortal(
-          <DeleteExternalServiceWarningModal
+          <DeleteWarningModal
             onClose={() => setShowModal(false)}
             onDelete={onDelete}
-            ExternalServiceId={externalServiceToDelete}
+            id={externalServiceToDelete}
+            text="Are you sure you want to delete this external service?"
           />,
           document.body
         )}
