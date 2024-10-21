@@ -89,13 +89,9 @@ export default function NewPlaceForm({
                             id="nombre"
                             type="text"
                             {...register('nombre', {
-                                minLength: {
-                                    value: 3,
-                                    message: 'Name must be at least 3 characters long',
-                                },
-                                maxLength: {
-                                    value: 40,
-                                    message: 'Name must be at most 40 characters long',
+                                pattern: {
+                                    value: /^[a-zA-Z0-9\s]{3,50}$/,
+                                    message: 'Invalid name format (between 3 and 50 characters. Alphanumeric only)',
                                 },
                                 required: 'Name is required',
                             })}
@@ -121,28 +117,10 @@ export default function NewPlaceForm({
                             type="number"
                             step="any" // Permite números decimales
                             {...register('ubicacion_latitud', {
-                                min: {
-                                    value: -90,
-                                    message: "Latitud cannot be less than -90",
-                                },
-                                max: {
-                                    value: 90,
-                                    message: "Latitud cannot be greater than 90",
-                                },
-                                minLength: {
-                                    value: 8, //8 porque el punto cuenta como caracter
-                                    message:
-                                        "Latitud must be at least 8 characters long (between -90 and 90 with six decimals)",
-                                },
-                                maxLength: {
-                                    value: 9,
-                                    message:
-                                        "latitude must be at most 9 characters long(between -90 and 90 with six decimals)",
-                                },
                                 pattern: {
-                                    value: /^-?\d+(\.\d+)?$/,
+                                    value: /^-?([1-8]?[0-9]\.\d{6}|90\.000000)$/,
                                     message:
-                                        "Please, enter a valid latitude (between -90 and 90 with six decimals)",
+                                        'Invalid latitude format (between -90 and 90 with six decimals)',
                                 },
                                 required: "latitude is required",
                             })}
@@ -168,28 +146,10 @@ export default function NewPlaceForm({
                             type="number"
                             step="any" // Permite números decimales
                             {...register('ubicacion_longitud', {
-                                min: {
-                                    value: -180,
-                                    message: "Longitud cannot be less than -180",
-                                },
-                                max: {
-                                    value: 180,
-                                    message: "Longitud cannot be greater than 180",
-                                },
-                                minLength: {
-                                    value: 8,
-                                    message:
-                                        "Longitude must be at least 8 characters long (between -180 and 180 with six decimals)",
-                                },
-                                maxLength: {
-                                    value: 10,
-                                    message:
-                                        "Longitude must be at most 10 characters long(between -180 and 180 with six decimals)",
-                                },
                                 pattern: {
-                                    value: /^-?\d+(\.\d+)?$/,
+                                    value: /^-?(1[0-7][0-9]|0?[0-9]{1,2})\.\d{6}$|^-?180\.000000$/,
                                     message:
-                                        "Please, enter a valid longitude (between -180 and 180 with six decimals)",
+                                        'Invalid longitude format (between -180 and 180 with six decimals)',
                                 },
                                 required: "Longitude is required",
                             })}
@@ -214,20 +174,12 @@ export default function NewPlaceForm({
                             id="codigoPostal"
                             type="text"
                             {...register('codigoPostal', {
-                                minLength: {
-                                    value: 4,
-                                    message: "zipCode must be at least 4 characters long",
-                                },
-                                maxLength: {
-                                    value: 10,
-                                    message: "zipCode must be at most 10 characters long",
-                                },
                                 pattern: {
                                     value: /^[A-Za-z0-9-]{4,10}$/,
                                     message:
-                                        "Please, enter a valid zipCode (alphanumeric and - only)",
+                                        'Invalid zip code format (between 4 and 10 characters. Alphanumeric and "-" only)',
                                 },
-                                required: "zipCode is required",
+                                required: "zip Code is required",
                             })}
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter place's ZIP code"
@@ -250,13 +202,10 @@ export default function NewPlaceForm({
                             id="provincia"
                             type="text"
                             {...register('provincia', {
-                                minLength: {
-                                    value: 3,
-                                    message: 'Province must be at least 3 characters long',
-                                },
-                                maxLength: {
-                                    value: 50,
-                                    message: 'Province must be at most 50 characters long',
+                                pattern: {
+                                    value: /^[a-zA-Z\s]{3,50}$/,
+                                    message:
+                                        'Invalid province format (between 3 and 50 characters. Letters only)',
                                 },
                                 required: 'Province is required',
                             })}
@@ -280,15 +229,12 @@ export default function NewPlaceForm({
                             id="pais"
                             type="text"
                             {...register('pais', {
-                                minLength: {
-                                    value: 3,
-                                    message: "Country must be at least 1 characters long",
+                                pattern: {
+                                    value: /^[a-zA-Z\s]{3,50}$/,
+                                    message:
+                                        'Invalid country format (between 3 and 50 characters. Letters only)',
                                 },
-                                maxLength: {
-                                    value: 40,
-                                    message: "Country must be at most 40 characters long",
-                                },
-                                required: "Country is required",
+                                required: 'Country is required',
                             })}
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter places's Country"

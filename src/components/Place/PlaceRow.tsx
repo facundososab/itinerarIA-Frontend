@@ -22,43 +22,88 @@ export default function PlaceRow({
     setShowModal: (show: boolean) => void
     setPlaceToDelete: (id: ObjectId) => void
 }) {
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-    //MANEJO MANUAL DE VALIDACIONES
-    const [errors, setErrors] = useState<{ [key: string]: string }>({})
+const validate = () => {
+  const newErrors: { [key: string]: string } = {};
 
-    // Validation function for latitude
-    const validateLatitud = (lat: number) => {
-        if (lat < -90 || lat > 90) {
-            return "Latitude must be between -90 and 90"
-        }
-        if (lat.toString().length < 8) {
-            return "Latitude must be at least 8 characters long"
-        }
-        if (lat.toString().length > 9) {
-            return "Latitude must be at most 9 characters long"
-        }
-        return ""
-    }
+  //Validacion para nombre
+    const name = editingPlace?.nombre;
+    const nameRegex = /^[a-zA-Z0-9\s]{3,50}$/; //Regex para nombre de 3 a 50 caracteres
+    if (!name) {
+        newErrors.nombre = 'Name is required';
+      } else if (!nameRegex.test(name)) {
+        newErrors.nombre = 'Invalid name format (between 3 and 50 characters. Alphanumeric only)';
+      }
 
-    // Handler for updating latitude with validation
-    const handleLatitudChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const lat = parseFloat(e.target.value);
-        if (isNaN(lat)) {
-            setErrors((prev) => ({ ...prev, ubicacion_latitud: "Latitud no válida" }));
-            return;
-        } else {
-            setErrors((prev) => ({ ...prev, ubicacion_latitud: "" }));
-        }
-        setEditingPlace({
-            ...editingPlace as Place, //Aseguro que editingPlace sea de tipo Place (tenga TODAS las propiedades de Place)
-            ubicacion_latitud: lat,
-        })
-    }
+  // Validación para latitud
+  const latitude = editingPlace?.ubicacion_latitud;
+  const latitudeRegex = /^-?([1-8]?[0-9]\.\d{6}|90\.000000)$/; // Regex para -90 a 90 con exactamente 6 decimales
 
+  if (!latitude) {
+    newErrors.ubicacion_latitud = 'Latitude is required';
+  } else if (!latitudeRegex.test(latitude.toString())) {
+    newErrors.ubicacion_latitud = 'Invalid latitude format (between -90 and 90 with up to six decimals)';
+  }
+
+  // Validación para longitud
+  const longitude = editingPlace?.ubicacion_longitud;
+  const longitudeRegex = /^-?(1[0-7][0-9]|0?[0-9]{1,2})\.\d{6}$|^-?180\.000000$/; // Regex para -180 a 180 con exactamente 6 decimales
+
+  if (!longitude) {
+    newErrors.ubicacion_longitud = 'Longitude is required';
+  } else if (!longitudeRegex.test(longitude.toString())) {
+    newErrors.ubicacion_longitud = 'Invalid longitude format (between -180 and 180 with up to six decimals)';
+  }
+
+  //Validación para código postal
+  const zipCode = editingPlace?.codigoPostal;
+  const zipCodeRegex =  /^[A-Za-z0-9-]{4,10}$/;
+
+  if (!zipCode) {
+    newErrors.codigoPostal = 'Zip code is required';
+  } else if (!zipCodeRegex.test(zipCode.toString())) {
+    newErrors.codigoPostal = 'Invalid zip code format (between 4 and 10 characters. Alphanumeric and "-" only)';
+  }
+  //Validación para provincia
+  const province = editingPlace?.provincia;
+    const provinceRegex = /^[a-zA-Z\s]{3,50}$/; //Regex para provincia de 3 a 50 caracteres
+    if (!province) {
+        newErrors.provincia = 'Province is required';
+      } else if (!provinceRegex.test(province)) {
+        newErrors.provincia = 'Invalid province format (between 3 and 50 characters. Letters only)';
+      }
+
+      //Validación para país
+      const country = editingPlace?.pais;
+    const countryRegex = /^[a-zA-Z\s]{3,50}$/; //Regex para pais de 3 a 50 caracteres
+    if (!country) {
+        newErrors.pais = 'Country is required';
+      } else if (!countryRegex.test(country)) {
+        newErrors.pais = 'Invalid country format (between 3 and 50 characters. Letters only)';
+      }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+const handleSave = () => {
+    const respuestaValidacion = validate();
+  if (respuestaValidacion) {
+    handleUpdate();
+    setEditingPlace(null); // Limpia el estado de edición
+    setErrors({}); // Limpia los errores
+  } else {
+    console.log(respuestaValidacion);
+    console.log('Validation failed');
+  }
+};
+    
     return (
         <tr key={place.id.toString()} className="border-b border-[#393a41]">
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
+                <>
                     <input
                         type="text"
                         value={editingPlace.nombre}
@@ -70,13 +115,18 @@ export default function PlaceRow({
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
+                    {errors.nombre && (
+                        <p className="text-red-500 text-xs">{errors.nombre}</p>
+                    )}
+                </>
                 ) : (
                     place.nombre
                 )}
             </td>
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
-                    <input
+                <>
+                <input
                         type="number"
                         step="any"
                         value={editingPlace.ubicacion_latitud}
@@ -88,12 +138,18 @@ export default function PlaceRow({
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
+                {errors.ubicacion_latitud && (
+                        <p className="text-red-500 text-xs">{errors.ubicacion_latitud}</p>
+                    )}
+                </>
+                    
                 ) : (
                     place.ubicacion_latitud
                 )}
             </td>
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
+                <>
                     <input
                         type="number"
                         step="any"
@@ -106,12 +162,17 @@ export default function PlaceRow({
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
+                    {errors.ubicacion_longitud && (
+                        <p className="text-red-500 text-xs">{errors.ubicacion_longitud}</p>
+                    )}
+                </>
                 ) : (
                     place.ubicacion_longitud
                 )}
             </td>
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
+                <>
                     <input
                         type="text"
                         value={editingPlace.codigoPostal}
@@ -123,6 +184,10 @@ export default function PlaceRow({
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
+                    {errors.codigoPostal && (
+                        <p className="text-red-500 text-xs">{errors.codigoPostal}</p>
+                    )}
+                </>
                 ) : (
                     place.codigoPostal
                 )}
@@ -130,6 +195,7 @@ export default function PlaceRow({
 
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
+                <>
                     <input
                         type="text"
                         value={editingPlace.provincia}
@@ -141,12 +207,17 @@ export default function PlaceRow({
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
+                    {errors.provincia && (
+                        <p className="text-red-500 text-xs">{errors.provincia}</p>
+                    )}
+                </>
                 ) : (
                     place.provincia
                 )}
             </td>
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
+                <>
                     <input
                         type="text"
                         value={editingPlace.pais}
@@ -158,47 +229,51 @@ export default function PlaceRow({
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
+                    {errors.pais && (
+                        <p className="text-red-500 text-xs">{errors.pais}</p>
+                    )}
+                </>
                 ) : (
                     place.pais
                 )}
             </td>
 
             <td className="p-3">
-                {editingPlace?.id === place.id ? (
-                    <div className="flex gap-2">
-                        <button
-                            onClick={handleUpdate}
-                            className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
-                        >
-                            Save
-                        </button>
-                        <button
-                            onClick={() => setEditingPlace(null)}
-                            className="bg-gray-600 text-white p-2 rounded hover:bg-gray-700"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-                ) : (
-                    <div className="flex gap-2">
-                        <button
-                            onClick={() => handleEdit(place)}
-                            className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
-                        >
-                            <PencilIcon size={16} />
-                        </button>
-                        <button
-                            onClick={() => {
-                                setShowModal(true) //llamada a que se muestre el modal de eliminación
-                                setPlaceToDelete(place.id)
-                            }}
-                            className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
-                        >
-                            <TrashIcon size={16} />
-                        </button>
-                    </div>
-                )}
-            </td>
+        {editingPlace?.id === place.id ? (
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setEditingPlace(null)}
+              className="bg-gray-600 text-white p-2 rounded hover:bg-gray-700"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <button
+              onClick={() => handleEdit(place)}
+              className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"
+            >
+              <PencilIcon className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => {
+                setShowModal(true)
+                setPlaceToDelete(place.id)
+              }}
+              className="bg-red-500 text-white p-2 rounded hover:bg-red-700"
+            >
+              <TrashIcon className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+      </td>
         </tr>
     )
 }
