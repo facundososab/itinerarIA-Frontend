@@ -1,28 +1,28 @@
-import { useEffect } from 'react'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { useExternalServices } from '../../context/ExternalServicesContext'
-import { X, MapPin, Clock, Globe, Phone } from 'lucide-react'
+import { useEffect } from "react";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { useExternalServices } from "../../context/ExternalServicesContext";
+import { X, MapPin, Clock, Globe, Phone } from "lucide-react";
 
 export default function ExternalServicesModal({
   idLugar,
   onClose,
 }: {
-  idLugar: ObjectId | undefined
-  onClose: () => void
+  idLugar: ObjectId | undefined;
+  onClose: () => void;
 }) {
   const { externalServices, getAllExternalServicesByPlace } =
-    useExternalServices()
+    useExternalServices();
 
   useEffect(() => {
     const loadServices = async (idLugar: ObjectId) => {
-      getAllExternalServicesByPlace(idLugar)
-      console.log('Loading external services for place', idLugar)
-    }
+      getAllExternalServicesByPlace(idLugar);
+      console.log("Loading external services for place", idLugar);
+    };
 
     if (idLugar) {
-      loadServices(idLugar)
+      loadServices(idLugar);
     }
-  }, []) // Asegúrate de incluir la función aquí
+  }, []); // Asegúrate de incluir la función aquí
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -45,36 +45,36 @@ export default function ExternalServicesModal({
               {externalServices.map((service, i) => (
                 <li key={i} className="bg-[#26262c] rounded-lg p-4 shadow-md">
                   <h3 className="text-xl font-semibold text-indigo-100 mb-2">
-                    {service.nombre}
+                    {service.name}
                   </h3>
-                  <p className="text-indigo-300 mb-2">{service.tipoServicio}</p>
-                  <p className="text-indigo-200 mb-4">{service.descripcion}</p>
+                  <p className="text-indigo-300 mb-2">{service.serviceType}</p>
+                  <p className="text-indigo-200 mb-4">{service.description}</p>
                   <div className="space-y-2 text-sm text-indigo-300">
                     <p className="flex items-center">
                       <MapPin size={16} className="mr-2" />
-                      {service.direccion}
+                      {service.adress}
                     </p>
                     <p className="flex items-center">
                       <Clock size={16} className="mr-2" />
-                      {service.horario}
+                      {service.schedule}
                     </p>
-                    {service.sitioWeb && (
+                    {service.website && (
                       <p className="flex items-center">
                         <Globe size={16} className="mr-2" />
                         <a
-                          href={service.sitioWeb}
+                          href={service.website}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-indigo-400 hover:text-indigo-300"
                         >
-                          {service.sitioWeb}
+                          {service.website}
                         </a>
                       </p>
                     )}
-                    {service.telContacto && (
+                    {service.phoneNumber && (
                       <p className="flex items-center">
                         <Phone size={16} className="mr-2" />
-                        {service.telContacto}
+                        {service.phoneNumber}
                       </p>
                     )}
                   </div>
@@ -89,5 +89,5 @@ export default function ExternalServicesModal({
         </div>
       </div>
     </div>
-  )
+  );
 }

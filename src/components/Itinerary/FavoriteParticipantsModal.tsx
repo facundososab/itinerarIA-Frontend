@@ -1,13 +1,13 @@
-import { useEffect } from 'react'
-import { createPortal } from 'react-dom'
-import { X, Calendar, AccessibilityIcon, Tag, Plus } from 'lucide-react'
-import { useParticipant } from '../../context/ParticipantContext'
-import Participant from '../../interfaces/Participant'
-import { useAuth } from '../../context/AuthContext.tsx'
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
+import { X, Calendar, AccessibilityIcon, Tag, Plus } from "lucide-react";
+import { useParticipant } from "../../context/ParticipantContext";
+import Participant from "../../interfaces/Participant";
+import { useAuth } from "../../context/AuthContext.tsx";
 
 interface FavoriteParticipantsModalProps {
-  onClose: () => void
-  onSelectParticipant: (participant: Participant) => void
+  onClose: () => void;
+  onSelectParticipant: (participant: Participant) => void;
 }
 
 export default function FavoriteParticipantsModal({
@@ -17,16 +17,16 @@ export default function FavoriteParticipantsModal({
   const {
     participants: favoriteParticipants,
     getAllParticipants: getFavoriteParticipants,
-  } = useParticipant()
+  } = useParticipant();
 
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   useEffect(() => {
     async function loadFavoriteParticipants() {
-      user && getFavoriteParticipants(user.id)
+      user && getFavoriteParticipants(user.id);
     }
-    loadFavoriteParticipants()
-  }, [])
+    loadFavoriteParticipants();
+  }, []);
 
   return createPortal(
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -61,8 +61,8 @@ export default function FavoriteParticipantsModal({
                     <AccessibilityIcon size={16} />
                     <span>
                       {participant.disability
-                        ? 'Has disability'
-                        : 'No disability'}
+                        ? "Has disability"
+                        : "No disability"}
                     </span>
                   </div>
                   <div className="mb-4">
@@ -72,7 +72,7 @@ export default function FavoriteParticipantsModal({
                     <div className="flex flex-wrap gap-2">
                       {participant.preferences.map((preference) => (
                         <div
-                          key={preference.id.toString()}
+                          key={preference?.id?.toString()}
                           className="px-3 py-1 rounded-full text-sm font-medium bg-indigo-600 text-white flex items-center"
                         >
                           <Tag size={14} className="mr-1" />
@@ -100,5 +100,5 @@ export default function FavoriteParticipantsModal({
       </div>
     </div>,
     document.body
-  )
+  );
 }

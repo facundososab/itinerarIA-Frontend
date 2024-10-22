@@ -45,7 +45,6 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
   const [activity, setActivity] = useState<Activity | null>(null);
   const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
   const [activityErrors, setActivityErrors] = useState([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleNewActivity = useCallback(
     (activity: Activity) => {
@@ -59,53 +58,46 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
   );
 
   const getAllActivities = async () => {
-    setIsLoading(true);
     try {
       const res = await getAllActivitiesRequest();
       setActivities(res.data.data);
       setActivityErrors([]);
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error fetching activities";
+      const errorData =
+        err.response?.data?.message || "Error fetching activities";
       setActivityErrors(errorData);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-
   const getOneActivity = async (id: ObjectId) => {
-    setIsLoading(true);
     try {
       const res = await getActivityRequest(id);
       setActivity(res.data.data);
       setActivityErrors([]);
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error fetching activity";
+      const errorData =
+        err.response?.data?.message || "Error fetching activity";
       setActivityErrors(errorData);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const createActivity = async (activity: Activity) => {
-    setIsLoading(true);
     try {
       const res = await createActivityRequest(activity);
       if (res.status === 201) {
-        setActivities([...activities, res.data.data]);
+        activities?.push(res.data.data);
         handleNewActivity(res.data.data);
         setActivityErrors([]);
+        await getAllActivities;
       }
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error creating activity";
+      const errorData =
+        err.response?.data?.message || "Error creating activity";
       setActivityErrors(errorData);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const updateActivity = async (activity: Activity) => {
-    setIsLoading(true);
     try {
       const res = await updateActivityRequest(activity);
       const activityUpdated: Activity = res.data.data;
@@ -115,26 +107,24 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
       setActivities(newActivities);
       handleNewActivity(activityUpdated);
       setActivityErrors([]);
+      await getAllActivities;
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error updating activity";
+      const errorData =
+        err.response?.data?.message || "Error updating activity";
       setActivityErrors(errorData);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const deleteActivity = async (id: ObjectId) => {
-    setIsLoading(true);
     try {
       await deleteActivityRequest(id);
       setActivities(activities.filter((activity) => activity.id !== id));
       handleDeleteActivity();
       setActivityErrors([]);
     } catch (err: any) {
-      const errorData = err.response?.data?.message || "Error deleting activity";
+      const errorData =
+        err.response?.data?.message || "Error deleting activity";
       setActivityErrors(errorData);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -166,7 +156,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
         setActivityErrors,
       }}
     >
-    {isLoading ? <p>Loading...</p> : children}
+      {children}
     </ActivitiesContext.Provider>
   );
 }

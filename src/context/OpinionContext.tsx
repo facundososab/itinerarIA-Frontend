@@ -43,11 +43,13 @@ export const useOpinion = () => {
 
 export function OpinionsProvider({ children }: { children: ReactNode }) {
   const [opinions, setOpinions] = useState<Opinion[]>([]);
-  const { user } = useAuth();
+  // const { user } = useAuth();
 
   const [opinion, setOpinion] = useState<Opinion | null>(null);
 
   const [currentOpinion, setCurrentOpinion] = useState<Opinion | null>(null);
+  const [opinionErrors, setOpinionErrors] = useState([]);
+
   const handleNewOpinion = useCallback(
     (opinion: Opinion) => {
       setCurrentOpinion(opinion);
@@ -58,8 +60,6 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
     () => setCurrentOpinion(null),
     [opinions]
   );
-
-  const [opinionErrors, setOpinionErrors] = useState([]);
 
   const getAllOpinions = async () => {
     try {
@@ -85,7 +85,7 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
     try {
       const res = await createOpinionRequest(opinion);
       if (res.status === 201) {
-        setOpinions([...opinions, res.data.data]);
+        opinions?.push(res.data.data);
         handleNewOpinion(res.data.data);
         console.log(opinions);
         setOpinionErrors([]);

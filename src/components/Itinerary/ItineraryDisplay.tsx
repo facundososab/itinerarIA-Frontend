@@ -38,6 +38,7 @@ export function ItineraryDisplay() {
     deleteActivity,
     createActivity,
     updateActivity,
+    setActivities,
   } = useActivity();
   const { user } = useAuth();
   const { createOpinion, getAllOpinions, opinions } = useOpinion();
@@ -71,42 +72,20 @@ export function ItineraryDisplay() {
   const [selectedActivityOpinions, setSelectedActivityOpinions] =
     useState<Activity | null>(null);
 
-  useEffect(() => {
-    const loadPlaces = async () => {
-      getAllPlaces();
-    };
-
-    loadPlaces();
-  }, [CurrentItinerary]);
-
-  const onDelete = (activityId: ObjectId) => {
-    console.log("Deleting activity", activityId);
-    deleteActivity(activityId);
-    setShowDeleteModal(false);
-  };
-  const handleViewOpinions = (activity: Activity) => {
-    setSelectedActivityOpinions(activity);
-    setShowOpinionsDisplay(true);
-  };
-
-  const onUpdate = (data: Activity) => {
-    if (CurrentItinerary) {
-      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
-      updateActivity({ ...updatedActivity } as Activity);
-    }
-    setShowUpdateModal(false);
-    loadActivities();
-  };
-
   const loadActivities = useCallback(async () => {
-    if (CurrentItinerary) {
-      await getAllActivities();
-    }
+    await getAllActivities();
   }, [CurrentItinerary, getAllActivities, activities]);
 
   const loadOpinions = useCallback(async () => {
     await getAllOpinions();
   }, [getAllOpinions, opinions]);
+
+  useEffect(() => {
+    const loadPlaces = async () => {
+      getAllPlaces();
+    };
+    loadPlaces();
+  }, [CurrentItinerary]);
 
   useEffect(() => {
     async function loadData() {
@@ -179,6 +158,11 @@ export function ItineraryDisplay() {
     scheduleFilter,
   ]);
 
+  const handleViewOpinions = (activity: Activity) => {
+    setSelectedActivityOpinions(activity);
+    setShowOpinionsDisplay(true);
+  };
+
   const handleCreateActivity = async (newActivity: Activity) => {
     if (CurrentItinerary) {
       createActivity({
@@ -186,10 +170,27 @@ export function ItineraryDisplay() {
         itinerary: CurrentItinerary.id,
       } as Activity);
       setShowActivityForm(false);
+      console.log("entre aca");
       loadActivities();
     }
   };
-
+  const onUpdateActivity = (data: Activity) => {
+    if (CurrentItinerary) {
+      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
+      updateActivity({ ...updatedActivity } as Activity);
+    }
+    const updatedActivities = activities.map((activity) =>
+      activity.id === data.id ? data : activity
+    );
+    setActivities(updatedActivities);
+    setShowUpdateModal(false);
+    loadActivities();
+  };
+  const onDeleteActivity = (activityId: ObjectId) => {
+    console.log("Deleting activity", activityId);
+    deleteActivity(activityId);
+    setShowDeleteModal(false);
+  };
   const handleCreateOpinion = async (opinion: Opinion) => {
     console.log(opinion);
     if (activityForOpinion) {
@@ -413,7 +414,7 @@ export function ItineraryDisplay() {
       {showUpdateModal && activityToUpdate && (
         <UpdateActivityModal
           onClose={() => setShowUpdateModal(false)}
-          onUpdate={onUpdate}
+          onUpdate={onUpdateActivity}
           activity={activityToUpdate}
           text="Update activity"
           itineraryPlace={CurrentItinerary?.place || undefined}
@@ -423,7 +424,7 @@ export function ItineraryDisplay() {
       {showDeleteModal && activityToDelete && (
         <DeleteWarningModal
           onClose={() => setShowDeleteModal(false)}
-          onDelete={onDelete}
+          onDelete={onDeleteActivity}
           id={activityToDelete}
           text="Are you sure you want to delete this activity?"
         />
