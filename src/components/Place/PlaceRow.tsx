@@ -1,7 +1,9 @@
 import { PencilIcon, TrashIcon } from 'lucide-react'
 import Place from '../../interfaces/Place.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import ExternalService from '../../interfaces/ExternalService.ts'
+import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
 
 export default function PlaceRow({
     place,
@@ -9,7 +11,8 @@ export default function PlaceRow({
     setEditingPlace,
     handleUpdate,
     handleEdit,
-    setShowModal,
+    setShowModalWarning,
+    setShowModalRestriction,
     setPlaceToDelete,
     places,
 }: {
@@ -19,7 +22,8 @@ export default function PlaceRow({
     setEditingPlace: (place: Place | null) => void
     handleUpdate: () => void
     handleEdit: (place: Place) => void
-    setShowModal: (show: boolean) => void
+    setShowModalWarning: (show: boolean) => void
+    setShowModalRestriction: (show: boolean) => void
     setPlaceToDelete: (id: ObjectId) => void
 }) {
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -98,6 +102,29 @@ const handleSave = () => {
     console.log('Validation failed');
   }
 };
+
+const { externalServices, getAllExternalServices} = useExternalServices()
+
+  useEffect(() => {
+    const loadExternalServices = async () => {
+      await getAllExternalServices()
+    }
+    loadExternalServices()
+  }, [])
+
+const handleDelete = async(place:Place) => {
+  const idPlace = place.id;
+  const hasAnyService = await externalServices?.some((service) => service.lugar.id === idPlace);
+
+  //console.log(hasAnyService,"tiene servicios externos");
+  if(hasAnyService){
+    setShowModalRestriction(true)
+  }
+  else{
+    setShowModalWarning(true)
+    setPlaceToDelete(place.id)
+    } 
+}
     
     return (
         <tr key={place.id.toString()} className="border-b border-[#393a41]">
@@ -263,10 +290,7 @@ const handleSave = () => {
               <PencilIcon className="w-4 h-4" />
             </button>
             <button
-              onClick={() => {
-                setShowModal(true)
-                setPlaceToDelete(place.id)
-              }}
+              onClick={() => handleDelete(place)}
               className="bg-red-500 text-white p-2 rounded hover:bg-red-700"
             >
               <TrashIcon className="w-4 h-4" />

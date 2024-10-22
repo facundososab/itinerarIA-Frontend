@@ -4,8 +4,11 @@ import Place from "../../interfaces/Place.ts";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { createPortal } from "react-dom";
 //import DeletePlaceWarningModal from './DeletePlaceWarningModal.tsx'
-import PlaceRow from "./PlaceRow.tsx";
-import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import PlaceRow from './PlaceRow.tsx'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
+import DeleteRestrictionModal from '../shared/DeleteRestrictionModal.tsx'
+import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
+
 
 export function PlacesDisplay() {
   const {
@@ -16,6 +19,17 @@ export function PlacesDisplay() {
     updatePlace,
     placeErrors,
   } = usePlace();
+
+    useEffect(() => {
+        const loadPlaces = async () => {
+            await getAllPlaces()
+        }
+        loadPlaces()
+    }, [])
+
+    const [showModalWarning, setShowModalWarning] = useState(false)
+
+    const [showModalRestriction, setShowModalRestriction] = useState(false)
 
   useEffect(() => {
     const loadPlaces = async () => {
@@ -58,12 +72,13 @@ export function PlacesDisplay() {
     setEditingPlace(place);
   };
 
-  const onDelete = async (id: ObjectId) => {
-    await deletePlace(id);
-    // Filtra el lugar eliminado del estado local
-    setPlaces(places.filter((place) => place.id !== id));
-    setShowModal(false);
-  };
+    const onDelete = async (id: ObjectId) => {
+        await deletePlace(id)
+        // Filtra el lugar eliminado del estado local
+        setPlaces(places.filter((place) => place.id !== id))
+        setShowModalWarning(false)
+    }
+
 
   const handleUpdate = async () => {
     if (editingPlace) {
@@ -75,6 +90,27 @@ export function PlacesDisplay() {
       );
       setEditingPlace(null);
     }
+
+    const { externalServices, getAllExternalServices } = useExternalServices();
+
+    useEffect(() => {
+        const loadExternalServices = async () => {
+          await getAllExternalServices();
+        };
+        loadExternalServices();
+      }, []);
+
+    const handleDelete = async (place: Place) => {
+        const hasAnyService = externalServices.some((service) => service.lugar.id === place.id)
+        if (hasAnyService) {
+            setShowModalRestriction(true)
+        } else {
+            setPlaceToDelete(place.id)
+            setShowModalWarning(true)
+        }
+
+    }
+
   };
 
   return (
@@ -133,7 +169,8 @@ export function PlacesDisplay() {
               editingPlace={editingPlace}
               handleUpdate={handleUpdate}
               handleEdit={handleEdit}
-              setShowModal={setShowModal}
+              setShowModalWarning={setShowModalWarning}
+              setShowModalRestriction={setShowModalRestriction}
               setEditingPlace={setEditingPlace}
               setPlaceToDelete={setPlaceToDelete}
               places={places}
@@ -142,16 +179,27 @@ export function PlacesDisplay() {
         </tbody>
       </table>
 
-      {showModal &&
-        createPortal(
-          <DeleteWarningModal
-            onClose={() => setShowModal(false)}
-            onDelete={onDelete}
-            id={placeToDelete}
-            text="Are you sure you want to delete this place?"
-          />,
-          document.body
-        )}
-    </article>
-  );
+            {showModalWarning &&
+                createPortal(
+                    <DeleteWarningModal
+                        onClose={() => setShowModalWarning(false)}
+                        onDelete={onDelete}
+                        id={placeToDelete}
+                        text="Are you sure you want to delete this place?"
+                    />,
+                    document.body
+                )}
+            
+            {showModalRestriction &&
+                createPortal(
+                    <DeleteRestrictionModal
+                        onClose={() => setShowModalRestriction(false)}
+                        text="You cannot delete this place because it has external services associated with it."
+                    />,
+                    document.body
+                )}
+
+                
+        </article>
+    )
 }

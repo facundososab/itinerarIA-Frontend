@@ -1,10 +1,6 @@
 import { ObjectId } from "@mikro-orm/mongodb";
 
-/*type CoordenadasGeograficas = {
-    latitud: number,
-    longitud: number,
-}
-*/
+
 export default interface Place {
     id: ObjectId
     nombre: string;
