@@ -71,6 +71,7 @@ export function ItineraryDisplay() {
   const [externalServicesModal, setExternalServicesModal] = useState(false);
   const [selectedActivityOpinions, setSelectedActivityOpinions] =
     useState<Activity | null>(null);
+  const [isCreatedOrUpdated, setIsCreatedOrUpdated] = useState(false);
 
   const loadActivities = useCallback(async () => {
     await getAllActivities();
@@ -79,7 +80,6 @@ export function ItineraryDisplay() {
   const loadOpinions = useCallback(async () => {
     await getAllOpinions();
   }, [getAllOpinions, opinions]);
-
   useEffect(() => {
     const loadPlaces = async () => {
       getAllPlaces();
@@ -93,7 +93,8 @@ export function ItineraryDisplay() {
       await loadOpinions();
     }
     loadData();
-  }, []);
+    setIsCreatedOrUpdated(false);
+  }, [isCreatedOrUpdated]);
 
   useEffect(() => {
     if (CurrentItinerary && activities) {
@@ -171,6 +172,7 @@ export function ItineraryDisplay() {
       } as Activity);
       setShowActivityForm(false);
       console.log("entre aca");
+      setIsCreatedOrUpdated(true);
       loadActivities();
     }
   };
@@ -184,6 +186,7 @@ export function ItineraryDisplay() {
     );
     setActivities(updatedActivities);
     setShowUpdateModal(false);
+    setIsCreatedOrUpdated(true);
     loadActivities();
   };
   const onDeleteActivity = (activityId: ObjectId) => {
@@ -200,6 +203,7 @@ export function ItineraryDisplay() {
         usuario: user?.id,
       } as Opinion);
       setShowOpinionForm(false);
+      setIsCreatedOrUpdated(true);
       loadOpinions();
     }
   };
@@ -299,7 +303,7 @@ export function ItineraryDisplay() {
               <option value="true">Transport Needed</option>
               <option value="false">No Transport Needed</option>
             </select>
-            <select
+            {/* <select
               value={scheduleFilter}
               onChange={(e) => setScheduleFilter(e.target.value)}
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -308,7 +312,7 @@ export function ItineraryDisplay() {
               <option value="morning">Morning</option>
               <option value="afternoon">Afternoon</option>
               <option value="evening">Evening</option>
-            </select>
+            </select> */}
           </div>
         </div>
 
@@ -338,10 +342,13 @@ export function ItineraryDisplay() {
                       </span>
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1 text-indigo-400" />
-                        {new Date(
+                        {
+                          /* {new Date(
                           activity.schedule
                         ).toLocaleTimeString()} -{" "}
-                        {new Date(activity.schedule).toLocaleTimeString()}
+                        {new Date(activity.schedule).toLocaleTimeString()} */
+                          activity.schedule
+                        }
                       </span>
                     </div>
                     <p className="text-sm font-semibold text-gray-400 mt-2">

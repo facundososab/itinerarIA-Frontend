@@ -1,11 +1,11 @@
-import { X, Star, Edit2, Trash2 } from "lucide-react";
+import { X, Star, Edit2, Trash2, Check, X as Cancel } from "lucide-react";
 import Activity from "../../interfaces/Activity.ts";
 import Opinion from "../../interfaces/Opinion.ts";
-import { useCallback, useEffect, useState } from "react";
+import { /*useCallback,*/ useEffect, useState } from "react";
 import { useOpinion } from "../../context/OpinionContext.tsx";
-import UpdateOpinionModal from "./UpdateOpinionModal.tsx";
 import { ObjectId } from "@mikro-orm/mongodb";
 import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+
 export default function OpinionsDisplay({
   onClose,
   activity,
@@ -17,32 +17,57 @@ export default function OpinionsDisplay({
     useOpinion();
   const [activityOpinions, setActivityOpinions] = useState<Opinion[]>([]);
   const [showDeleteOpinionModal, setShowDeleteOpinionModal] = useState(false);
-  const [showUpdateOpinionModal, setShowUpdateOpinionModal] = useState(false);
-  const [opinionToUpdate, setOpinionToUpdate] = useState<Opinion | null>(null);
+  const [editingOpinionId, setEditingOpinionId] = useState<string | null>(null);
   const [opinionToDelete, setOpinionToDelete] = useState<ObjectId | null>(null);
-  const loadOpinions = useCallback(async () => {
-    await getAllOpinions();
+  const [editForm, setEditForm] = useState({
+    rating: 0,
+    comment: "",
+  });
+
+  const loadOpinions = async () => {
+    getAllOpinions();
     setActivityOpinions(
       opinions.filter(
         (opinion) =>
           opinion?.activity?.id?.toString() === activity?.id?.toString()
       )
     );
-  }, [getAllOpinions]);
-  const handleUpdateOpinion = (opinion: Opinion) => {
-    updateOpinion(opinion);
-    setShowUpdateOpinionModal(false);
-    loadOpinions();
+    console.log(activityOpinions);
   };
+
   useEffect(() => {
     loadOpinions();
-  }, [showDeleteOpinionModal]);
+  }, [showDeleteOpinionModal, editingOpinionId]);
+
   const onDelete = async () => {
     if (opinionToDelete) {
-      await deleteOpinion(opinionToDelete);
+      deleteOpinion(opinionToDelete);
       setShowDeleteOpinionModal(false);
-      loadOpinions();
+      await loadOpinions();
     }
+  };
+  const onUpdate = async (opinion: Opinion) => {
+    const updatedOpinion = {
+      ...opinion,
+      calificacion: editForm.rating,
+      comentario: editForm.comment,
+    };
+    updateOpinion(updatedOpinion);
+    setEditingOpinionId(null);
+    await loadOpinions();
+  };
+
+  const startEditing = (opinion: Opinion) => {
+    setEditingOpinionId(opinion.id.toString());
+    setEditForm({
+      rating: opinion.calificacion,
+      comment: opinion.comentario,
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingOpinionId(null);
+    setEditForm({ rating: 0, comment: "" });
   };
 
   return (
@@ -69,51 +94,107 @@ export default function OpinionsDisplay({
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={18}
-                          className={
-                            star <= opinion.calificacion
-                              ? "text-yellow-400"
-                              : "text-gray-400"
-                          }
-                          fill={
-                            star <= opinion.calificacion
-                              ? "currentColor"
-                              : "none"
-                          }
-                        />
-                      ))}
+                      {editingOpinionId === opinion.id.toString() ? (
+                        <div className="flex space-x-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() =>
+                                setEditForm({ ...editForm, rating: star })
+                              }
+                              className="focus:outline-none"
+                            >
+                              <Star
+                                size={18}
+                                className={
+                                  star <= editForm.rating
+                                    ? "text-yellow-400"
+                                    : "text-gray-400"
+                                }
+                                fill={
+                                  star <= editForm.rating
+                                    ? "currentColor"
+                                    : "none"
+                                }
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <>
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <Star
+                              key={star}
+                              size={18}
+                              className={
+                                star <= opinion.calificacion
+                                  ? "text-yellow-400"
+                                  : "text-gray-400"
+                              }
+                              fill={
+                                star <= opinion.calificacion
+                                  ? "currentColor"
+                                  : "none"
+                              }
+                            />
+                          ))}
+                        </>
+                      )}
                     </div>
                     <span className="text-sm text-gray-400">
                       {opinion.usuario.username || "Anonymous"}
                     </span>
                   </div>
-                  <p className="text-indigo-100">{opinion.comentario}</p>
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => {
-                        setShowUpdateOpinionModal(true);
-                        setOpinionToUpdate(opinion);
-                        console.log(showUpdateOpinionModal, opinionToUpdate);
-                      }}
-                      className="p-2 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
-                      aria-label="Edit opinion"
-                    >
-                      <Edit2 size={16} className="text-white" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowDeleteOpinionModal(true);
-                        setOpinionToDelete(opinion.id);
-                      }}
-                      className="p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200"
-                      aria-label="Delete activity"
-                    >
-                      <Trash2 size={16} className="text-white" />
-                    </button>
-                  </div>
+
+                  {editingOpinionId === opinion.id.toString() ? (
+                    <div className="space-y-3">
+                      <textarea
+                        value={editForm.comment}
+                        onChange={(e) =>
+                          setEditForm({ ...editForm, comment: e.target.value })
+                        }
+                        className="w-full px-3 py-2 bg-[#1c1c21] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                        rows={3}
+                      />
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          onClick={() => onUpdate(opinion)}
+                          className="p-2 rounded-full bg-green-600 hover:bg-green-700 transition-colors duration-200"
+                        >
+                          <Check size={16} className="text-white" />
+                        </button>
+                        <button
+                          onClick={cancelEditing}
+                          className="p-2 rounded-full bg-gray-600 hover:bg-gray-700 transition-colors duration-200"
+                        >
+                          <Cancel size={16} className="text-white" />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-indigo-100">{opinion.comentario}</p>
+                      <div className="flex space-x-2 mt-4">
+                        <button
+                          onClick={() => startEditing(opinion)}
+                          className="p-2 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
+                          aria-label="Edit opinion"
+                        >
+                          <Edit2 size={16} className="text-white" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowDeleteOpinionModal(true);
+                            setOpinionToDelete(opinion.id);
+                          }}
+                          className="p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200"
+                          aria-label="Delete activity"
+                        >
+                          <Trash2 size={16} className="text-white" />
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </li>
               ))}
             </ul>
@@ -122,14 +203,6 @@ export default function OpinionsDisplay({
           <p className="text-gray-400 text-center">
             No opinions yet for this activity.
           </p>
-        )}
-        {showUpdateOpinionModal && opinionToUpdate && (
-          <UpdateOpinionModal
-            onClose={() => setShowUpdateOpinionModal(false)}
-            onUpdate={handleUpdateOpinion}
-            opinion={opinionToUpdate}
-            text="Update Opinion"
-          />
         )}
         {showDeleteOpinionModal && opinionToDelete && (
           <DeleteWarningModal
