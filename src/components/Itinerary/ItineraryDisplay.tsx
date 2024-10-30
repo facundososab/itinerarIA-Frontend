@@ -28,9 +28,10 @@ import { useOpinion } from "../../context/OpinionContext.tsx";
 import Opinion from "../../interfaces/Opinion.ts";
 import OpinionForm from "../Opinion/OpinionForm.tsx";
 import OpinionsDisplay from "../Opinion/OpinionsDisplay.tsx";
+import Place from "../../interfaces/Place.ts";
 
 export function ItineraryDisplay() {
-  const { CurrentItinerary } = useItinerary();
+  const { CurrentItinerary, itineraries } = useItinerary();
 
   const {
     getAllActivities,
@@ -61,7 +62,7 @@ export function ItineraryDisplay() {
   const [selectedPlace, setSelectedPlace] = useState<string>("");
   const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null);
   const [transportFilter, setTransportFilter] = useState<boolean | null>(null);
-  const [scheduleFilter, setScheduleFilter] = useState<string>("");
+  // const [scheduleFilter, setScheduleFilter] = useState<string>("");
   const [showOpinionForm, setShowOpinionForm] = useState(false);
   const [activityForOpinion, setActivityForOpinion] = useState<Activity | null>(
     null
@@ -72,6 +73,7 @@ export function ItineraryDisplay() {
   const [selectedActivityOpinions, setSelectedActivityOpinions] =
     useState<Activity | null>(null);
   const [isCreatedOrUpdated, setIsCreatedOrUpdated] = useState(false);
+  const [itineraryPlace, setItineraryPlace] = useState<Place | null>(null);
 
   const loadActivities = useCallback(async () => {
     await getAllActivities();
@@ -82,10 +84,15 @@ export function ItineraryDisplay() {
   }, [getAllOpinions, opinions]);
   useEffect(() => {
     const loadPlaces = async () => {
-      getAllPlaces();
+      await getAllPlaces();
+      places?.find((place) => {
+        if (CurrentItinerary?.place?.id?.toString() === place?.id?.toString()) {
+          setItineraryPlace(place);
+        }
+      });
     };
     loadPlaces();
-  }, [CurrentItinerary]);
+  }, [CurrentItinerary, itineraries]);
 
   useEffect(() => {
     async function loadData() {
@@ -131,21 +138,21 @@ export function ItineraryDisplay() {
         );
       }
 
-      if (scheduleFilter) {
-        filtered = filtered.filter((activity) => {
-          const activityTime = new Date(activity.schedule).getHours();
-          switch (scheduleFilter) {
-            case "morning":
-              return activityTime >= 6 && activityTime < 12;
-            case "afternoon":
-              return activityTime >= 12 && activityTime < 18;
-            case "evening":
-              return activityTime >= 18 || activityTime < 6;
-            default:
-              return true;
-          }
-        });
-      }
+      // if (scheduleFilter) {
+      //   filtered = filtered.filter((activity) => {
+      //     const activityTime = new Date(activity.schedule).getHours();
+      //     switch (scheduleFilter) {
+      //       case "morning":
+      //         return activityTime >= 6 && activityTime < 12;
+      //       case "afternoon":
+      //         return activityTime >= 12 && activityTime < 18;
+      //       case "evening":
+      //         return activityTime >= 18 || activityTime < 6;
+      //       default:
+      //         return true;
+      //     }
+      //   });
+      // }
 
       setFilteredActivities(filtered);
     }
@@ -156,7 +163,7 @@ export function ItineraryDisplay() {
     selectedPlace,
     outdoorFilter,
     transportFilter,
-    scheduleFilter,
+    //scheduleFilter,
   ]);
 
   const handleViewOpinions = (activity: Activity) => {
@@ -200,7 +207,7 @@ export function ItineraryDisplay() {
       createOpinion({
         ...opinion,
         activity: activityForOpinion.id,
-        usuario: user?.id,
+        user: user?.id,
       } as Opinion);
       setShowOpinionForm(false);
       setIsCreatedOrUpdated(true);
@@ -218,7 +225,7 @@ export function ItineraryDisplay() {
           <p className="text-gray-400">{CurrentItinerary?.description}</p>
           <p className="text-gray-400 flex items-center mt-2">
             <MapPin size={16} className="mr-2 text-indigo-400" />
-            {CurrentItinerary?.place?.nombre} - {CurrentItinerary?.place?.pais}
+            {itineraryPlace?.nombre} - {itineraryPlace?.pais}
           </p>
         </div>
         <div className="flex flex-col space-y-2 w-1/5">

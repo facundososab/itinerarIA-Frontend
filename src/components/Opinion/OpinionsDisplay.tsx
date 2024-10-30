@@ -23,6 +23,7 @@ export default function OpinionsDisplay({
     rating: 0,
     comment: "",
   });
+  const [updatedOrDeleted, setUpdatedOrDeleted] = useState(false);
 
   const loadOpinions = async () => {
     getAllOpinions();
@@ -36,14 +37,15 @@ export default function OpinionsDisplay({
   };
 
   useEffect(() => {
+    setUpdatedOrDeleted(false);
     loadOpinions();
-  }, [showDeleteOpinionModal, editingOpinionId]);
+  }, [updatedOrDeleted]);
 
   const onDelete = async () => {
     if (opinionToDelete) {
       deleteOpinion(opinionToDelete);
       setShowDeleteOpinionModal(false);
-      await loadOpinions();
+      setUpdatedOrDeleted(true);
     }
   };
   const onUpdate = async (opinion: Opinion) => {
@@ -54,7 +56,7 @@ export default function OpinionsDisplay({
     };
     updateOpinion(updatedOpinion);
     setEditingOpinionId(null);
-    await loadOpinions();
+    setUpdatedOrDeleted(true);
   };
 
   const startEditing = (opinion: Opinion) => {
@@ -142,7 +144,7 @@ export default function OpinionsDisplay({
                       )}
                     </div>
                     <span className="text-sm text-gray-400">
-                      {opinion.usuario.username || "Anonymous"}
+                      {opinion.user?.username || "Anonymous"}
                     </span>
                   </div>
 
