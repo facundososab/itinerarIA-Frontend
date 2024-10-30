@@ -181,13 +181,13 @@ export default function InputNewItinerary({
 
               <div>
                 <label
-                  htmlFor="lugar"
+                  htmlFor="place"
                   className="block text-sm font-medium text-indigo-300"
                 >
                   Place
                 </label>
                 <select
-                  id="lugar"
+                  id="place"
                   {...register("place", { required: "Place is required" })}
                   className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
@@ -201,7 +201,7 @@ export default function InputNewItinerary({
                         value={place.id.toString()}
                         className="bg-[#26262c] text-indigo-100"
                       >
-                        {place.nombre}
+                        {place.name}
                       </option>
                     ))}
                 </select>

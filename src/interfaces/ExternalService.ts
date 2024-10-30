@@ -10,5 +10,5 @@ export default interface ExternalService {
   schedule?: string,
   website?: string,
   phoneNumber?: string,
-  lugar: Place,
+  place: Place,
 }
