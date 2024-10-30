@@ -31,7 +31,7 @@ function UpdateOpinionModal({
     const opinionUpdate: Opinion = {
       ...data,
       activity: opinionToUpdate.activity,
-      usuario: opinionToUpdate.usuario,
+      user: opinionToUpdate.user,
     };
     if (!opinion) return null;
     onUpdate(opinionUpdate);
