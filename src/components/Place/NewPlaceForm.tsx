@@ -80,15 +80,15 @@ export default function NewPlaceForm({
 
                     <div>
                         <label
-                            htmlFor="nombre"
+                            htmlFor="name"
                             className="block text-sm font-medium text-indigo-300"
                         >
                             Name
                         </label>
                         <input
-                            id="nombre"
+                            id="name"
                             type="text"
-                            {...register('nombre', {
+                            {...register('name', {
                                 pattern: {
                                     value: /^[a-zA-Z0-9\s]{3,50}$/,
                                     message: 'Invalid name format (between 3 and 50 characters. Alphanumeric only)',
@@ -98,25 +98,25 @@ export default function NewPlaceForm({
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter the place's name"
                         />
-                        {errors.nombre?.message && (
+                        {errors.name?.message && (
                             <p className="mt-1 text-sm text-red-400">
-                                {errors.nombre.message}
+                                {errors.name.message}
                             </p>
                         )}
                     </div>
 
                     <div>
                         <label
-                            htmlFor="ubicacion_latitud"
+                            htmlFor="latitude"
                             className="block text-sm font-medium text-indigo-300"
                         >
                             Latitude
                         </label>
                         <input
-                            id="ubicacion_latitud"
+                            id="latitude"
                             type="number"
-                            step="any" // Permite números decimales
-                            {...register('ubicacion_latitud', {
+                            step="any"
+                            {...register('latitude', {
                                 pattern: {
                                     value: /^-?([1-8]?[0-9]\.\d{6}|90\.000000)$/,
                                     message:
@@ -127,25 +127,25 @@ export default function NewPlaceForm({
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter place's latitude"
                         />
-                        {errors.ubicacion_latitud?.message && (
+                        {errors.latitude?.message && (
                             <p className="mt-1 text-sm text-red-400">
-                                {errors.ubicacion_latitud.message}
+                                {errors.latitude.message}
                             </p>
                         )}
                     </div>
 
                     <div>
                         <label
-                            htmlFor="ubicacion_longitud"
+                            htmlFor="longitude"
                             className="block text-sm font-medium text-indigo-300"
                         >
                             Longitude
                         </label>
                         <input
-                            id="ubicacion_longitud"
+                            id="longitude"
                             type="number"
-                            step="any" // Permite números decimales
-                            {...register('ubicacion_longitud', {
+                            step="any"
+                            {...register('longitude', {
                                 pattern: {
                                     value: /^-?(1[0-7][0-9]|0?[0-9]{1,2})\.\d{6}$|^-?180\.000000$/,
                                     message:
@@ -156,24 +156,24 @@ export default function NewPlaceForm({
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter places's longitude"
                         />
-                        {errors.ubicacion_longitud?.message && (
+                        {errors.longitude?.message && (
                             <p className="mt-1 text-sm text-red-400">
-                                {errors.ubicacion_longitud.message}
+                                {errors.longitude.message}
                             </p>
                         )}
                     </div>
 
                     <div>
                         <label
-                            htmlFor="codigoPostal"
+                            htmlFor="zipCode"
                             className="block text-sm font-medium text-indigo-300"
                         >
                             ZIP Code
                         </label>
                         <input
-                            id="codigoPostal"
+                            id="zipCode"
                             type="text"
-                            {...register('codigoPostal', {
+                            {...register('zipCode', {
                                 pattern: {
                                     value: /^[A-Za-z0-9-]{4,10}$/,
                                     message:
@@ -184,24 +184,24 @@ export default function NewPlaceForm({
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter place's ZIP code"
                         />
-                        {errors.codigoPostal?.message && (
+                        {errors.zipCode?.message && (
                             <p className="mt-1 text-sm text-red-400">
-                                {errors.codigoPostal.message}
+                                {errors.zipCode.message}
                             </p>
                         )}
                     </div>
 
                     <div>
                         <label
-                            htmlFor="provincia"
+                            htmlFor="province"
                             className="block text-sm font-medium text-indigo-300"
                         >
                             Province
                         </label>
                         <input
-                            id="provincia"
+                            id="province"
                             type="text"
-                            {...register('provincia', {
+                            {...register('province', {
                                 pattern: {
                                     value: /^[a-zA-Z\s]{3,50}$/,
                                     message:
@@ -212,23 +212,23 @@ export default function NewPlaceForm({
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter place's province"
                         />
-                        {errors.provincia?.message && (
+                        {errors.province?.message && (
                             <p className="mt-1 text-sm text-red-400">
-                                {errors.provincia.message}
+                                {errors.province.message}
                             </p>
                         )}
                     </div>
                     <div>
                         <label
-                            htmlFor="pais"
+                            htmlFor="country"
                             className="block text-sm font-medium text-indigo-300"
                         >
                             Country
                         </label>
                         <input
-                            id="pais"
+                            id="country"
                             type="text"
-                            {...register('pais', {
+                            {...register('country', {
                                 pattern: {
                                     value: /^[a-zA-Z\s]{3,50}$/,
                                     message:
@@ -239,9 +239,9 @@ export default function NewPlaceForm({
                             className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter places's Country"
                         />
-                        {errors.pais?.message && (
+                        {errors.country?.message && (
                             <p className="mt-1 text-sm text-red-400">
-                                {errors.pais.message}
+                                {errors.country.message}
                             </p>
                         )}
                     </div>

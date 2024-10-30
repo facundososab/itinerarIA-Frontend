@@ -46,7 +46,7 @@ function App() {
                               path="/itinerarios"
                               element={<ItinerariesPage />}
                             />
-                            <Route path="/lugares" element={<PlacesPage />} />
+                            <Route path="/places" element={<PlacesPage />} />
                             <Route
                               path="/externalServices"
                               element={<ExternalServicesPage />}

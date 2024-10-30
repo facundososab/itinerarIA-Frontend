@@ -38,60 +38,60 @@ export default function PlaceRow({
 const validate = () => {
   const newErrors: { [key: string]: string } = {};
 
-  //Validacion para nombre
-    const name = editingPlace?.nombre;
-    const nameRegex = /^[a-zA-Z0-9\s]{3,50}$/; //Regex para nombre de 3 a 50 caracteres
+  //Validacion para name
+    const name = editingPlace?.name;
+    const nameRegex = /^[a-zA-Z0-9\s]{3,50}$/; //Regex para name de 3 a 50 caracteres
     if (!name) {
-        newErrors.nombre = 'Name is required';
+        newErrors.name = 'Name is required';
       } else if (!nameRegex.test(name)) {
-        newErrors.nombre = 'Invalid name format (between 3 and 50 characters. Alphanumeric only)';
+        newErrors.name = 'Invalid name format (between 3 and 50 characters. Alphanumeric only)';
       }
 
   // Validación para latitud
-  const latitude = editingPlace?.ubicacion_latitud;
+  const latitude = editingPlace?.latitude;
   const latitudeRegex = /^-?([1-8]?[0-9]\.\d{6}|90\.000000)$/; // Regex para -90 a 90 con exactamente 6 decimales
 
   if (!latitude) {
-    newErrors.ubicacion_latitud = 'Latitude is required';
+    newErrors.latitude = 'Latitude is required';
   } else if (!latitudeRegex.test(latitude.toString())) {
-    newErrors.ubicacion_latitud = 'Invalid latitude format (between -90 and 90 with six decimals)';
+    newErrors.latitude = 'Invalid latitude format (between -90 and 90 with six decimals)';
   }
 
   // Validación para longitud
-  const longitude = editingPlace?.ubicacion_longitud;
+  const longitude = editingPlace?.longitude;
   const longitudeRegex = /^-?(1[0-7][0-9]|0?[0-9]{1,2})\.\d{6}$|^-?180\.000000$/; // Regex para -180 a 180 con exactamente 6 decimales
 
   if (!longitude) {
-    newErrors.ubicacion_longitud = 'Longitude is required';
+    newErrors.longitude = 'Longitude is required';
   } else if (!longitudeRegex.test(longitude.toString())) {
-    newErrors.ubicacion_longitud = 'Invalid longitude format (between -180 and 180 with six decimals)';
+    newErrors.longitude = 'Invalid longitude format (between -180 and 180 with six decimals)';
   }
 
   //Validación para código postal
-  const zipCode = editingPlace?.codigoPostal;
+  const zipCode = editingPlace?.zipCode;
   const zipCodeRegex =  /^[A-Za-z0-9-]{4,10}$/;
 
   if (!zipCode) {
-    newErrors.codigoPostal = 'Zip code is required';
+    newErrors.zipCode = 'Zip code is required';
   } else if (!zipCodeRegex.test(zipCode.toString())) {
-    newErrors.codigoPostal = 'Invalid zip code format (between 4 and 10 characters. Alphanumeric and "-" only)';
+    newErrors.zipCode = 'Invalid zip code format (between 4 and 10 characters. Alphanumeric and "-" only)';
   }
-  //Validación para provincia
-  const province = editingPlace?.provincia;
-    const provinceRegex = /^[a-zA-Z\s]{3,50}$/; //Regex para provincia de 3 a 50 caracteres
+  //Validación para province
+  const province = editingPlace?.province;
+    const provinceRegex = /^[a-zA-Z\s]{3,50}$/; //Regex para province de 3 a 50 caracteres
     if (!province) {
-        newErrors.provincia = 'Province is required';
+        newErrors.province = 'Province is required';
       } else if (!provinceRegex.test(province)) {
-        newErrors.provincia = 'Invalid province format (between 3 and 50 characters. Letters only)';
+        newErrors.province = 'Invalid province format (between 3 and 50 characters. Letters only)';
       }
 
       //Validación para país
-      const country = editingPlace?.pais;
-    const countryRegex = /^[a-zA-Z\s]{3,50}$/; //Regex para pais de 3 a 50 caracteres
+      const country = editingPlace?.country;
+    const countryRegex = /^[a-zA-Z\s]{3,50}$/; //Regex para country de 3 a 50 caracteres
     if (!country) {
-        newErrors.pais = 'Country is required';
+        newErrors.country = 'Country is required';
       } else if (!countryRegex.test(country)) {
-        newErrors.pais = 'Invalid country format (between 3 and 50 characters. Letters only)';
+        newErrors.country = 'Invalid country format (between 3 and 50 characters. Letters only)';
       }
 
     setEditingErrors(newErrors);
@@ -101,21 +101,21 @@ const validate = () => {
 const handleSave = () => {
     const respuestaValidacion = validate();
   if (respuestaValidacion) {
-    const latitude = editingPlace?.ubicacion_latitud;
-    const longitude = editingPlace?.ubicacion_longitud;
+    const latitude = editingPlace?.latitude;
+    const longitude = editingPlace?.longitude;
 
     const isDuplicateCoordinates = places.some(
         (place) =>
             place.id !== editingPlace?.id && // Asegurarse de que no sea el mismo lugar que estamos editando
-            place.ubicacion_latitud === latitude &&
-            place.ubicacion_longitud === longitude
+            place.latitude === latitude &&
+            place.longitude === longitude
     );
 
     if (isDuplicateCoordinates) {
         setEditingErrors((prevErrors) => ({
             ...prevErrors,
-            ubicacion_latitud: 'These coordinates already exist for another place',
-            ubicacion_longitud: 'These coordinates already exist for another place',
+            latitude: 'These coordinates already exist for another place',
+            longitude: 'These coordinates already exist for another place',
         }));
         return; // Salir sin guardar
     }
@@ -167,21 +167,21 @@ const handleDelete = async(place:Place) => {
                 <>
                     <input
                         type="text"
-                        value={editingPlace.nombre}
+                        value={editingPlace.name}
                         onChange={(e) =>
                             setEditingPlace({
                                 ...editingPlace,
-                                nombre: e.target.value,
+                                name: e.target.value,
                             })
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {editingErrors.nombre && (
-                        <p className="text-red-500 text-xs">{editingErrors.nombre}</p>
+                    {editingErrors.name && (
+                        <p className="text-red-500 text-xs">{editingErrors.name}</p>
                     )}
                 </>
                 ) : (
-                    place.nombre
+                    place.name
                 )}
             </td>
             <td className="p-3">
@@ -190,22 +190,22 @@ const handleDelete = async(place:Place) => {
                 <input
                         type="number"
                         step="any"
-                        value={editingPlace.ubicacion_latitud}
+                        value={editingPlace.latitude}
                         onChange={(e) =>
                             setEditingPlace({
                                 ...editingPlace,
-                                ubicacion_latitud: parseFloat(e.target.value), //Parseo el string del input
+                                latitude: parseFloat(e.target.value), //Parseo el string del input
                             })
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                {editingErrors.ubicacion_latitud && (
-                        <p className="text-red-500 text-xs">{editingErrors.ubicacion_latitud}</p>
+                {editingErrors.latitude && (
+                        <p className="text-red-500 text-xs">{editingErrors.latitude}</p>
                     )}
                 </>
                     
                 ) : (
-                    place.ubicacion_latitud
+                    place.latitude
                 )}
             </td>
             <td className="p-3">
@@ -214,21 +214,21 @@ const handleDelete = async(place:Place) => {
                     <input
                         type="number"
                         step="any"
-                        value={editingPlace.ubicacion_longitud}
+                        value={editingPlace.longitude}
                         onChange={(e) =>
                             setEditingPlace({
                                 ...editingPlace,
-                                ubicacion_longitud: parseFloat(e.target.value),
+                                longitude: parseFloat(e.target.value),
                             })
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {editingErrors.ubicacion_longitud && (
-                        <p className="text-red-500 text-xs">{editingErrors.ubicacion_longitud}</p>
+                    {editingErrors.longitude && (
+                        <p className="text-red-500 text-xs">{editingErrors.longitude}</p>
                     )}
                 </>
                 ) : (
-                    place.ubicacion_longitud
+                    place.longitude
                 )}
             </td>
             <td className="p-3">
@@ -236,21 +236,21 @@ const handleDelete = async(place:Place) => {
                 <>
                     <input
                         type="text"
-                        value={editingPlace.codigoPostal}
+                        value={editingPlace.zipCode}
                         onChange={(e) =>
                             setEditingPlace({
                                 ...editingPlace,
-                                codigoPostal: e.target.value,
+                                zipCode: e.target.value,
                             })
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {editingErrors.codigoPostal && (
-                        <p className="text-red-500 text-xs">{editingErrors.codigoPostal}</p>
+                    {editingErrors.zipCode && (
+                        <p className="text-red-500 text-xs">{editingErrors.zipCode}</p>
                     )}
                 </>
                 ) : (
-                    place.codigoPostal
+                    place.zipCode
                 )}
             </td>
 
@@ -259,21 +259,21 @@ const handleDelete = async(place:Place) => {
                 <>
                     <input
                         type="text"
-                        value={editingPlace.provincia}
+                        value={editingPlace.province}
                         onChange={(e) =>
                             setEditingPlace({
                                 ...editingPlace,
-                                provincia: e.target.value,
+                                province: e.target.value,
                             })
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {editingErrors.provincia && (
-                        <p className="text-red-500 text-xs">{editingErrors.provincia}</p>
+                    {editingErrors.province && (
+                        <p className="text-red-500 text-xs">{editingErrors.province}</p>
                     )}
                 </>
                 ) : (
-                    place.provincia
+                    place.province
                 )}
             </td>
             <td className="p-3">
@@ -281,21 +281,21 @@ const handleDelete = async(place:Place) => {
                 <>
                     <input
                         type="text"
-                        value={editingPlace.pais}
+                        value={editingPlace.country}
                         onChange={(e) =>
                             setEditingPlace({
                                 ...editingPlace,
-                                pais: e.target.value,
+                                country: e.target.value,
                             })
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {editingErrors.pais && (
-                        <p className="text-red-500 text-xs">{editingErrors.pais}</p>
+                    {editingErrors.country && (
+                        <p className="text-red-500 text-xs">{editingErrors.country}</p>
                     )}
                 </>
                 ) : (
-                    place.pais
+                    place.country
                 )}
             </td>
 
