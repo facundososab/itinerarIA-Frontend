@@ -146,7 +146,7 @@ const {user} = useAuth();
 
 const handleDelete = async(place:Place) => {
   const idPlace = place.id;
-  const hasAnyService = await externalServices?.some((service) => service.lugar.id === idPlace);
+  const hasAnyService = await externalServices?.some((service) => service.place.id === idPlace);
   const hasAnyItinerary = await itineraries?.some((itinerary) => itinerary.place.id === idPlace);
 
   //console.log(hasAnyService,"tiene servicios externos");

@@ -25,6 +25,8 @@ export default function NewPlaceForm({
     }, [])
 
     const onCreate = handleSubmit(async (data) => {
+        data.latitude = parseFloat(data.latitude as unknown as string) as number; //Sino se pasa al back como string
+        data.longitude = parseFloat(data.longitude as unknown as string) as number;
         createPlace(data)
         onClose()
     })

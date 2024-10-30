@@ -49,7 +49,7 @@ export default function ExternalServiceRow({
     }
 
     // Validation for place
-    if (!editingService?.lugar) {
+    if (!editingService?.place) {
       newErrors.place = 'Place is required'
     }
 
@@ -178,23 +178,23 @@ export default function ExternalServiceRow({
         {editingService?.id === service.id ? (
           <>
             <select
-              id="lugar"
+              id="place"
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  lugar: places.find(
+                  place: places.find(
                     (place) => place.id.toString() === e.target.value
                   )!,
                 })
               }
-              value={editingService.lugar.id.toString()}
+              value={editingService.place.id.toString()}
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
             >
               <option value="">Select a place</option>
               {places &&
                 places.map((place) => (
                   <option key={place.id.toString()} value={place.id.toString()}>
-                    {place.nombre}
+                    {place.name}
                   </option>
                 ))}
             </select>
@@ -203,7 +203,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.lugar.nombre
+          service.place.name
         )}
       </td>
       <td className="p-3">
