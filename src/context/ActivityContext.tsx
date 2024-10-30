@@ -28,8 +28,7 @@ export const ActivitiesContext = createContext({
   createActivity: (_activity: Activity) => {},
   updateActivity: (_activity: Activity) => {},
   deleteActivity: (_id: ObjectId) => {},
-  activityErrors: [] as string[],
-  setActivityErrors: (_activityErrors: []) => {},
+  activityErrors: [] as string[] | null,
 });
 
 export const useActivity = () => {
@@ -44,7 +43,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activity, setActivity] = useState<Activity | null>(null);
   const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
-  const [activityErrors, setActivityErrors] = useState([]);
+  const [activityErrors, setActivityErrors] = useState<string[] | null>([]);
 
   const handleNewActivity = useCallback(
     (activity: Activity) => {
@@ -61,10 +60,9 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
     try {
       const res = await getAllActivitiesRequest();
       setActivities(res.data.data);
-      setActivityErrors([]);
+      //setActivityErrors([]);
     } catch (err: any) {
-      const errorData =
-        err.response?.data?.message || "Error fetching activities";
+      const errorData = err.response?.data?.message;
       setActivityErrors(errorData);
     }
   };
@@ -87,13 +85,15 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
       if (res.status === 201) {
         activities?.push(res.data.data);
         handleNewActivity(res.data.data);
-        setActivityErrors([]);
         await getAllActivities;
+        setActivityErrors([]);
       }
     } catch (err: any) {
-      const errorData =
-        err.response?.data?.message || "Error creating activity";
+      console.log(err.response?.data.message);
+      const errorData = err.response?.data?.message;
+      console.log(typeof errorData, "errorData");
       setActivityErrors(errorData);
+      console.log(activityErrors, "activityErrors");
     }
   };
 
@@ -109,8 +109,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
       setActivityErrors([]);
       await getAllActivities;
     } catch (err: any) {
-      const errorData =
-        err.response?.data?.message || "Error updating activity";
+      const errorData = err.response?.data?.message;
       setActivityErrors(errorData);
     }
   };
@@ -130,7 +129,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
 
   // Limpiar mensajes de error después de 5 segundos
   useEffect(() => {
-    if (activityErrors.length > 0) {
+    if (activityErrors && activityErrors.length > 0) {
       const timer = setTimeout(() => {
         setActivityErrors([]);
       }, 5000);
@@ -153,7 +152,6 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
         currentActivity,
         setCurrentActivity,
         activityErrors,
-        setActivityErrors,
       }}
     >
       {children}

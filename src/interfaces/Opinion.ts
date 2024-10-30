@@ -4,8 +4,8 @@ import { ObjectId } from "@mikro-orm/mongodb";
 
 export default interface Opinion {
     id: ObjectId;
-    calificacion: number;
-    comentario: string;
+    rating: number;
+    comment: string;
     user: ObjectId;
     activity: ObjectId;
 }

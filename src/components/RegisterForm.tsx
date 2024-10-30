@@ -129,24 +129,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="nombres"
+                htmlFor="name"
                 className="block text-sm font-medium text-white"
               >
                 First Name
               </label>
               <div className="mt-1">
                 <input
-                  id="nombres"
+                  id="name"
                   type="text"
                   placeholder="First name"
-                  {...register("nombres", {
+                  {...register("name", {
                     required: "First name is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.nombres && (
+                {errors.name && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.nombres.message}
+                    {errors.name.message}
                   </p>
                 )}
               </div>
@@ -154,24 +154,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="apellidos"
+                htmlFor="lastName"
                 className="block text-sm font-medium text-white"
               >
                 Last Name
               </label>
               <div className="mt-1">
                 <input
-                  id="apellidos"
+                  id="lastName"
                   type="text"
                   placeholder="Last name"
-                  {...register("apellidos", {
+                  {...register("lastName", {
                     required: "Last name is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.apellidos && (
+                {errors.lastName && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.apellidos.message}
+                    {errors.lastName.message}
                   </p>
                 )}
               </div>
@@ -202,24 +202,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="nroTelefono"
+                htmlFor="phoneNumber"
                 className="block text-sm font-medium text-white"
               >
                 Phone Number
               </label>
               <div className="mt-1">
                 <input
-                  id="nroTelefono"
+                  id="phoneNumber"
                   type="tel"
                   placeholder="Phone number"
-                  {...register("nroTelefono", {
+                  {...register("phoneNumber", {
                     required: "Phone number is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.nroTelefono && (
+                {errors.phoneNumber && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.nroTelefono.message}
+                    {errors.phoneNumber.message}
                   </p>
                 )}
               </div>
@@ -227,23 +227,23 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="fechaNacimiento"
+                htmlFor="dateOfBirth"
                 className="block text-sm font-medium text-white"
               >
                 Date of Birth
               </label>
               <div className="mt-1">
                 <input
-                  id="fechaNacimiento"
+                  id="dateOfBirth"
                   type="date"
-                  {...register("fechaNacimiento", {
+                  {...register("dateOfBirth", {
                     required: "Date of birth is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.fechaNacimiento && (
+                {errors.dateOfBirth && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.fechaNacimiento.message}
+                    {errors.dateOfBirth.message}
                   </p>
                 )}
               </div>

@@ -51,8 +51,8 @@ export default function OpinionsDisplay({
   const onUpdate = async (opinion: Opinion) => {
     const updatedOpinion = {
       ...opinion,
-      calificacion: editForm.rating,
-      comentario: editForm.comment,
+      rating: editForm.rating,
+      comment: editForm.comment,
     };
     updateOpinion(updatedOpinion);
     setEditingOpinionId(null);
@@ -62,8 +62,8 @@ export default function OpinionsDisplay({
   const startEditing = (opinion: Opinion) => {
     setEditingOpinionId(opinion.id.toString());
     setEditForm({
-      rating: opinion.calificacion,
-      comment: opinion.comentario,
+      rating: opinion.rating,
+      comment: opinion.comment,
     });
   };
 
@@ -129,14 +129,12 @@ export default function OpinionsDisplay({
                               key={star}
                               size={18}
                               className={
-                                star <= opinion.calificacion
+                                star <= opinion.rating
                                   ? "text-yellow-400"
                                   : "text-gray-400"
                               }
                               fill={
-                                star <= opinion.calificacion
-                                  ? "currentColor"
-                                  : "none"
+                                star <= opinion.rating ? "currentColor" : "none"
                               }
                             />
                           ))}
@@ -175,7 +173,7 @@ export default function OpinionsDisplay({
                     </div>
                   ) : (
                     <>
-                      <p className="text-indigo-100">{opinion.comentario}</p>
+                      <p className="text-indigo-100">{opinion.comment}</p>
                       <div className="flex space-x-2 mt-4">
                         <button
                           onClick={() => startEditing(opinion)}
