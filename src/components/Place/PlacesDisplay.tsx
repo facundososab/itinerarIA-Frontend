@@ -3,12 +3,11 @@ import { usePlace } from "../../context/PlaceContext.tsx";
 import Place from "../../interfaces/Place.ts";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { createPortal } from "react-dom";
-//import DeletePlaceWarningModal from './DeletePlaceWarningModal.tsx'
-import PlaceRow from './PlaceRow.tsx'
-import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
-import DeleteRestrictionModal from '../shared/DeleteRestrictionModal.tsx'
-import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
-
+// import DeletePlaceWarningModal from './DeletePlaceWarningModal.tsx'
+import PlaceRow from './PlaceRow.tsx';
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx';
+import TextModal from '../shared/TextModal.tsx';
+import { useExternalServices } from '../../context/ExternalServicesContext.tsx';
 
 export function PlacesDisplay() {
   const {
@@ -18,18 +17,8 @@ export function PlacesDisplay() {
     deletePlace,
     updatePlace,
     placeErrors,
+    setPlaceErrors,
   } = usePlace();
-
-    useEffect(() => {
-        const loadPlaces = async () => {
-            await getAllPlaces()
-        }
-        loadPlaces()
-    }, [])
-
-    const [showModalWarning, setShowModalWarning] = useState(false)
-
-    const [showModalRestriction, setShowModalRestriction] = useState(false)
 
   useEffect(() => {
     const loadPlaces = async () => {
@@ -38,13 +27,13 @@ export function PlacesDisplay() {
     loadPlaces();
   }, []);
 
+  const [showModalWarning, setShowModalWarning] = useState(false);
+  const [showModalRestriction, setShowModalRestriction] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
-
   const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null);
-
   const [showModal, setShowModal] = useState(false);
 
-  // Cerrar el formulario de edición si se hace clic fuera de él
+  // Close edit form when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element | null;
@@ -54,63 +43,60 @@ export function PlacesDisplay() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [editingPlace]);
 
-  // Cargar los lugares al montar el componente
-  useEffect(() => {
-    const loadPlaces = async () => {
-      await getAllPlaces();
-    };
-    loadPlaces();
-  }, []);
-
   const handleEdit = (place: Place) => {
     setEditingPlace(place);
   };
 
-    const onDelete = async (id: ObjectId) => {
-        await deletePlace(id)
-        // Filtra el lugar eliminado del estado local
-        setPlaces(places.filter((place) => place.id !== id))
-        setShowModalWarning(false)
+  const onDelete = async (id: ObjectId) => {
+    try{
+      await deletePlace(id);
+    // Remove deleted place from local state
+    setPlaces(places.filter((place) => place.id !== id));
+    setShowModalWarning(false);
     }
-
+    catch(error:any){
+      console.log(error);
+    }
+  };
 
   const handleUpdate = async () => {
     if (editingPlace) {
-      await updatePlace(editingPlace);
-      setPlaces(
-        places.map((place) =>
-          place.id === editingPlace.id ? editingPlace : place
-        )
-      );
-      setEditingPlace(null);
+      try {
+        await updatePlace(editingPlace);
+        setPlaces(
+          places.map((place) =>
+            place.id === editingPlace.id ? editingPlace : place
+          )
+        );
+        setEditingPlace(null);
+      } catch (err: any) {
+        console.log(err);
+      }
     }
+  };
 
-    const { externalServices, getAllExternalServices } = useExternalServices();
+  const { externalServices, getAllExternalServices } = useExternalServices();
 
-    useEffect(() => {
-        const loadExternalServices = async () => {
-          await getAllExternalServices();
-        };
-        loadExternalServices();
-      }, []);
+  useEffect(() => {
+    const loadExternalServices = async () => {
+      await getAllExternalServices();
+    };
+    loadExternalServices();
+  }, []);
 
-    const handleDelete = async (place: Place) => {
-        const hasAnyService = externalServices.some((service) => service.lugar.id === place.id)
-        if (hasAnyService) {
-            setShowModalRestriction(true)
-        } else {
-            setPlaceToDelete(place.id)
-            setShowModalWarning(true)
-        }
-
+  const handleDelete = async (place: Place) => {
+    const hasAnyService = externalServices.some((service) => service.lugar.id === place.id);
+    if (hasAnyService) {
+      setShowModalRestriction(true);
+    } else {
+      setPlaceToDelete(place.id);
+      setShowModalWarning(true);
     }
-
   };
 
   return (
@@ -179,27 +165,26 @@ export function PlacesDisplay() {
         </tbody>
       </table>
 
-            {showModalWarning &&
-                createPortal(
-                    <DeleteWarningModal
-                        onClose={() => setShowModalWarning(false)}
-                        onDelete={onDelete}
-                        id={placeToDelete}
-                        text="Are you sure you want to delete this place?"
-                    />,
-                    document.body
-                )}
-            
-            {showModalRestriction &&
-                createPortal(
-                    <DeleteRestrictionModal
-                        onClose={() => setShowModalRestriction(false)}
-                        text="You cannot delete this place because it has external services associated with it."
-                    />,
-                    document.body
-                )}
-
-                
-        </article>
-    )
+      {showModalWarning &&
+        createPortal(
+          <DeleteWarningModal
+            onClose={() => setShowModalWarning(false)}
+            onDelete={onDelete}
+            id={placeToDelete}
+            text="Are you sure you want to delete this place?"
+          />,
+          document.body
+        )}
+      
+      {showModalRestriction &&
+        createPortal(
+          <TextModal
+            onClose={() => setShowModalRestriction(false)}
+            text="You cannot delete this place because it has external services or itineraries associated with it."
+          />,
+          document.body
+        )}
+    </article>
+  );
 }
+

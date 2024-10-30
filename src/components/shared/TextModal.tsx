@@ -1,6 +1,6 @@
 import { ObjectId } from '@mikro-orm/mongodb'
 
-export default function DeleteRestrictionModal({
+export default function TextModal({
   onClose,
   text
 }: {

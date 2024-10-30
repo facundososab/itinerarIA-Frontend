@@ -10,7 +10,7 @@ export default function NewPlaceForm({
     onClose: () => void
 }) {
     const { createPlace, placeErrors } = usePlace()
-    const { places, getPlaces } = usePlace()
+    const { places, getAllPlaces } = usePlace()
     const {
         register,
         handleSubmit,
@@ -19,7 +19,7 @@ export default function NewPlaceForm({
 
     useEffect(() => {
         const loadPlaces = async () => {
-            getPlaces()
+            getAllPlaces()
         }
         loadPlaces()
     }, [])

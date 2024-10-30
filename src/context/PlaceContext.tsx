@@ -27,8 +27,8 @@ export const PlacesContext = createContext({
   createPlace: (_place: Place) => { },
   updatePlace: (_place: Place) => { },
   deletePlace: (_id: ObjectId) => { },
-  placeErrors: [],
-  setPlaceErrors: (_placeErrors: []) => { },
+  placeErrors: [] as string[],
+  setPlaceErrors: (_placeErrors: string[]) => { },
 })
 
 export const usePlace = () => {
@@ -56,14 +56,15 @@ export function PlacesProvider({
   const [currentPlace, setCurrentPlace] =
     useState<Place | null>(null)
 
-  const [placeErrors, setPlaceErrors] = useState<[]>([])
+  const [placeErrors, setPlaceErrors] = useState<string[]>([])
 
   const getAllPlaces = async () => {
     try {
       const res = await getAllPlacesRequest()
       setPlaces(res.data.data)
+      setPlaceErrors([]);
     } catch (err: any) {
-      setPlaceErrors(err.response.data.message)
+      setPlaceErrors([err.response.data.message]);
     }
   }
 
@@ -71,8 +72,9 @@ export function PlacesProvider({
     try {
       const res = await getPlaceRequest(id)
       setPlace(res.data.data)
+      setPlaceErrors([]);
     } catch (err: any) {
-      setPlaceErrors(err.response.data.message)
+      setPlaceErrors([err.response.data.message]);
     }
   }
 
@@ -80,8 +82,9 @@ export function PlacesProvider({
     try {
       const res = await createPlaceRequest(place)
       setPlaces([...places, res.data.data])
+      setPlaceErrors([]);
     } catch (err: any) {
-      setPlaceErrors(err.response.data.message)
+      setPlaceErrors([err.response.data.message]);
     }
   }
 
@@ -89,8 +92,9 @@ export function PlacesProvider({
     try {
       const res = await updatePlaceRequest(place)
       setPlaces([...places, res.data.data])
+      setPlaceErrors([]);
     } catch (err: any) {
-      setPlaceErrors(err.response.data.message)
+      setPlaceErrors([err.response.data.message]);
     }
   }
 
@@ -98,8 +102,9 @@ export function PlacesProvider({
     try {
       const res = await deletePlaceRequest(id)
       setPlace(res.data.data)
+      setPlaceErrors([]);
     } catch (err: any) {
-      setPlaceErrors(err.response.data.message)
+      setPlaceErrors([err.response.data.message]);
     }
   }
 
@@ -108,7 +113,7 @@ export function PlacesProvider({
     if (placeErrors.length > 0) {
       const timer = setTimeout(() => {
         setPlaceErrors([])
-      }, 2000)
+      }, 10000)
       return () => clearTimeout(timer)
     }
   }, [placeErrors])

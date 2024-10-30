@@ -4,6 +4,12 @@ import { ObjectId } from '@mikro-orm/mongodb'
 import { useState, useEffect } from 'react'
 import ExternalService from '../../interfaces/ExternalService.ts'
 import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
+import { usePlace } from '../../context/PlaceContext.tsx'
+import { createPortal } from "react-dom";
+import TextModal from '../shared/TextModal.tsx'
+import { useItinerary } from '../../context/ItineraryContext.tsx'
+import { useAuth } from '../../context/AuthContext.tsx'
+
 
 export default function PlaceRow({
     place,
@@ -26,7 +32,8 @@ export default function PlaceRow({
     setShowModalRestriction: (show: boolean) => void
     setPlaceToDelete: (id: ObjectId) => void
 }) {
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  //const {placeErrors, setPlaceErrors} = usePlace();
+  const [editingErrors, setEditingErrors] = useState<{ [key: string]: string }>({});
 
 const validate = () => {
   const newErrors: { [key: string]: string } = {};
@@ -87,37 +94,63 @@ const validate = () => {
         newErrors.pais = 'Invalid country format (between 3 and 50 characters. Letters only)';
       }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
+    setEditingErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
 };
 
 const handleSave = () => {
     const respuestaValidacion = validate();
   if (respuestaValidacion) {
+    const latitude = editingPlace?.ubicacion_latitud;
+    const longitude = editingPlace?.ubicacion_longitud;
+
+    const isDuplicateCoordinates = places.some(
+        (place) =>
+            place.id !== editingPlace?.id && // Asegurarse de que no sea el mismo lugar que estamos editando
+            place.ubicacion_latitud === latitude &&
+            place.ubicacion_longitud === longitude
+    );
+
+    if (isDuplicateCoordinates) {
+        setEditingErrors((prevErrors) => ({
+            ...prevErrors,
+            ubicacion_latitud: 'These coordinates already exist for another place',
+            ubicacion_longitud: 'These coordinates already exist for another place',
+        }));
+        return; // Salir sin guardar
+    }
+
     handleUpdate();
     setEditingPlace(null); // Limpia el estado de edición
-    setErrors({}); // Limpia los errores
+    setEditingErrors({}); // Limpia los errores
   } else {
     console.log(respuestaValidacion);
     console.log('Validation failed');
+    return;
   }
 };
 
 const { externalServices, getAllExternalServices} = useExternalServices()
+const {itineraries, getItineraries} = useItinerary();
+const {user} = useAuth();
 
   useEffect(() => {
-    const loadExternalServices = async () => {
-      await getAllExternalServices()
+    const loadExternalServicesAndItineraries = async () => {
+      await getAllExternalServices();
+      if(user){
+        await getItineraries(user.id);
+      }
     }
-    loadExternalServices()
+    loadExternalServicesAndItineraries()
   }, [])
 
 const handleDelete = async(place:Place) => {
   const idPlace = place.id;
   const hasAnyService = await externalServices?.some((service) => service.lugar.id === idPlace);
+  const hasAnyItinerary = await itineraries?.some((itinerary) => itinerary.place.id === idPlace);
 
   //console.log(hasAnyService,"tiene servicios externos");
-  if(hasAnyService){
+  if(hasAnyService || hasAnyItinerary){
     setShowModalRestriction(true)
   }
   else{
@@ -127,7 +160,8 @@ const handleDelete = async(place:Place) => {
 }
     
     return (
-        <tr key={place.id.toString()} className="border-b border-[#393a41]">
+      <>
+<tr key={place.id.toString()} className="border-b border-[#393a41]">
             <td className="p-3">
                 {editingPlace?.id === place.id ? (
                 <>
@@ -142,8 +176,8 @@ const handleDelete = async(place:Place) => {
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {errors.nombre && (
-                        <p className="text-red-500 text-xs">{errors.nombre}</p>
+                    {editingErrors.nombre && (
+                        <p className="text-red-500 text-xs">{editingErrors.nombre}</p>
                     )}
                 </>
                 ) : (
@@ -165,8 +199,8 @@ const handleDelete = async(place:Place) => {
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                {errors.ubicacion_latitud && (
-                        <p className="text-red-500 text-xs">{errors.ubicacion_latitud}</p>
+                {editingErrors.ubicacion_latitud && (
+                        <p className="text-red-500 text-xs">{editingErrors.ubicacion_latitud}</p>
                     )}
                 </>
                     
@@ -189,8 +223,8 @@ const handleDelete = async(place:Place) => {
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {errors.ubicacion_longitud && (
-                        <p className="text-red-500 text-xs">{errors.ubicacion_longitud}</p>
+                    {editingErrors.ubicacion_longitud && (
+                        <p className="text-red-500 text-xs">{editingErrors.ubicacion_longitud}</p>
                     )}
                 </>
                 ) : (
@@ -211,8 +245,8 @@ const handleDelete = async(place:Place) => {
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {errors.codigoPostal && (
-                        <p className="text-red-500 text-xs">{errors.codigoPostal}</p>
+                    {editingErrors.codigoPostal && (
+                        <p className="text-red-500 text-xs">{editingErrors.codigoPostal}</p>
                     )}
                 </>
                 ) : (
@@ -234,8 +268,8 @@ const handleDelete = async(place:Place) => {
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {errors.provincia && (
-                        <p className="text-red-500 text-xs">{errors.provincia}</p>
+                    {editingErrors.provincia && (
+                        <p className="text-red-500 text-xs">{editingErrors.provincia}</p>
                     )}
                 </>
                 ) : (
@@ -256,8 +290,8 @@ const handleDelete = async(place:Place) => {
                         }
                         className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                     />
-                    {errors.pais && (
-                        <p className="text-red-500 text-xs">{errors.pais}</p>
+                    {editingErrors.pais && (
+                        <p className="text-red-500 text-xs">{editingErrors.pais}</p>
                     )}
                 </>
                 ) : (
@@ -299,6 +333,30 @@ const handleDelete = async(place:Place) => {
         )}
       </td>
         </tr>
+
+        {/* {(placeErrors.length > 0) &&
+                createPortal(
+                    <TextModal
+                        onClose={() => setPlaceErrors([])}
+                        text={placeErrors.join('\n')}
+                    />,
+                    document.body
+                )} */}
+      
+      </>
+        
+
+// {placeErrors &&
+//   createPortal(
+//       <DeleteWarningModal
+//           onClose={() => setShowModalWarning(false)}
+//           onDelete={onDelete}
+//           id={placeToDelete}
+//           text="Are you sure you want to delete this place?"
+//       />,
+//       document.body
+//   )}
     )
 }
+
 
