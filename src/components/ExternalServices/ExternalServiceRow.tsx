@@ -59,7 +59,7 @@ export default function ExternalServiceRow({
     // Validation for place
     if (!editingService?.place) {
       newErrors.place = 'Place is required'
-
+    }
 
     // Validation for schedule
     if (!editingService?.schedule) {
