@@ -1,30 +1,30 @@
-import { useEffect, useState } from 'react'
-import { useForm, useFieldArray, Controller } from 'react-hook-form'
-import { createPortal } from 'react-dom'
-import { X, Check, Plus, Trash2 } from 'lucide-react'
-import { ObjectId } from '@mikro-orm/mongodb'
-import Itinerary from '../../interfaces/Itinerary'
-import Preference from '../../interfaces/Preference'
-import { useItinerary } from '../../context/ItineraryContext'
-import { usePlace } from '../../context/PlaceContext'
-import { usePreference } from '../../context/PreferenceContext'
-import { useParticipant } from '../../context/ParticipantContext'
-import FavoriteParticipantsModal from './FavoriteParticipantsModal'
-import { useAuth } from '../../context/AuthContext'
+import { useEffect, useState } from "react";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { createPortal } from "react-dom";
+import { X, Check, Plus, Trash2 } from "lucide-react";
+import { ObjectId } from "@mikro-orm/mongodb";
+import Itinerary from "../../interfaces/Itinerary";
+import Preference from "../../interfaces/Preference";
+import { useItinerary } from "../../context/ItineraryContext";
+import { usePlace } from "../../context/PlaceContext";
+import { usePreference } from "../../context/PreferenceContext";
+import { useParticipant } from "../../context/ParticipantContext";
+import FavoriteParticipantsModal from "./FavoriteParticipantsModal";
+import { useAuth } from "../../context/AuthContext";
 
 export default function InputNewItinerary({
   onClose,
 }: {
-  onClose: () => void
+  onClose: () => void;
 }) {
   const [favoriteParticipantsModal, setFavoriteParticipantsModal] =
-    useState(false)
+    useState(false);
 
-  const { user } = useAuth()
-  const { createItinerary } = useItinerary()
-  const { places, getPlaces } = usePlace()
-  const { preferences, getPreferences } = usePreference()
-  const { getAllParticipants: getFavoriteParticipants } = useParticipant()
+  const { user } = useAuth();
+  const { createItinerary, itineraries } = useItinerary();
+  const { places, getAllPlaces } = usePlace();
+  const { preferences, getPreferences } = usePreference();
+  const { getAllParticipants: getFavoriteParticipants } = useParticipant();
 
   const {
     register,
@@ -35,21 +35,21 @@ export default function InputNewItinerary({
     defaultValues: {
       participants: [],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: 'participants',
-  })
+    name: "participants",
+  });
 
   useEffect(() => {
     const loadData = async () => {
-      getPlaces()
-      getPreferences()
-      user && getFavoriteParticipants(user.id)
-    }
-    loadData()
-  }, [])
+      getAllPlaces();
+      getPreferences();
+      user && getFavoriteParticipants(user.id);
+    };
+    loadData();
+  }, [itineraries]);
 
   const handlePreferenceToggle = (
     preferenceId: ObjectId,
@@ -57,16 +57,16 @@ export default function InputNewItinerary({
   ) => {
     const currentPreferencesIds = preferences.map(
       (preference: Preference) => preference.id
-    )
+    );
     return currentPreferencesIds.includes(preferenceId)
       ? preferences.filter((p: Preference) => p.id !== preferenceId)
-      : [...preferences, { id: preferenceId }]
-  }
+      : [...preferences, { id: preferenceId }];
+  };
 
   const onCreate = handleSubmit((data) => {
-    createItinerary(data)
-    onClose()
-  })
+    createItinerary(data);
+    onClose();
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-4 overflow-y-auto">
@@ -94,16 +94,16 @@ export default function InputNewItinerary({
                 <input
                   id="title"
                   type="text"
-                  {...register('title', {
+                  {...register("title", {
                     minLength: {
                       value: 3,
-                      message: 'Title must be at least 3 characters long',
+                      message: "Title must be at least 3 characters long",
                     },
                     maxLength: {
                       value: 20,
-                      message: 'Title must be at most 20 characters long',
+                      message: "Title must be at most 20 characters long",
                     },
-                    required: 'Title is required',
+                    required: "Title is required",
                   })}
                   className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Enter itinerary title"
@@ -125,16 +125,16 @@ export default function InputNewItinerary({
                 <input
                   id="description"
                   type="text"
-                  {...register('description', {
+                  {...register("description", {
                     minLength: {
                       value: 10,
                       message:
-                        'Description must be at least 10 characters long',
+                        "Description must be at least 10 characters long",
                     },
                     maxLength: {
                       value: 100,
                       message:
-                        'Description must be at most 100 characters long',
+                        "Description must be at most 100 characters long",
                     },
                   })}
                   className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -157,16 +157,16 @@ export default function InputNewItinerary({
                 <input
                   id="duration"
                   type="number"
-                  {...register('duration', {
+                  {...register("duration", {
                     valueAsNumber: true,
-                    required: 'Duration is required',
+                    required: "Duration is required",
                     min: {
                       value: 1,
-                      message: 'Duration must be at least 1 day',
+                      message: "Duration must be at least 1 day",
                     },
                     max: {
                       value: 30,
-                      message: 'Duration must be at most 30 days',
+                      message: "Duration must be at most 30 days",
                     },
                   })}
                   className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -181,14 +181,14 @@ export default function InputNewItinerary({
 
               <div>
                 <label
-                  htmlFor="lugar"
+                  htmlFor="place"
                   className="block text-sm font-medium text-indigo-300"
                 >
                   Place
                 </label>
                 <select
-                  id="lugar"
-                  {...register('place', { required: 'Place is required' })}
+                  id="place"
+                  {...register("place", { required: "Place is required" })}
                   className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 >
                   <option value="" className="bg-[#26262c] text-indigo-100">
@@ -201,7 +201,7 @@ export default function InputNewItinerary({
                         value={place.id.toString()}
                         className="bg-[#26262c] text-indigo-100"
                       >
-                        {place.nombre}
+                        {place.name}
                       </option>
                     ))}
                 </select>
@@ -255,7 +255,7 @@ export default function InputNewItinerary({
                           <input
                             type="text"
                             {...register(`participants.${index}.name`, {
-                              required: 'Name is required',
+                              required: "Name is required",
                             })}
                             className="mt-1 block w-full px-3 py-2 bg-[#1c1c21] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             placeholder="Enter participant name"
@@ -278,14 +278,14 @@ export default function InputNewItinerary({
                             type="number"
                             {...register(`participants.${index}.age`, {
                               valueAsNumber: true,
-                              required: 'Age is required',
+                              required: "Age is required",
                               min: {
                                 value: 0,
-                                message: 'Age must be at least 0',
+                                message: "Age must be at least 0",
                               },
                               max: {
                                 value: 120,
-                                message: 'Age must be at most 120',
+                                message: "Age must be at most 120",
                               },
                             })}
                             className="mt-1 block w-full px-3 py-2 bg-[#1c1c21] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -302,16 +302,15 @@ export default function InputNewItinerary({
                           <label className="block text-sm font-medium text-indigo-300">
                             Disability
                           </label>
-                          <select
-                            {...register(`participants.${index}.disability`, {
-                              required: 'Disability selection is required',
-                            })}
-                            className="mt-1 block w-full px-3 py-2 bg-[#1c1c21] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          >
-                            <option value="">Select disability status</option>
-                            <option value="true">Yes</option>
-                            <option value="false">No</option>
-                          </select>
+                          <input
+                            type="checkbox"
+                            {...register(
+                              `participants.${index}.disability`,
+                              {}
+                            )}
+                            className="form-checkbox h-5 w-5 text-indigo-600 bg-[#26262c] border-[#393a41] rounded focus:ring-indigo-500"
+                          />
+
                           {errors.participants?.[index]?.disability && (
                             <p className="mt-1 text-sm text-red-400">
                               {errors.participants[index].disability?.message}
@@ -346,8 +345,8 @@ export default function InputNewItinerary({
                                         (p: Preference) =>
                                           p.id === preference.id
                                       )
-                                        ? 'bg-indigo-600 text-white'
-                                        : 'bg-[#1c1c21] text-indigo-300 hover:bg-indigo-700 hover:text-white'
+                                        ? "bg-indigo-600 text-white"
+                                        : "bg-[#1c1c21] text-indigo-300 hover:bg-indigo-700 hover:text-white"
                                     }`}
                                   >
                                     {preference.name}
@@ -368,10 +367,10 @@ export default function InputNewItinerary({
                         <p>Name: {field.name}</p>
                         <p>Age: {field.age}</p>
                         <p>
-                          Preferences:{' '}
+                          Preferences:{" "}
                           {field.preferences
                             .map((p: Preference) => p.name)
-                            .join(', ')}
+                            .join(", ")}
                         </p>
                       </div>
                     )}
@@ -385,7 +384,7 @@ export default function InputNewItinerary({
                   append({
                     age: 0,
                     preferences: [],
-                    name: '',
+                    name: "",
                     disability: false,
                   })
                 }
@@ -413,12 +412,12 @@ export default function InputNewItinerary({
           <FavoriteParticipantsModal
             onClose={() => setFavoriteParticipantsModal(false)}
             onSelectParticipant={(participant) => {
-              append(participant)
-              setFavoriteParticipantsModal(false)
+              append(participant);
+              setFavoriteParticipantsModal(false);
             }}
           />,
           document.body
         )}
     </div>
-  )
+  );
 }

@@ -3,7 +3,7 @@ import { useItinerary } from "../../context/ItineraryContext.tsx";
 import { NewItineraryButton } from "./NewItineraryButton.tsx";
 import { CalendarIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { createPortal } from "react-dom";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { Edit2 as EditIcon, MapPin, Filter } from "lucide-react";
 import Itinerary from "../../interfaces/Itinerary.ts";
@@ -12,14 +12,14 @@ import { usePlace } from "../../context/PlaceContext.tsx";
 
 export default function ItinerariesSidebar() {
   const {
-    setItineraries,
+    // setItineraries,
     handleSelectItinerary,
     deleteItinerary,
     updateItinerary,
+    CurrentItinerary,
+    itineraries,
   } = useItinerary();
-  const { CurrentItinerary, itineraries } = useItinerary();
-
-  const { places, getPlaces } = usePlace();
+  const { places, getAllPlaces } = usePlace();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -37,21 +37,22 @@ export default function ItinerariesSidebar() {
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces();
+      await getAllPlaces();
     };
     loadPlaces();
-  }, [CurrentItinerary]);
+  }, [CurrentItinerary, itineraries]);
 
-  useEffect(() => {
-    itineraries ? setItineraries(itineraries) : null;
-  }, [itineraries]);
+  // useEffect(() => {
+  //   itineraries ? setItineraries(itineraries) : null;
+  // }, [itineraries]); Comento esto ya que ahora cuando creo un itinerario vuelvo a hacer el getItineraries
 
   useEffect(() => {
     if (itineraries) {
       setFilteredItineraries(
         selectedPlace
           ? itineraries.filter(
-              (itinerary) => itinerary.place?.toString() === selectedPlace
+              (itinerary) =>
+                itinerary.place?.id.toString() === selectedPlace.toString()
             )
           : itineraries
       );
@@ -114,7 +115,7 @@ export default function ItinerariesSidebar() {
               <div className="text-sm text-gray-500 flex items-center">
                 <MapPin className="h-4 w-4 mr-2" />
                 {itinerary.place.nombre}
-                {"-"}
+                {" - "}
                 {itinerary.place.pais}
               </div>
             </div>

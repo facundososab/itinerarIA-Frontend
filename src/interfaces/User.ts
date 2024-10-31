@@ -4,10 +4,10 @@ export default interface User {
     id: ObjectId;
     username: string;
     password: string;
-    nombres: string;
-    apellidos: string;
+    name: string;
+    lastName: string;
     mail: string;
-    nroTelefono: string;
-    fechaNacimiento: string;
+    phoneNumber: string;
+    dateOfBirth: string;
 }
 

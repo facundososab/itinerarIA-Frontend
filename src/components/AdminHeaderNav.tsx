@@ -11,7 +11,7 @@ export const AdminHeaderNav = ({
 }: AdminHeaderNavProps) => {
   const navItems = [
     { to: '/externalServices', label: 'External Services' },
-    { to: '/lugares', label: 'Places' },
+    { to: '/places', label: 'Places' },
     { to: '/preferences', label: 'Preferences' },
     { to: '/favorites', label: 'Favorites' },
   ]

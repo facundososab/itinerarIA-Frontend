@@ -1,3 +1,4 @@
+
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import RegisterPage from './pages/RegisterPage.tsx'
@@ -10,8 +11,8 @@ import HomePage from './pages/HomePage.tsx'
 import { ItineraryProvider } from './context/ItineraryContext.tsx'
 import ExternalServicesPage from './pages/ExternalServicesCrudPage.tsx'
 import NotFoundPage from './pages/404.tsx'
-import { PlacesPage } from './pages/PlacesPage.tsx'
-import { PlaceProvider } from './context/PlaceContext.tsx'
+import PlacesPage  from './pages/PlacesPage.tsx'
+import { PlacesProvider } from './context/PlaceContext.tsx'
 import MyAccountPage from './pages/MyAccountPage.tsx'
 import PreferencePage from './pages/PreferencesPage.tsx'
 import { PreferenceProvider } from './context/PreferenceContext.tsx'
@@ -21,15 +22,17 @@ import { ActivitiesProvider } from './context/ActivityContext.tsx'
 import { OpinionsProvider } from './context/OpinionContext.tsx'
 import { ExternalServicesProvider } from './context/ExternalServicesContext.tsx'
 
+
 function App() {
   return (
     <div>
       <AuthProvider>
         <ItineraryProvider>
+
           <ExternalServicesProvider>
             <OpinionsProvider>
               <ActivitiesProvider>
-                <PlaceProvider>
+                <PlacesProvider>
                   <PreferenceProvider>
                     <ParticipantProvider>
                       <BrowserRouter>
@@ -43,7 +46,7 @@ function App() {
                               path="/itinerarios"
                               element={<ItinerariesPage />}
                             />
-                            <Route path="/lugares" element={<PlacesPage />} />
+                            <Route path="/places" element={<PlacesPage />} />
                             <Route
                               path="/externalServices"
                               element={<ExternalServicesPage />}
@@ -66,7 +69,7 @@ function App() {
                       </BrowserRouter>
                     </ParticipantProvider>
                   </PreferenceProvider>
-                </PlaceProvider>
+                </PlacesProvider>
               </ActivitiesProvider>
             </OpinionsProvider>
           </ExternalServicesProvider>

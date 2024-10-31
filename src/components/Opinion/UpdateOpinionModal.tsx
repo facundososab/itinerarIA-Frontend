@@ -30,8 +30,8 @@ function UpdateOpinionModal({
   const onEdit = handleSubmit((data) => {
     const opinionUpdate: Opinion = {
       ...data,
-      actividad: opinionToUpdate.actividad,
-      usuario: opinionToUpdate.usuario,
+      activity: opinionToUpdate.activity,
+      user: opinionToUpdate.user,
     };
     if (!opinion) return null;
     onUpdate(opinionUpdate);
@@ -39,8 +39,8 @@ function UpdateOpinionModal({
   });
 
   useEffect(() => {
-    setValue("calificacion", opinionToUpdate.calificacion);
-    setValue("comentario", opinionToUpdate.comentario);
+    setValue("rating", opinionToUpdate.rating);
+    setValue("comment", opinionToUpdate.comment);
   }, [opinions, opinionToUpdate]);
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
@@ -64,7 +64,7 @@ function UpdateOpinionModal({
               Rating
             </label>
             <Controller
-              name="calificacion"
+              name="rating"
               control={control}
               rules={{ required: "Rating is required" }}
               render={({ field: { onChange, value } }) => (
@@ -89,40 +89,40 @@ function UpdateOpinionModal({
                 </div>
               )}
             />
-            {errors.calificacion?.message && (
+            {errors.rating?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.calificacion.message}
+                {errors.rating.message}
               </p>
             )}
           </div>
 
           <div>
             <label
-              htmlFor="comentario"
+              htmlFor="comment"
               className="block text-sm font-medium text-indigo-300"
             >
-              Comentario
+              comment
             </label>
             <textarea
-              id="comentario"
-              {...register("comentario", {
+              id="comment"
+              {...register("comment", {
                 minLength: {
                   value: 3,
-                  message: "Comentario must be at least 3 characters long",
+                  message: "comment must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 100,
-                  message: "Comentario must be at most 100 characters long",
+                  message: "comment must be at most 100 characters long",
                 },
-                required: "Comentario is required",
+                required: "comment is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter opinion comentario"
+              placeholder="Enter opinion comment"
               rows={3}
             />
-            {errors.comentario?.message && (
+            {errors.comment?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.comentario.message}
+                {errors.comment.message}
               </p>
             )}
           </div>

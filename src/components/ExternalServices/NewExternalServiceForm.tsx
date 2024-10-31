@@ -1,34 +1,36 @@
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
-import ExternalService from '../../interfaces/ExternalService.ts'
-import { X } from 'lucide-react'
-import { usePlace } from '../../context/PlaceContext.tsx'
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useExternalServices } from "../../context/ExternalServicesContext.tsx";
+import ExternalService from "../../interfaces/ExternalService.ts";
+import { X } from "lucide-react";
+import { usePlace } from "../../context/PlaceContext.tsx";
 
 export default function NewExternalServiceForm({
   onClose,
 }: {
-  onClose: () => void
+  onClose: () => void;
 }) {
-  const { createExternalService, externalServiceErrors } = useExternalServices()
-  const { places, getPlaces } = usePlace()
+  const { createExternalService, externalServiceErrors } =
+    useExternalServices();
+  const { places, getAllPlaces } = usePlace();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ExternalService>()
+  } = useForm<ExternalService>();
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getPlaces()
-    }
-    loadPlaces()
-  }, [])
+      getAllPlaces();
+    };
+    loadPlaces();
+  }, []);
 
   const onCreate = handleSubmit(async (data) => {
-    createExternalService(data)
-    onClose()
-  })
+    console.log(data.place, "lugar del serv externo");
+    createExternalService(data);
+    onClose();
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-2">
@@ -88,16 +90,16 @@ export default function NewExternalServiceForm({
             <input
               id="serviceType"
               type="text"
-              {...register('serviceType', {
+              {...register("serviceType", {
                 minLength: {
                   value: 3,
-                  message: 'Service type must be at least 3 characters long',
+                  message: "Service type must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 20,
-                  message: 'Service type must be at most 20 characters long',
+                  message: "Service type must be at most 20 characters long",
                 },
-                required: 'Service type is required',
+                required: "Service type is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter service type"
@@ -119,16 +121,16 @@ export default function NewExternalServiceForm({
             <input
               id="name"
               type="text"
-              {...register('name', {
+              {...register("name", {
                 minLength: {
                   value: 3,
-                  message: 'Name must be at least 3 characters long',
+                  message: "Name must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 40,
-                  message: 'Name must be at most 40 characters long',
+                  message: "Name must be at most 40 characters long",
                 },
-                required: 'Name is required',
+                required: "Name is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter service name"
@@ -148,16 +150,16 @@ export default function NewExternalServiceForm({
             <input
               id="description"
               type="text"
-              {...register('description', {
+              {...register("description", {
                 minLength: {
                   value: 10,
-                  message: 'Description must be at least 10 characters long',
+                  message: "Description must be at least 10 characters long",
                 },
                 maxLength: {
                   value: 100,
-                  message: 'Description must be at most 100 characters long',
+                  message: "Description must be at most 100 characters long",
                 },
-                required: 'Description is required',
+                required: "Description is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service description"
@@ -179,16 +181,16 @@ export default function NewExternalServiceForm({
             <input
               id="adress"
               type="text"
-              {...register('adress', {
+              {...register("adress", {
                 minLength: {
                   value: 10,
-                  message: 'Address must be at least 10 characters long',
+                  message: "Address must be at least 10 characters long",
                 },
                 maxLength: {
                   value: 40,
-                  message: 'Address must be at most 40 characters long',
+                  message: "Address must be at most 40 characters long",
                 },
-                required: 'Address is required',
+                required: "Address is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service address"
@@ -202,15 +204,15 @@ export default function NewExternalServiceForm({
 
           <div>
             <label
-              htmlFor="lugar"
+              htmlFor="place"
               className="block text-sm font-medium text-indigo-300"
             >
               Place
             </label>
             <select
-              id="lugar"
-              {...register('lugar', {
-                required: 'Place is required',
+              id="place"
+              {...register("place", {
+                required: "Place is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
@@ -218,13 +220,13 @@ export default function NewExternalServiceForm({
               {places &&
                 places.map((place) => (
                   <option key={place.id.toString()} value={place.id.toString()}>
-                    {place.nombre}
+                    {place.name}
                   </option>
                 ))}
             </select>
-            {errors.lugar?.message && (
+            {errors.place?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.lugar.message}
+                {errors.place.message}
               </p>
             )}
           </div>
@@ -239,16 +241,16 @@ export default function NewExternalServiceForm({
             <input
               id="schedule"
               type="text"
-              {...register('schedule', {
+              {...register("schedule", {
                 minLength: {
                   value: 3,
-                  message: 'Schedule must be at least 3 characters long',
+                  message: "Schedule must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 40,
-                  message: 'Schedule must be at most 40 characters long',
+                  message: "Schedule must be at most 40 characters long",
                 },
-                required: 'Schedule is required',
+                required: "Schedule is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service schedule"
@@ -270,18 +272,18 @@ export default function NewExternalServiceForm({
             <input
               id="website"
               type="text"
-              {...register('website', {
+              {...register("website", {
                 minLength: {
                   value: 3,
-                  message: 'Website must be at least 3 characters long',
+                  message: "Website must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 50,
-                  message: 'Website must be at most 50 characters long',
+                  message: "Website must be at most 50 characters long",
                 },
                 pattern: {
                   value: /^www\.[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/,
-                  message: 'Website must be a valid URL (www.example.com)',
+                  message: "Website must be a valid URL (www.example.com)",
                 },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -303,14 +305,14 @@ export default function NewExternalServiceForm({
             <input
               id="phoneNumber"
               type="number"
-              {...register('phoneNumber', {
+              {...register("phoneNumber", {
                 minLength: {
                   value: 10,
-                  message: 'Website must be 10 characters long',
+                  message: "Website must be 10 characters long",
                 },
                 maxLength: {
                   value: 10,
-                  message: 'Website must be 10 characters long',
+                  message: "Website must be 10 characters long",
                 },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -334,5 +336,5 @@ export default function NewExternalServiceForm({
         </form>
       </div>
     </div>
-  )
+  );
 }

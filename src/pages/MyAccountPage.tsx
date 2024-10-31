@@ -107,7 +107,7 @@ export default function MyAccountPage() {
                   name="nombres"
                   id="nombres"
                   className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  value={formData.nombres}
+                  value={formData.name}
                   onChange={handleInputChange}
                   disabled={!editMode}
                 />
@@ -124,7 +124,7 @@ export default function MyAccountPage() {
                   name="apellidos"
                   id="apellidos"
                   className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  value={formData.apellidos}
+                  value={formData.lastName}
                   onChange={handleInputChange}
                   disabled={!editMode}
                 />
@@ -148,7 +148,7 @@ export default function MyAccountPage() {
                     name="nroTelefono"
                     id="nroTelefono"
                     className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    value={formData.nroTelefono}
+                    value={formData.phoneNumber}
                     onChange={handleInputChange}
                     disabled={!editMode}
                   />
@@ -173,7 +173,7 @@ export default function MyAccountPage() {
                     name="fechaNacimiento"
                     id="fechaNacimiento"
                     className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    value={formData.fechaNacimiento.split('T')[0]}
+                    value={String(formData.dateOfBirth).split('T')[0]}
                     onChange={handleInputChange}
                     disabled={!editMode}
                   />

@@ -1,27 +1,27 @@
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import User from '../interfaces/User'
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import User from "../interfaces/User";
 
 function RegisterForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<User>()
-  const navigate = useNavigate()
-  const { isAuthenticated, signup, authErrors } = useAuth()
+  } = useForm<User>();
+  const navigate = useNavigate();
+  const { isAuthenticated, signup, authErrors } = useAuth();
 
   const onSubmit = handleSubmit(async (values) => {
-    signup(values as User)
-  })
+    signup(values as User);
+  });
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/itinerarios')
+      navigate("/itinerarios");
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-full flex flex-col justify-center pb-12 sm:px-6 lg:px-8 px-4">
@@ -30,7 +30,7 @@ function RegisterForm() {
           Register
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Or{' '}
+          Or{" "}
           <Link
             to="/login"
             className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -88,8 +88,9 @@ function RegisterForm() {
                 <input
                   id="username"
                   type="text"
-                  {...register('username', {
-                    required: 'Username is required',
+                  placeholder="Username"
+                  {...register("username", {
+                    required: "Username is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -112,8 +113,9 @@ function RegisterForm() {
                 <input
                   id="password"
                   type="password"
-                  {...register('password', {
-                    required: 'Password is required',
+                  placeholder="Password"
+                  {...register("password", {
+                    required: "Password is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
@@ -127,23 +129,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="nombres"
+                htmlFor="name"
                 className="block text-sm font-medium text-white"
               >
                 First Name
               </label>
               <div className="mt-1">
                 <input
-                  id="nombres"
+                  id="name"
                   type="text"
-                  {...register('nombres', {
-                    required: 'First name is required',
+                  placeholder="First name"
+                  {...register("name", {
+                    required: "First name is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.nombres && (
+                {errors.name && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.nombres.message}
+                    {errors.name.message}
                   </p>
                 )}
               </div>
@@ -151,23 +154,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="apellidos"
+                htmlFor="lastName"
                 className="block text-sm font-medium text-white"
               >
                 Last Name
               </label>
               <div className="mt-1">
                 <input
-                  id="apellidos"
+                  id="lastName"
                   type="text"
-                  {...register('apellidos', {
-                    required: 'Last name is required',
+                  placeholder="Last name"
+                  {...register("lastName", {
+                    required: "Last name is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.apellidos && (
+                {errors.lastName && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.apellidos.message}
+                    {errors.lastName.message}
                   </p>
                 )}
               </div>
@@ -184,7 +188,8 @@ function RegisterForm() {
                 <input
                   id="mail"
                   type="email"
-                  {...register('mail', { required: 'Email is required' })}
+                  placeholder="mail@example.com"
+                  {...register("mail", { required: "Email is required" })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
                 {errors.mail && (
@@ -197,23 +202,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="nroTelefono"
+                htmlFor="phoneNumber"
                 className="block text-sm font-medium text-white"
               >
                 Phone Number
               </label>
               <div className="mt-1">
                 <input
-                  id="nroTelefono"
+                  id="phoneNumber"
                   type="tel"
-                  {...register('nroTelefono', {
-                    required: 'Phone number is required',
+                  placeholder="Phone number"
+                  {...register("phoneNumber", {
+                    required: "Phone number is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.nroTelefono && (
+                {errors.phoneNumber && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.nroTelefono.message}
+                    {errors.phoneNumber.message}
                   </p>
                 )}
               </div>
@@ -221,23 +227,23 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="fechaNacimiento"
+                htmlFor="dateOfBirth"
                 className="block text-sm font-medium text-white"
               >
                 Date of Birth
               </label>
               <div className="mt-1">
                 <input
-                  id="fechaNacimiento"
+                  id="dateOfBirth"
                   type="date"
-                  {...register('fechaNacimiento', {
-                    required: 'Date of birth is required',
+                  {...register("dateOfBirth", {
+                    required: "Date of birth is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.fechaNacimiento && (
+                {errors.dateOfBirth && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.fechaNacimiento.message}
+                    {errors.dateOfBirth.message}
                   </p>
                 )}
               </div>
@@ -255,7 +261,7 @@ function RegisterForm() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default RegisterForm
+export default RegisterForm;

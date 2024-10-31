@@ -3,21 +3,21 @@ import Activity from "../interfaces/Activity.ts";
 import instance from "./axios.ts";
 
 export const createActivityRequest = async(activity: Activity) => {
-  return instance.post("/actividades", activity);
+  return instance.post("/activities", activity);
 }
 
 export const getAllActivitiesRequest = async () => {
-  return instance.get("/actividades");
+  return instance.get("/activities");
 }
 
 export const getActivityRequest = async (id: ObjectId) => {
-  return instance.get(`/actividades/${id}`);
+  return instance.get(`/activities/${id}`);
 }
 
 export const updateActivityRequest = async (activity: Activity) => {
-  return instance.put(`/actividades/${activity.id}`, activity);
+  return instance.put(`/activities/${activity.id}`, activity);
 }
 
 export const deleteActivityRequest = async(id: ObjectId) => {
-  return instance.delete(`/actividades/${id}`);
+  return instance.delete(`/activities/${id}`);
 }

@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
-import { usePreference } from '../../context/PreferenceContext'
-import Preference from '../../interfaces/Preference'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { createPortal } from 'react-dom'
-import DeletePreferenceWarningModal from './DeletePreferenceWarningModal.tsx'
-import PreferenceRow from './PreferenceRow.tsx'
+import { useEffect, useState } from "react";
+import { usePreference } from "../../context/PreferenceContext";
+import Preference from "../../interfaces/Preference";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { createPortal } from "react-dom";
+import DeletePreferenceWarningModal from "./DeletePreferenceWarningModal.tsx";
+import PreferenceRow from "./PreferenceRow.tsx";
 
 export function PreferenceDisplay() {
   const {
@@ -14,60 +14,60 @@ export function PreferenceDisplay() {
     deletePreference,
     updatePreference,
     preferenceErrors,
-  } = usePreference()
+  } = usePreference();
 
   const [editingPreference, setEditingPreference] = useState<Preference | null>(
     null
-  )
+  );
   const [preferenceToDelete, setPreferenceToDelete] = useState<ObjectId | null>(
     null
-  )
-  const [showModal, setShowModal] = useState(false)
+  );
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null
-      if (editingPreference && target && !target.closest('article')) {
-        setEditingPreference(null)
+      const target = event.target as Element | null;
+      if (editingPreference && target && !target.closest("article")) {
+        setEditingPreference(null);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [editingPreference])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editingPreference]);
 
   useEffect(() => {
     const loadPreferences = async () => {
-      await getPreferences()
-    }
-    loadPreferences()
-  }, [])
+      await getPreferences();
+    };
+    loadPreferences();
+  }, []);
 
   const handleEdit = (preference: Preference) => {
-    setEditingPreference(preference)
-  }
+    setEditingPreference(preference);
+  };
 
   const onDelete = async (id: ObjectId) => {
-    await deletePreference(id)
-    setPreferences(preferences.filter((preference) => preference.id !== id))
-    setShowModal(false)
-  }
+    await deletePreference(id);
+    setPreferences(preferences.filter((preference) => preference.id !== id));
+    setShowModal(false);
+  };
 
   const handleUpdate = async () => {
     if (editingPreference) {
-      await updatePreference(editingPreference)
+      await updatePreference(editingPreference);
       setPreferences(
         preferences.map((preference) =>
           preference.id === editingPreference.id
             ? editingPreference
             : preference
         )
-      )
-      setEditingPreference(null)
+      );
+      setEditingPreference(null);
     }
-  }
+  };
 
   return (
     <article
@@ -155,5 +155,5 @@ export function PreferenceDisplay() {
           document.body
         )}
     </article>
-  )
+  );
 }

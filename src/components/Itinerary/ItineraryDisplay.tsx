@@ -14,7 +14,7 @@ import {
   MessageSquareMore,
   Eye,
 } from "lucide-react";
-import DeleteWarningModal from "../DeleteWarningModal.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 //import { createPortal } from "react-dom";
 import { ObjectId } from "@mikro-orm/mongodb";
 import Activity from "../../interfaces/Activity.ts";
@@ -28,9 +28,10 @@ import { useOpinion } from "../../context/OpinionContext.tsx";
 import Opinion from "../../interfaces/Opinion.ts";
 import OpinionForm from "../Opinion/OpinionForm.tsx";
 import OpinionsDisplay from "../Opinion/OpinionsDisplay.tsx";
+import Place from "../../interfaces/Place.ts";
 
 export function ItineraryDisplay() {
-  const { CurrentItinerary } = useItinerary();
+  const { CurrentItinerary, itineraries } = useItinerary();
 
   const {
     getAllActivities,
@@ -38,10 +39,12 @@ export function ItineraryDisplay() {
     deleteActivity,
     createActivity,
     updateActivity,
+    setActivities,
+    activityErrors,
   } = useActivity();
   const { user } = useAuth();
   const { createOpinion, getAllOpinions, opinions } = useOpinion();
-  const { getPlaces, places } = usePlace();
+  const { getAllPlaces, places } = usePlace();
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -60,7 +63,7 @@ export function ItineraryDisplay() {
   const [selectedPlace, setSelectedPlace] = useState<string>("");
   const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null);
   const [transportFilter, setTransportFilter] = useState<boolean | null>(null);
-  const [scheduleFilter, setScheduleFilter] = useState<string>("");
+  // const [scheduleFilter, setScheduleFilter] = useState<string>("");
   const [showOpinionForm, setShowOpinionForm] = useState(false);
   const [activityForOpinion, setActivityForOpinion] = useState<Activity | null>(
     null
@@ -70,43 +73,27 @@ export function ItineraryDisplay() {
   const [externalServicesModal, setExternalServicesModal] = useState(false);
   const [selectedActivityOpinions, setSelectedActivityOpinions] =
     useState<Activity | null>(null);
-
-  useEffect(() => {
-    const loadPlaces = async () => {
-      getPlaces();
-    };
-
-    loadPlaces();
-  }, [CurrentItinerary]);
-
-  const onDelete = (activityId: ObjectId) => {
-    console.log("Deleting activity", activityId);
-    deleteActivity(activityId);
-    setShowDeleteModal(false);
-  };
-  const handleViewOpinions = (activity: Activity) => {
-    setSelectedActivityOpinions(activity);
-    setShowOpinionsDisplay(true);
-  };
-
-  const onUpdate = (data: Activity) => {
-    if (CurrentItinerary) {
-      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
-      updateActivity({ ...updatedActivity } as Activity);
-    }
-    setShowUpdateModal(false);
-    loadActivities();
-  };
+  const [isCreatedOrUpdated, setIsCreatedOrUpdated] = useState(false);
+  const [itineraryPlace, setItineraryPlace] = useState<Place | null>(null);
 
   const loadActivities = useCallback(async () => {
-    if (CurrentItinerary) {
-      await getAllActivities();
-    }
+    await getAllActivities();
   }, [CurrentItinerary, getAllActivities, activities]);
 
   const loadOpinions = useCallback(async () => {
     await getAllOpinions();
   }, [getAllOpinions, opinions]);
+  useEffect(() => {
+    const loadPlaces = async () => {
+      await getAllPlaces();
+      places?.find((place) => {
+        if (CurrentItinerary?.place?.id?.toString() === place?.id?.toString()) {
+          setItineraryPlace(place);
+        }
+      });
+    };
+    loadPlaces();
+  }, [CurrentItinerary, itineraries]);
 
   useEffect(() => {
     async function loadData() {
@@ -114,7 +101,8 @@ export function ItineraryDisplay() {
       await loadOpinions();
     }
     loadData();
-  }, []);
+    setIsCreatedOrUpdated(false);
+  }, [isCreatedOrUpdated]);
 
   useEffect(() => {
     if (CurrentItinerary && activities) {
@@ -151,21 +139,21 @@ export function ItineraryDisplay() {
         );
       }
 
-      if (scheduleFilter) {
-        filtered = filtered.filter((activity) => {
-          const activityTime = new Date(activity.schedule).getHours();
-          switch (scheduleFilter) {
-            case "morning":
-              return activityTime >= 6 && activityTime < 12;
-            case "afternoon":
-              return activityTime >= 12 && activityTime < 18;
-            case "evening":
-              return activityTime >= 18 || activityTime < 6;
-            default:
-              return true;
-          }
-        });
-      }
+      // if (scheduleFilter) {
+      //   filtered = filtered.filter((activity) => {
+      //     const activityTime = new Date(activity.schedule).getHours();
+      //     switch (scheduleFilter) {
+      //       case "morning":
+      //         return activityTime >= 6 && activityTime < 12;
+      //       case "afternoon":
+      //         return activityTime >= 12 && activityTime < 18;
+      //       case "evening":
+      //         return activityTime >= 18 || activityTime < 6;
+      //       default:
+      //         return true;
+      //     }
+      //   });
+      // }
 
       setFilteredActivities(filtered);
     }
@@ -176,8 +164,13 @@ export function ItineraryDisplay() {
     selectedPlace,
     outdoorFilter,
     transportFilter,
-    scheduleFilter,
+    //scheduleFilter,
   ]);
+
+  const handleViewOpinions = (activity: Activity) => {
+    setSelectedActivityOpinions(activity);
+    setShowOpinionsDisplay(true);
+  };
 
   const handleCreateActivity = async (newActivity: Activity) => {
     if (CurrentItinerary) {
@@ -186,19 +179,39 @@ export function ItineraryDisplay() {
         itinerary: CurrentItinerary.id,
       } as Activity);
       setShowActivityForm(false);
+      console.log("entre aca");
+      setIsCreatedOrUpdated(true);
       loadActivities();
     }
   };
-
+  const onUpdateActivity = (data: Activity) => {
+    if (CurrentItinerary) {
+      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
+      updateActivity({ ...updatedActivity } as Activity);
+    }
+    const updatedActivities = activities.map((activity) =>
+      activity.id === data.id ? data : activity
+    );
+    setActivities(updatedActivities);
+    setShowUpdateModal(false);
+    setIsCreatedOrUpdated(true);
+    loadActivities();
+  };
+  const onDeleteActivity = (activityId: ObjectId) => {
+    console.log("Deleting activity", activityId);
+    deleteActivity(activityId);
+    setShowDeleteModal(false);
+  };
   const handleCreateOpinion = async (opinion: Opinion) => {
     console.log(opinion);
     if (activityForOpinion) {
       createOpinion({
         ...opinion,
-        actividad: activityForOpinion.id,
-        usuario: user?.id,
+        activity: activityForOpinion.id,
+        user: user?.id,
       } as Opinion);
       setShowOpinionForm(false);
+      setIsCreatedOrUpdated(true);
       loadOpinions();
     }
   };
@@ -213,7 +226,7 @@ export function ItineraryDisplay() {
           <p className="text-gray-400">{CurrentItinerary?.description}</p>
           <p className="text-gray-400 flex items-center mt-2">
             <MapPin size={16} className="mr-2 text-indigo-400" />
-            {CurrentItinerary?.place?.nombre} - {CurrentItinerary?.place?.pais}
+            {itineraryPlace?.nombre} - {itineraryPlace?.pais}
           </p>
         </div>
         <div className="flex flex-col space-y-2 w-1/5">
@@ -241,6 +254,43 @@ export function ItineraryDisplay() {
         </h3>
         <NewActivityButton onClick={() => setShowActivityForm(true)} />
       </div>
+      {activityErrors && activityErrors?.length > 0 && (
+        <div
+          className="bg-red-50 border-l-4 border-red-400 p-4 mb-6"
+          role="alert"
+          aria-live="assertive"
+        >
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                There were some errors with your activity
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <ul className="list-disc pl-5 space-y-1">
+                  {activityErrors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="bg-[#26262c] p-4 rounded-lg shadow-inner">
         <div className="flex flex-col space-y-4 mb-6">
@@ -298,7 +348,7 @@ export function ItineraryDisplay() {
               <option value="true">Transport Needed</option>
               <option value="false">No Transport Needed</option>
             </select>
-            <select
+            {/* <select
               value={scheduleFilter}
               onChange={(e) => setScheduleFilter(e.target.value)}
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -307,7 +357,7 @@ export function ItineraryDisplay() {
               <option value="morning">Morning</option>
               <option value="afternoon">Afternoon</option>
               <option value="evening">Evening</option>
-            </select>
+            </select> */}
           </div>
         </div>
 
@@ -337,10 +387,13 @@ export function ItineraryDisplay() {
                       </span>
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1 text-indigo-400" />
-                        {new Date(
+                        {
+                          /* {new Date(
                           activity.schedule
                         ).toLocaleTimeString()} -{" "}
-                        {new Date(activity.schedule).toLocaleTimeString()}
+                        {new Date(activity.schedule).toLocaleTimeString()} */
+                          activity.schedule
+                        }
                       </span>
                     </div>
                     <p className="text-sm font-semibold text-gray-400 mt-2">
@@ -413,7 +466,7 @@ export function ItineraryDisplay() {
       {showUpdateModal && activityToUpdate && (
         <UpdateActivityModal
           onClose={() => setShowUpdateModal(false)}
-          onUpdate={onUpdate}
+          onUpdate={onUpdateActivity}
           activity={activityToUpdate}
           text="Update activity"
           itineraryPlace={CurrentItinerary?.place || undefined}
@@ -423,7 +476,7 @@ export function ItineraryDisplay() {
       {showDeleteModal && activityToDelete && (
         <DeleteWarningModal
           onClose={() => setShowDeleteModal(false)}
-          onDelete={onDelete}
+          onDelete={onDeleteActivity}
           id={activityToDelete}
           text="Are you sure you want to delete this activity?"
         />
