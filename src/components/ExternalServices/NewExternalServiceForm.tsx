@@ -27,6 +27,7 @@ export default function NewExternalServiceForm({
   }, []);
 
   const onCreate = handleSubmit(async (data) => {
+    console.log(data.place, "lugar del serv externo");
     createExternalService(data);
     onClose();
   });
@@ -203,14 +204,14 @@ export default function NewExternalServiceForm({
 
           <div>
             <label
-              htmlFor="lugar"
+              htmlFor="place"
               className="block text-sm font-medium text-indigo-300"
             >
               Place
             </label>
             <select
-              id="lugar"
-              {...register("lugar", {
+              id="place"
+              {...register("place", {
                 required: "Place is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -219,13 +220,13 @@ export default function NewExternalServiceForm({
               {places &&
                 places.map((place) => (
                   <option key={place.id.toString()} value={place.id.toString()}>
-                    {place.nombre}
+                    {place.name}
                   </option>
                 ))}
             </select>
-            {errors.lugar?.message && (
+            {errors.place?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.lugar.message}
+                {errors.place.message}
               </p>
             )}
           </div>
