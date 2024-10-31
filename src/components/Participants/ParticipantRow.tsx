@@ -35,30 +35,41 @@ export default function ParticipantRow({
   const validate = () => {
     const newErrors: { [key: string]: string } = {}
 
+    // Validation for name
     if (!editingParticipant?.name) {
       newErrors.name = 'Name is required'
+    } else if (editingParticipant.name.length < 3) {
+      newErrors.name = 'Name must be at least 3 characters'
+    } else if (editingParticipant.name.length > 15) {
+      newErrors.name = 'Name can have a maximum of 15 characters'
+    } else if (!/^[A-Za-z ]+$/.test(editingParticipant.name)) {
+      newErrors.name = 'Name must contain only letters'
     }
 
-    if (
-      editingParticipant?.age === undefined ||
-      editingParticipant?.age < 0 ||
-      editingParticipant?.age > 110
+    // Validation for age
+    if (editingParticipant?.age === undefined) {
+      newErrors.age = 'Age is required'
+    } else if (
+      typeof editingParticipant.age !== 'number' ||
+      editingParticipant.age < 1 || // Ensure age is at least 1
+      editingParticipant.age > 110
     ) {
-      newErrors.age =
-        'Age is required, must be a positive number, and cannot be greater than 110'
+      newErrors.age = 'Age must be a positive number between 1 and 110'
     }
 
+    // Validation for disability
     if (editingParticipant?.disability === undefined) {
       newErrors.disability =
         'You must specify whether the participant has a disability'
     }
 
+    // Validation for preferences
     if (selectedPreferences.length === 0) {
       newErrors.preferences = 'You must select at least one preference'
     }
 
     setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    return Object.keys(newErrors).length === 0 // Returns true if there are no errors
   }
 
   // Save changes after validation

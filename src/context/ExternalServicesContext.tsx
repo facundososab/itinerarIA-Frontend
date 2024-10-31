@@ -15,6 +15,7 @@ import {
   updateExternalServiceRequest,
 } from '../auth/externalService.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
+import { set } from 'react-hook-form'
 
 export const ExternalServicesContext = createContext({
   externalServices: [] as ExternalService[],
@@ -87,16 +88,24 @@ export function ExternalServicesProvider({
   const createExternalService = async (externalService: ExternalService) => {
     try {
       const res = await createExternalServiceRequest(externalService)
-      setExternalServices([...externalServices, res.data.data])
+      setExternalServices((prevExternalServices) => [
+        ...(prevExternalServices || []),
+        res.data.data,
+      ])
     } catch (err: any) {
+      console.log(err, 'err')
       setExternalServiceErrors(err.response.data.message)
     }
   }
 
   const updateExternalService = async (externalService: ExternalService) => {
     try {
-      const res = await updateExternalServiceRequest(externalService)
-      setExternalServices([...externalServices, res.data.data])
+      await updateExternalServiceRequest(externalService)
+      setExternalServices(
+        externalServices.map((es) =>
+          es.id === externalService.id ? externalService : es
+        )
+      )
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
     }
@@ -116,7 +125,7 @@ export function ExternalServicesProvider({
     if (externalServiceErrors.length > 0) {
       const timer = setTimeout(() => {
         setExternalServiceErrors([])
-      }, 2000)
+      }, 4000)
       return () => clearTimeout(timer)
     }
   }, [externalServiceErrors])

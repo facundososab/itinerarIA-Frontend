@@ -93,7 +93,9 @@ export default function PreferenceRow({
           preference.description
         )}
       </td>
-      <td className="p-3">
+      <td className="p-3 flex justify-end">
+        {' '}
+        {/* Agregado flex y justify-end */}
         {editingPreference?.id === preference.id ? (
           <div className="flex gap-2">
             <button

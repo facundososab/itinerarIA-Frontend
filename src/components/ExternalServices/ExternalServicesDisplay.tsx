@@ -21,7 +21,7 @@ export function ExternalServicesDisplay() {
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getPlaces()
+      getPlaces()
     }
     loadPlaces()
   }, [])
@@ -52,7 +52,7 @@ export function ExternalServicesDisplay() {
   // Load external services on component mount
   useEffect(() => {
     const loadExternalServices = async () => {
-      await getAllExternalServices()
+      getAllExternalServices()
     }
     loadExternalServices()
   }, [])
@@ -62,7 +62,7 @@ export function ExternalServicesDisplay() {
   }
 
   const onDelete = async (id: ObjectId) => {
-    await deleteExternalService(id)
+    deleteExternalService(id)
     setExternalServices(externalServices.filter((service) => service.id !== id))
     setShowModal(false)
   }
@@ -70,11 +70,6 @@ export function ExternalServicesDisplay() {
   const handleUpdate = async () => {
     if (editingService) {
       updateExternalService(editingService)
-      setExternalServices(
-        externalServices.map((service) =>
-          service.id === editingService.id ? editingService : service
-        )
-      )
       setEditingService(null)
     }
   }
@@ -119,8 +114,6 @@ export function ExternalServicesDisplay() {
       )}
 
       <div className="overflow-x-auto">
-        {' '}
-        {/* Add this div for horizontal scrolling */}
         <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
           <thead className="bg-[#2f3037]">
             <tr>

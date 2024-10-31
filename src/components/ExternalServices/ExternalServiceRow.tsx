@@ -31,31 +31,41 @@ export default function ExternalServiceRow({
     // Validation for serviceType
     if (!editingService?.serviceType) {
       newErrors.serviceType = 'Service type is required'
+    } else if (editingService.serviceType.length < 3) {
+      newErrors.serviceType = 'The service type must have at least 3 characters'
     }
 
     // Validation for name
     if (!editingService?.name) {
       newErrors.name = 'Name is required'
+    } else if (editingService.name.length < 3) {
+      newErrors.name = 'The name must have at least 3 characters'
     }
 
     // Validation for description
     if (!editingService?.description) {
       newErrors.description = 'Description is required'
+    } else if (editingService.description.length < 3) {
+      newErrors.description = 'The description must have at least 3 characters'
     }
 
     // Validation for address
     if (!editingService?.adress) {
-      newErrors.address = 'Address is required'
+      newErrors.adress = 'Address is required'
+    } else if (editingService.adress.length < 3) {
+      newErrors.adress = 'The address must have at least 3 characters'
     }
 
     // Validation for place
     if (!editingService?.lugar) {
-      newErrors.place = 'Place is required'
+      newErrors.lugar = 'Place is required'
     }
 
     // Validation for schedule
     if (!editingService?.schedule) {
       newErrors.schedule = 'Schedule is required'
+    } else if (editingService.schedule.length < 3) {
+      newErrors.schedule = 'The schedule must have at least 3 characters'
     }
 
     // Validation for website
@@ -67,9 +77,13 @@ export default function ExternalServiceRow({
         'Invalid website format. It must start with "www." and have a valid domain.'
     }
 
-    // Validation for contact phone
+    // Validation for phone number
+    const telRegex = /^\d{10}$/
     if (!editingService?.phoneNumber) {
-      newErrors.contactPhone = 'Contact phone is required'
+      newErrors.phoneNumber = 'Contact phone is required'
+    } else if (!telRegex.test(editingService.phoneNumber)) {
+      newErrors.phoneNumber =
+        'Invalid phone number format. It must be 10 digits.'
     }
 
     setErrors(newErrors)
