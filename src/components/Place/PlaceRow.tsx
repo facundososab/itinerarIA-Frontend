@@ -2,11 +2,7 @@ import { PencilIcon, TrashIcon } from 'lucide-react'
 import Place from '../../interfaces/Place.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
 import { useState, useEffect } from 'react'
-import ExternalService from '../../interfaces/ExternalService.ts'
 import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
-import { usePlace } from '../../context/PlaceContext.tsx'
-import { createPortal } from "react-dom";
-import TextModal from '../shared/TextModal.tsx'
 import { useItinerary } from '../../context/ItineraryContext.tsx'
 import { useAuth } from '../../context/AuthContext.tsx'
 
@@ -193,7 +189,7 @@ const handleSave = () => {
                                       name: e.target.value,
                                   })
                               }
-                              className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
                           />
                           {editingErrors.name && (
                               <p className="text-red-500 text-xs">{editingErrors.name}</p>
@@ -323,7 +319,7 @@ const handleSave = () => {
           <div className="flex gap-2">
             <button
               onClick={handleSave}
-              className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+               className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
             >
               Save
             </button>

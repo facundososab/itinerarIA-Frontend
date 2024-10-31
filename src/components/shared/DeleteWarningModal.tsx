@@ -26,7 +26,7 @@ export default function DeleteWarningModal({
           </button>
           <button
             onClick={() => (id ? onDelete(id) : null)}
-            className="bg-red-500 text-white rounded-md py-2 px-4 flex items-center justify-center hover:bg-red-600 transition duration-200 w-1/2 ml-2"
+             className="bg-red-500 text-white rounded-md py-2 px-4 flex items-center justify-center hover:bg-red-600 transition duration-200 w-1/2 ml-2"
           >
             Delete
           </button>
