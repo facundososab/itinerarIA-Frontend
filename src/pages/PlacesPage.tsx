@@ -1,8 +1,6 @@
-
-import { PlacesDisplay } from '../components/Place/PlacesDisplay.tsx'
-import NewPlaceForm from '../components/Place/NewPlaceForm.tsx'
-import { NewButton } from '../components/shared/NewButton.tsx'
-
+import { PlacesDisplay } from '../components/Place/PlacesDisplay.tsx';
+import NewPlaceForm from '../components/Place/NewPlaceForm.tsx';
+import { NewButton } from '../components/shared/NewButton.tsx';
 
 export default function PlacesPage() {
   return (
@@ -11,18 +9,27 @@ export default function PlacesPage() {
       <main className="min-h-screen bg-raisin-black text-indigo-100">
         <header className="shadow-md">
           <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-center justify-between">
               <div className="flex items-center">
-                <h1 className="text-3xl font-bold text-indigo-100">
+                <h1 
+                  className="text-3xl font-bold text-indigo-100"
+                  aria-label="Places page header"
+                  role="heading"
+                >
                   Places
                 </h1>
               </div>
-              <NewButton text="Add a new Place" NewForm={NewPlaceForm} />
+              <NewButton text="Add a new Place" NewForm={NewPlaceForm} aria-label="Add new place button" />
             </div>
           </div>
         </header>
-        <PlacesDisplay />
+        
+        <section aria-labelledby="places-section">
+          <h2 id="places-section" className="sr-only">List of places</h2>
+          <PlacesDisplay />
+        </section>
       </main>
     </>
-  )
+  );
 }
+
