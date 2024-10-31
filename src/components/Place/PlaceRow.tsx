@@ -32,7 +32,6 @@ export default function PlaceRow({
     setShowModalRestriction: (show: boolean) => void
     setPlaceToDelete: (id: ObjectId) => void
 }) {
-  //const {placeErrors, setPlaceErrors} = usePlace();
   const [editingErrors, setEditingErrors] = useState<{ [key: string]: string }>({});
 
 const validate = () => {
@@ -44,7 +43,7 @@ const validate = () => {
     if (!name) {
         newErrors.name = 'Name is required';
       } else if (!nameRegex.test(name)) {
-        newErrors.name = 'Invalid name format (between 3 and 50 characters. Alphanumeric only)';
+          newErrors.name = 'Invalid name format (between 3 and 50 characters. Alphanumeric only)';
       }
 
   // Validación para latitud
@@ -100,154 +99,174 @@ const validate = () => {
 
 const handleSave = () => {
     const respuestaValidacion = validate();
-  if (respuestaValidacion) {
-    const latitude = editingPlace?.latitude;
-    const longitude = editingPlace?.longitude;
+    if (respuestaValidacion) {
+        const latitude = editingPlace?.latitude;
+        const longitude = editingPlace?.longitude;
+        const name = editingPlace?.name;
+        const province = editingPlace?.province;
+        const country = editingPlace?.country;
 
-    const isDuplicateCoordinates = places.some(
-        (place) =>
-            place.id !== editingPlace?.id && // Asegurarse de que no sea el mismo lugar que estamos editando
-            place.latitude === latitude &&
-            place.longitude === longitude
-    );
+        const isDuplicatedCoordinates = places.some(
+            (place) =>
+                place.id !== editingPlace?.id && // Asegurarse de que no sea el mismo lugar que estamos editando
+                place.latitude === latitude &&
+                place.longitude === longitude
+        );
 
-    if (isDuplicateCoordinates) {
-        setEditingErrors((prevErrors) => ({
-            ...prevErrors,
-            latitude: 'These coordinates already exist for another place',
-            longitude: 'These coordinates already exist for another place',
-        }));
-        return; // Salir sin guardar
+        const isDuplicatedName = places.some(
+            (place) =>
+                place.id !== editingPlace?.id &&
+                place.name === name &&
+                place.province === province &&
+                place.country === country
+        );
+
+        if (isDuplicatedCoordinates) {
+            setEditingErrors((prevErrors) => ({
+                ...prevErrors,
+                latitude: 'These coordinates already exist for another place',
+                longitude: 'These coordinates already exist for another place',
+                
+            }));
+            return; // Salir sin guardar
+        } else if (isDuplicatedName) {
+            setEditingErrors((prevErrors) => ({
+                ...prevErrors,
+                name: 'This data already exist for another place',
+                province: 'This data already exist for another place',
+                country: 'This data already exist for another place',
+            }));
+            return; // Salir sin guardar
+        }
+
+        handleUpdate();
+        setEditingPlace(null); // Limpia el estado de edición
+        setEditingErrors({}); // Limpia los errores
+    } else {
+        console.log(respuestaValidacion);
+        console.log('Validation failed');
+        return;
     }
-
-    handleUpdate();
-    setEditingPlace(null); // Limpia el estado de edición
-    setEditingErrors({}); // Limpia los errores
-  } else {
-    console.log(respuestaValidacion);
-    console.log('Validation failed');
-    return;
-  }
 };
 
-const { externalServices, getAllExternalServices} = useExternalServices()
-const {itineraries, getItineraries} = useItinerary();
-const {user} = useAuth();
+
+  const { externalServices, getAllExternalServices } = useExternalServices();
+  const { itineraries, getItineraries } = useItinerary();
+  const { user } = useAuth();
 
   useEffect(() => {
-    const loadExternalServicesAndItineraries = async () => {
-      await getAllExternalServices();
-      if(user){
-        await getItineraries(user.id);
+      const loadExternalServicesAndItineraries = async () => {
+          await getAllExternalServices();
+          if (user) {
+              await getItineraries(user.id);
+          }
+      };
+      loadExternalServicesAndItineraries();
+  }, []);
+
+  const handleDelete = async (place: Place) => {
+      const idPlace = place.id;
+      const hasAnyService = await externalServices?.some((service) => service.place.id === idPlace);
+      const hasAnyItinerary = await itineraries?.some((itinerary) => itinerary.place.id === idPlace);
+
+      //console.log(hasAnyService,"tiene servicios externos");
+      if (hasAnyService || hasAnyItinerary) {
+          setShowModalRestriction(true);
+      } else {
+          setShowModalWarning(true);
+          setPlaceToDelete(place.id);
       }
-    }
-    loadExternalServicesAndItineraries()
-  }, [])
+  };
 
-const handleDelete = async(place:Place) => {
-  const idPlace = place.id;
-  const hasAnyService = await externalServices?.some((service) => service.place.id === idPlace);
-  const hasAnyItinerary = await itineraries?.some((itinerary) => itinerary.place.id === idPlace);
-
-  //console.log(hasAnyService,"tiene servicios externos");
-  if(hasAnyService || hasAnyItinerary){
-    setShowModalRestriction(true)
-  }
-  else{
-    setShowModalWarning(true)
-    setPlaceToDelete(place.id)
-    } 
-}
-    
-    return (
+  return (
       <>
-<tr key={place.id.toString()} className="border-b border-[#393a41]">
-            <td className="p-3">
-                {editingPlace?.id === place.id ? (
-                <>
-                    <input
-                        type="text"
-                        value={editingPlace.name}
-                        onChange={(e) =>
-                            setEditingPlace({
-                                ...editingPlace,
-                                name: e.target.value,
-                            })
-                        }
-                        className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                    />
-                    {editingErrors.name && (
-                        <p className="text-red-500 text-xs">{editingErrors.name}</p>
-                    )}
-                </>
-                ) : (
-                    place.name
-                )}
-            </td>
-            <td className="p-3">
-                {editingPlace?.id === place.id ? (
-                <>
-                <input
-                        type="number"
-                        step="any"
-                        value={editingPlace.latitude}
-                        onChange={(e) =>
-                            setEditingPlace({
-                                ...editingPlace,
-                                latitude: parseFloat(e.target.value), //Parseo el string del input
-                            })
-                        }
-                        className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                    />
-                {editingErrors.latitude && (
-                        <p className="text-red-500 text-xs">{editingErrors.latitude}</p>
-                    )}
-                </>
-                    
-                ) : (
-                    place.latitude
-                )}
-            </td>
-            <td className="p-3">
-                {editingPlace?.id === place.id ? (
-                <>
-                    <input
-                        type="number"
-                        step="any"
-                        value={editingPlace.longitude}
-                        onChange={(e) =>
-                            setEditingPlace({
-                                ...editingPlace,
-                                longitude: parseFloat(e.target.value),
-                            })
-                        }
-                        className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                    />
-                    {editingErrors.longitude && (
-                        <p className="text-red-500 text-xs">{editingErrors.longitude}</p>
-                    )}
-                </>
-                ) : (
-                    place.longitude
-                )}
-            </td>
-            <td className="p-3">
-                {editingPlace?.id === place.id ? (
-                <>
-                    <input
-                        type="text"
-                        value={editingPlace.zipCode}
-                        onChange={(e) =>
-                            setEditingPlace({
-                                ...editingPlace,
-                                zipCode: e.target.value,
-                            })
-                        }
-                        className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
-                    />
-                    {editingErrors.zipCode && (
-                        <p className="text-red-500 text-xs">{editingErrors.zipCode}</p>
-                    )}
+          <tr key={place.id.toString()} className="border-b border-[#393a41]">
+              <td className="p-3">
+                  {editingPlace?.id === place.id ? (
+                      <>
+                          <input
+                              type="text"
+                              value={editingPlace.name}
+                              onChange={(e) =>
+                                  setEditingPlace({
+                                      ...editingPlace,
+                                      name: e.target.value,
+                                  })
+                              }
+                              className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                          />
+                          {editingErrors.name && (
+                              <p className="text-red-500 text-xs">{editingErrors.name}</p>
+                          )}
+                      </>
+                  ) : (
+                      place.name
+                  )}
+              </td>
+              <td className="p-3">
+                  {editingPlace?.id === place.id ? (
+                      <>
+                          <input
+                              type="number"
+                              step="any"
+                              value={editingPlace.latitude}
+                              onChange={(e) =>
+                                  setEditingPlace({
+                                      ...editingPlace,
+                                      latitude: parseFloat(e.target.value), //Parseo el string del input
+                                  })
+                              }
+                              className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                          />
+                          {editingErrors.latitude && (
+                              <p className="text-red-500 text-xs">{editingErrors.latitude}</p>
+                          )}
+                      </>
+                  ) : (
+                      place.latitude
+                  )}
+              </td>
+              <td className="p-3">
+                  {editingPlace?.id === place.id ? (
+                      <>
+                          <input
+                              type="number"
+                              step="any"
+                              value={editingPlace.longitude}
+                              onChange={(e) =>
+                                  setEditingPlace({
+                                      ...editingPlace,
+                                      longitude: parseFloat(e.target.value),
+                                  })
+                              }
+                              className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                          />
+                          {editingErrors.longitude && (
+                              <p className="text-red-500 text-xs">{editingErrors.longitude}</p>
+                          )}
+                      </>
+                  ) : (
+                      place.longitude
+                  )}
+              </td>
+              <td className="p-3">
+                  {editingPlace?.id === place.id ? (
+                      <>
+                          <input
+                              type="text"
+                              value={editingPlace.zipCode}
+                              onChange={(e) =>
+                                  setEditingPlace({
+                                      ...editingPlace,
+                                      zipCode: e.target.value,
+                                  })
+                              }
+                              className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+                          />
+                          {editingErrors.zipCode && (
+                              <p className="text-red-500 text-xs">{editingErrors.zipCode}</p>
+                          )}
+
                 </>
                 ) : (
                     place.zipCode
