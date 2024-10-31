@@ -54,6 +54,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   const handleUpdateItinerary = useCallback(
     (itinerary: Itinerary) => {
       console.log("entra al handleUpdateItinerary");
+      console.log(itinerary);
       setCurrentItinerary(itinerary);
     },
     [itineraries]

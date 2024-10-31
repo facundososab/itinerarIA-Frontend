@@ -83,7 +83,7 @@ export function ActivitiesProvider({ children }: { children: ReactNode }) {
     try {
       const res = await createActivityRequest(activity);
       if (res.status === 201) {
-        activities?.push(res.data.data);
+        setActivities((prevActivities) => [...prevActivities, res.data.data]);
         handleNewActivity(res.data.data);
         await getAllActivities;
         setActivityErrors([]);

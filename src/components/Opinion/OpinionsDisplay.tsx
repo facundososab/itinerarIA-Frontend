@@ -1,7 +1,7 @@
 import { X, Star, Edit2, Trash2, Check, X as Cancel } from "lucide-react";
 import Activity from "../../interfaces/Activity.ts";
 import Opinion from "../../interfaces/Opinion.ts";
-import { /*useCallback,*/ useEffect, useState } from "react";
+import { /*useCallback,*/ useCallback, useEffect, useState } from "react";
 import { useOpinion } from "../../context/OpinionContext.tsx";
 import { ObjectId } from "@mikro-orm/mongodb";
 import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
@@ -23,29 +23,28 @@ export default function OpinionsDisplay({
     rating: 0,
     comment: "",
   });
-  const [updatedOrDeleted, setUpdatedOrDeleted] = useState(false);
 
-  const loadOpinions = async () => {
-    getAllOpinions();
-    setActivityOpinions(
-      opinions.filter(
-        (opinion) =>
-          opinion?.activity?.id?.toString() === activity?.id?.toString()
-      )
-    );
-    console.log(activityOpinions);
-  };
+  const loadOpinions = useCallback(async () => {
+    console.log("entra aca");
+    await getAllOpinions();
+    if (opinions)
+      setActivityOpinions(
+        opinions.filter(
+          (opinion) =>
+            opinion?.activity?.id?.toString() === activity?.id?.toString()
+        )
+      );
+    console.log(activityOpinions, opinions, "opiniones");
+  }, [getAllOpinions, opinions]);
 
   useEffect(() => {
-    setUpdatedOrDeleted(false);
     loadOpinions();
-  }, [updatedOrDeleted]);
+  }, []);
 
   const onDelete = async () => {
     if (opinionToDelete) {
       deleteOpinion(opinionToDelete);
       setShowDeleteOpinionModal(false);
-      setUpdatedOrDeleted(true);
     }
   };
   const onUpdate = async (opinion: Opinion) => {
@@ -54,9 +53,9 @@ export default function OpinionsDisplay({
       rating: editForm.rating,
       comment: editForm.comment,
     };
-    updateOpinion(updatedOpinion);
+    await updateOpinion(updatedOpinion);
     setEditingOpinionId(null);
-    setUpdatedOrDeleted(true);
+    loadOpinions();
   };
 
   const startEditing = (opinion: Opinion) => {

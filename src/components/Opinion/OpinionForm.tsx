@@ -76,7 +76,7 @@ export default function OpinionForm({
               Rating
             </label>
             <Controller
-              name="calificacion"
+              name="rating"
               control={control}
               rules={{ required: "Rating is required" }}
               render={({ field: { onChange, value } }) => (
@@ -101,9 +101,9 @@ export default function OpinionForm({
                 </div>
               )}
             />
-            {errors.calificacion?.message && (
+            {errors.rating?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.calificacion.message}
+                {errors.rating.message}
               </p>
             )}
           </div>
@@ -117,7 +117,7 @@ export default function OpinionForm({
             </label>
             <textarea
               id="comment"
-              {...register("comentario", {
+              {...register("comment", {
                 minLength: {
                   value: 10,
                   message: "Comment must be at least 10 characters long",
@@ -132,9 +132,9 @@ export default function OpinionForm({
               placeholder="Enter your comment"
               rows={4}
             />
-            {errors.comentario?.message && (
+            {errors.comment?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.comentario.message}
+                {errors.comment.message}
               </p>
             )}
           </div>

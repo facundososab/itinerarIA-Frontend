@@ -76,7 +76,6 @@ function UpdateItineraryModal({
     onClose();
   });
   const loadActivities = useCallback(async () => {
-    console.log(itineraryToUpdate);
     if (itineraryToUpdate) {
       await getAllActivities();
     }
@@ -103,7 +102,7 @@ function UpdateItineraryModal({
       setValue("description", itineraryToUpdate.description);
       setValue("duration", itineraryToUpdate.duration);
       setValue("place", itineraryToUpdate.place.id);
-      setValue("preferences", itineraryToUpdate.preferences);
+      setValue("participants", itineraryToUpdate.participants);
     }
   }, [itineraryToUpdate]);
   // if (loadingPlaces) return <div>Loading...</div>;
@@ -211,13 +210,13 @@ function UpdateItineraryModal({
           {filteredActivities && filteredActivities.length === 0 && (
             <div>
               <label
-                htmlFor="lugar"
+                htmlFor="place"
                 className="block text-sm font-medium text-indigo-300"
               >
                 Place
               </label>
               <select
-                id="lugar"
+                id="place"
                 {...register("place", {
                   required: "Place is required",
                 })}
@@ -235,7 +234,7 @@ function UpdateItineraryModal({
                       key={place.id.toString()}
                       value={place.id.toString()}
                     >
-                      {place.nombre}
+                      {place.name}
                     </option>
                   ))}
               </select>

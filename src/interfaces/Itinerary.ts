@@ -9,7 +9,7 @@ export default interface Itinerary {
     description: string,
     duration: number,
     user: ObjectId | null,
-    place : Place,
+    place : Place 
     preferences: string,
     activities: Activity[],
     participants: Participant[],

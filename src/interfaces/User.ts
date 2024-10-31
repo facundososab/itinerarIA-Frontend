@@ -4,7 +4,7 @@ export default interface User {
     id: ObjectId;
     username: string;
     password: string;
-    name: string;
+    names: string;
     lastName: string;
     mail: string;
     phoneNumber: string;

@@ -15,7 +15,6 @@ import {
 } from "../auth/opinion.ts";
 import { ObjectId } from "@mikro-orm/mongodb";
 import { useCallback } from "react";
-import { useAuth } from "./AuthContext.tsx";
 
 export const OpinionsContext = createContext({
   opinions: [] as Opinion[],
@@ -50,12 +49,6 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
   const [currentOpinion, setCurrentOpinion] = useState<Opinion | null>(null);
   const [opinionErrors, setOpinionErrors] = useState([]);
 
-  const handleNewOpinion = useCallback(
-    (opinion: Opinion) => {
-      setCurrentOpinion(opinion);
-    },
-    [opinions]
-  );
   const handleDeleteOpinion = useCallback(
     () => setCurrentOpinion(null),
     [opinions]
@@ -71,6 +64,12 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
       console.log(err.response.data.message);
     }
   };
+  const handleNewOpinion = useCallback(
+    (opinion: Opinion) => {
+      setCurrentOpinion(opinion);
+    },
+    [getAllOpinions, opinions]
+  );
 
   const getOneOpinion = async (id: ObjectId) => {
     try {
@@ -102,13 +101,17 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
     try {
       const res = await updateOpinionRequest(opinion);
       const opinionUpdated: Opinion = res.data.data;
-      const newOpinions = opinions?.map((opinion) =>
-        opinion.id === opinionUpdated.id ? opinionUpdated : opinion
-      );
-      opinions ? setOpinions(newOpinions as Opinion[]) : null;
+      // const newOpinions = opinions?.map((opinion) =>
+      //   opinion.id === opinionUpdated.id ? opinionUpdated : opinion
+      // );
+      // setOpinions(newOpinions);
+      // console.log(res.data.data);
+      // setOpinions([...opinions, opinionUpdated]);
+      // console.log(opinions, "opinions en el contexto");
       handleNewOpinion(opinionUpdated);
-      console.log(res);
+      // console.log(res);
       setOpinionErrors([]);
+      await getAllOpinions();
     } catch (err: any) {
       console.log(err.response.data.message);
       setOpinionErrors(err.response.data.message);

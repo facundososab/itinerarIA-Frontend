@@ -129,24 +129,24 @@ function RegisterForm() {
 
             <div>
               <label
-                htmlFor="name"
+                htmlFor="names"
                 className="block text-sm font-medium text-white"
               >
                 First Name
               </label>
               <div className="mt-1">
                 <input
-                  id="name"
+                  id="names"
                   type="text"
-                  placeholder="First name"
-                  {...register("name", {
+                  placeholder="First names"
+                  {...register("names", {
                     required: "First name is required",
                   })}
                   className="appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 bg-davys-gray focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
-                {errors.name && (
+                {errors.names && (
                   <p className="mt-2 text-sm text-red-600">
-                    {errors.name.message}
+                    {errors.names.message}
                   </p>
                 )}
               </div>

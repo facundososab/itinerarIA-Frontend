@@ -226,7 +226,7 @@ export function ItineraryDisplay() {
           <p className="text-gray-400">{CurrentItinerary?.description}</p>
           <p className="text-gray-400 flex items-center mt-2">
             <MapPin size={16} className="mr-2 text-indigo-400" />
-            {itineraryPlace?.nombre} - {itineraryPlace?.pais}
+            {itineraryPlace?.name} - {itineraryPlace?.country}
           </p>
         </div>
         <div className="flex flex-col space-y-2 w-1/5">
@@ -316,7 +316,7 @@ export function ItineraryDisplay() {
               <option value="">All Places</option>
               {places?.map((place) => (
                 <option key={place.id.toString()} value={place.id.toString()}>
-                  {place.nombre}
+                  {place.name}
                 </option>
               ))}
             </select>
@@ -401,7 +401,7 @@ export function ItineraryDisplay() {
                         size={16}
                         className="inline mr-1 text-indigo-400"
                       />
-                      {activity.place.nombre} - {activity.place.pais}
+                      {activity.place.name} - {activity.place.country}
                     </p>
                   </div>
                   <div className="flex space-x-2 mt-4 sm:mt-0">

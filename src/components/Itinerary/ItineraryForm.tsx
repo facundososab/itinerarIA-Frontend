@@ -382,6 +382,7 @@ export default function InputNewItinerary({
                 type="button"
                 onClick={() =>
                   append({
+                    // id: new ObjectId(),
                     age: 0,
                     preferences: [],
                     name: "",

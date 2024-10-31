@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useItinerary } from "../../context/ItineraryContext.tsx";
 import { NewItineraryButton } from "./NewItineraryButton.tsx";
 import { CalendarIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -9,24 +9,26 @@ import { Edit2 as EditIcon, MapPin, Filter } from "lucide-react";
 import Itinerary from "../../interfaces/Itinerary.ts";
 import UpdateItineraryModal from "./UpdateItineraryModal.tsx";
 import { usePlace } from "../../context/PlaceContext.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
 
 export default function ItinerariesSidebar() {
   const {
-    // setItineraries,
     handleSelectItinerary,
     deleteItinerary,
     updateItinerary,
-    CurrentItinerary,
+    // CurrentItinerary,
     itineraries,
+    setItineraries,
+    getItineraries,
   } = useItinerary();
   const { places, getAllPlaces } = usePlace();
+  const { user } = useAuth();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [itineraryToDelete, setItineraryToDelete] = useState<ObjectId | null>(
     null
   );
-
   const [itineraryToUpdate, setItineraryToUpdate] = useState<
     ObjectId | undefined
   >(undefined);
@@ -35,18 +37,24 @@ export default function ItinerariesSidebar() {
     Itinerary[] | null
   >(itineraries);
 
+  const loadPlaces = useCallback(async () => {
+    await getAllPlaces();
+  }, [getAllPlaces, itineraries]);
+
+  const loadItineraries = useCallback(async () => {
+    if (user) await getItineraries(user?.id);
+  }, [getItineraries, itineraries, user]);
+
   useEffect(() => {
-    const loadPlaces = async () => {
+    const loadData = async () => {
       await getAllPlaces();
+      if (user) await getItineraries(user?.id);
     };
-    loadPlaces();
-  }, [CurrentItinerary, itineraries]);
-
-  // useEffect(() => {
-  //   itineraries ? setItineraries(itineraries) : null;
-  // }, [itineraries]); Comento esto ya que ahora cuando creo un itinerario vuelvo a hacer el getItineraries
+    loadData();
+  }, []);
 
   useEffect(() => {
+    // itineraries ? setItineraries(itineraries) : null;
     if (itineraries) {
       setFilteredItineraries(
         selectedPlace
@@ -65,8 +73,10 @@ export default function ItinerariesSidebar() {
   };
 
   const onUpdate = (data: Itinerary) => {
+    console.log(data);
     updateItinerary(data);
     setShowUpdateModal(false);
+    loadItineraries();
   };
 
   return (
@@ -82,7 +92,7 @@ export default function ItinerariesSidebar() {
             <option value="">All Places</option>
             {places?.map((place) => (
               <option key={place.id.toString()} value={place.id.toString()}>
-                {place.nombre}
+                {place.name}
               </option>
             ))}
           </select>
@@ -114,9 +124,9 @@ export default function ItinerariesSidebar() {
               </div>
               <div className="text-sm text-gray-500 flex items-center">
                 <MapPin className="h-4 w-4 mr-2" />
-                {itinerary.place.nombre}
+                {itinerary.place.name}
                 {" - "}
-                {itinerary.place.pais}
+                {itinerary.place.country}
               </div>
             </div>
             <div className="flex space-x-2">
