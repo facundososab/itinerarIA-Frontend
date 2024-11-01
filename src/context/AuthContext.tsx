@@ -9,6 +9,8 @@ import {
 import User from "../interfaces/User.ts";
 import Itinerary from "../interfaces/Itinerary.ts";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
 
 export const AuthContext = createContext({
   user: null as User | null,
@@ -38,6 +40,9 @@ export const AuthProvider = ({ children }: any) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authErrors, setAuthErrors] = useState([]);
   const [isLoading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  
+  
   const signup = async (user: User) => {
     try {
       const res = await registerRequest(user);
@@ -75,6 +80,7 @@ export const AuthProvider = ({ children }: any) => {
       setUser(null);
       setIsAuthenticated(false);
       Cookies.remove("token");
+      navigate("/login");
     } catch (err: any) {
       const errorData = err.response?.data?.message || "Error";
       setAuthErrors(errorData);
