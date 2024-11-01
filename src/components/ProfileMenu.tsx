@@ -68,7 +68,7 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
                 logout()
                 toggleProfile()
               }}
-              className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
+              className="w-full block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037] text-left"
             >
               <LogOutIcon className="inline-block h-4 w-4 mr-2" />
               Log out

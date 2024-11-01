@@ -31,7 +31,6 @@ export function PlacesDisplay() {
   const [showModalRestriction, setShowModalRestriction] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null);
-  const [showModal, setShowModal] = useState(false);
 
   // Close edit form when clicking outside
   useEffect(() => {
@@ -89,15 +88,15 @@ export function PlacesDisplay() {
     loadExternalServices();
   }, []);
 
-  const handleDelete = async (place: Place) => {
-    const hasAnyService = externalServices.some((service) => service.place.id === place.id);
-    if (hasAnyService) {
-      setShowModalRestriction(true);
-    } else {
-      setPlaceToDelete(place.id);
-      setShowModalWarning(true);
-    }
-  };
+  // const handleDelete = async (place: Place) => {
+  //   const hasAnyService = externalServices.some((service) => service.place.id === place.id);
+  //   if (hasAnyService) {
+  //     setShowModalRestriction(true);
+  //   } else {
+  //     setPlaceToDelete(place.id);
+  //     setShowModalWarning(true);
+  //   }
+  // };
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
