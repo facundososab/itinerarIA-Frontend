@@ -25,6 +25,7 @@ export default function MyAccountPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     formData && updateUser(formData)
     if (authErrors.length === 0) {
       setEditMode(false)

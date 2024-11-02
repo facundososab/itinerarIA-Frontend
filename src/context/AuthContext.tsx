@@ -7,14 +7,12 @@ import {
   updateUserRequest,
 } from '../auth/user.ts'
 import User from '../interfaces/User.ts'
-import Itinerary from '../interfaces/Itinerary.ts'
+
 import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 
 export const AuthContext = createContext({
   user: null as User | null,
-  itineraries: null as Itinerary[] | null,
-  setItineraries: (_itineraries: Itinerary[]) => {},
   isAuthenticated: true || false,
   signup: (_user: User) => {},
   authErrors: [],
@@ -35,7 +33,6 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }: any) => {
   const [user, setUser] = useState<User | null>(null)
-  const [itineraries, setItineraries] = useState<Itinerary[]>([]) //cambie [] por null,cambiar si hay algun error
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [authErrors, setAuthErrors] = useState([])
   const [isLoading, setLoading] = useState(true)
@@ -45,7 +42,6 @@ export const AuthProvider = ({ children }: any) => {
     try {
       const res = await registerRequest(user)
       setUser(res.data.data)
-      setItineraries(res.data.data.itineraries)
       setIsAuthenticated(true)
       setAuthErrors([])
     } catch (err: any) {
@@ -59,7 +55,6 @@ export const AuthProvider = ({ children }: any) => {
       const res = await loginRequest(user)
       console.log(res.data.data.user, 'res.data.data.user')
       setUser(res.data.data.user)
-      setItineraries(res.data.data.user.itineraries)
       setIsAuthenticated(true)
       setAuthErrors([])
     } catch (err: any) {
@@ -133,8 +128,6 @@ export const AuthProvider = ({ children }: any) => {
     <AuthContext.Provider
       value={{
         user,
-        itineraries,
-        setItineraries,
         isAuthenticated,
         signup,
         authErrors,
