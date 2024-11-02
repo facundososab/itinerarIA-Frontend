@@ -10,7 +10,7 @@ import {
 import User from '../interfaces/User'
 
 export default function MyAccountPage() {
-  const { user, updateUser } = useAuth()
+  const { user, updateUser, authErrors } = useAuth()
   const [editMode, setEditMode] = useState(false)
   const [formData, setFormData] = useState<User | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
@@ -27,10 +27,12 @@ export default function MyAccountPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (formData) {
-      await updateUser(formData)
-      setEditMode(false)
-      setSuccessMessage('Your profile has been updated successfully!')
-      setTimeout(() => setSuccessMessage(null), 5000) // Clear message after 5 seconds
+      try {
+        updateUser(formData)
+        setEditMode(false)
+        setSuccessMessage('Your profile has been updated successfully!')
+        setTimeout(() => setSuccessMessage(null), 5000) // Clear message after 5 seconds
+      } catch (err: any) {}
     }
   }
 
@@ -107,7 +109,7 @@ export default function MyAccountPage() {
                   name="nombres"
                   id="nombres"
                   className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  value={formData.name}
+                  value={formData.names}
                   onChange={handleInputChange}
                   disabled={!editMode}
                 />
@@ -131,7 +133,7 @@ export default function MyAccountPage() {
               </div>
               <div>
                 <label
-                  htmlFor="nroTelefono"
+                  htmlFor="phoneNumber"
                   className="block text-sm font-medium text-indigo-300"
                 >
                   Phone Number
@@ -145,8 +147,8 @@ export default function MyAccountPage() {
                   </div>
                   <input
                     type="tel"
-                    name="nroTelefono"
-                    id="nroTelefono"
+                    name="phoneNumber"
+                    id="phoneNumber"
                     className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
@@ -212,6 +214,11 @@ export default function MyAccountPage() {
             <div className="mt-4 p-4 bg-green-800 text-green-100 rounded-md flex items-center">
               <CheckCircle className="h-5 w-5 mr-2" />
               {successMessage}
+            </div>
+          )}
+          {authErrors.length > 0 && (
+            <div className="mt-4 p-4 bg-red-800 text-red-100 rounded-md flex items-center">
+              {authErrors}
             </div>
           )}
         </div>

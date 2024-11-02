@@ -17,5 +17,5 @@ export const logoutRequest = async () => {
 }
 
 export const updateUserRequest = async (user: User) => {
-  return instance.put(`/usuarios/${user.id}`, user);
+  return instance.patch(`/users/${user.id}`, user);
 }
