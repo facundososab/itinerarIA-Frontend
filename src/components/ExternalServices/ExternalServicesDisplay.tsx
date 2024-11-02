@@ -3,10 +3,10 @@ import { useExternalServices } from '../../context/ExternalServicesContext'
 import ExternalService from '../../interfaces/ExternalService'
 import { ObjectId } from '@mikro-orm/mongodb'
 import { createPortal } from 'react-dom'
-//import DeleteExternalServiceWarningModal from './DeleteExternalServiceWarningModal.tsx'
 import ExternalServiceRow from './ExternalServiceRow.tsx'
 import { usePlace } from '../../context/PlaceContext.tsx'
 import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
+import { Search } from 'lucide-react'
 
 export function ExternalServicesDisplay() {
   const {
@@ -20,6 +20,14 @@ export function ExternalServicesDisplay() {
 
   const { places, getAllPlaces } = usePlace()
 
+  const [editingService, setEditingService] = useState<ExternalService | null>(
+    null
+  )
+  const [externalServiceToDelete, setExternalServiceToDelete] =
+    useState<ObjectId | null>(null)
+  const [showModal, setShowModal] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+
   useEffect(() => {
     const loadPlaces = async () => {
       getAllPlaces()
@@ -27,14 +35,6 @@ export function ExternalServicesDisplay() {
     loadPlaces()
   }, [])
 
-  const [editingService, setEditingService] = useState<ExternalService | null>(
-    null
-  )
-  const [externalServiceToDelete, setExternalServiceToDelete] =
-    useState<ObjectId | null>(null)
-  const [showModal, setShowModal] = useState(false)
-
-  // Close editing form if clicked outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element | null
@@ -50,7 +50,6 @@ export function ExternalServicesDisplay() {
     }
   }, [editingService])
 
-  // Load external services on component mount
   useEffect(() => {
     const loadExternalServices = async () => {
       getAllExternalServices()
@@ -74,6 +73,19 @@ export function ExternalServicesDisplay() {
       setEditingService(null)
     }
   }
+
+  const filteredServices =
+    externalServices &&
+    externalServices.filter((service) => {
+      const searchRegex = new RegExp(searchTerm, 'i')
+      return (
+        searchRegex.test(service.serviceType) ||
+        searchRegex.test(service.name) ||
+        searchRegex.test(service.description) ||
+        searchRegex.test(service.adress) ||
+        searchRegex.test(service.place?.name || '')
+      )
+    })
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -114,6 +126,21 @@ export function ExternalServicesDisplay() {
         </div>
       )}
 
+      <div className="mb-4 relative">
+        <input
+          type="text"
+          placeholder="Search external services..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 pl-10 bg-[#26262c] text-indigo-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="Search external services"
+        />
+        <Search
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
+          size={20}
+        />
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
           <thead className="bg-[#2f3037]">
@@ -148,19 +175,20 @@ export function ExternalServicesDisplay() {
             </tr>
           </thead>
           <tbody>
-            {externalServices?.map((service) => (
-              <ExternalServiceRow
-                key={service.id.toString()}
-                service={service}
-                editingService={editingService}
-                handleUpdate={handleUpdate}
-                handleEdit={handleEdit}
-                setShowModal={setShowModal}
-                setEditingService={setEditingService}
-                setExternalServiceToDelete={setExternalServiceToDelete}
-                places={places}
-              />
-            ))}
+            {filteredServices &&
+              filteredServices.map((service) => (
+                <ExternalServiceRow
+                  key={service.id.toString()}
+                  service={service}
+                  editingService={editingService}
+                  handleUpdate={handleUpdate}
+                  handleEdit={handleEdit}
+                  setShowModal={setShowModal}
+                  setEditingService={setEditingService}
+                  setExternalServiceToDelete={setExternalServiceToDelete}
+                  places={places}
+                />
+              ))}
           </tbody>
         </table>
       </div>

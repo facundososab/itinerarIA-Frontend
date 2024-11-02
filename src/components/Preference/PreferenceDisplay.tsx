@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { usePreference } from "../../context/PreferenceContext";
-import Preference from "../../interfaces/Preference";
-import { ObjectId } from "@mikro-orm/mongodb";
-import { createPortal } from "react-dom";
-import DeletePreferenceWarningModal from "./DeletePreferenceWarningModal.tsx";
-import PreferenceRow from "./PreferenceRow.tsx";
-import TextModal from "../shared/TextModal.tsx";
-import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import { useEffect, useState } from 'react'
+import { usePreference } from '../../context/PreferenceContext'
+import Preference from '../../interfaces/Preference'
+import { ObjectId } from '@mikro-orm/mongodb'
+import { createPortal } from 'react-dom'
+import PreferenceRow from './PreferenceRow.tsx'
+import TextModal from '../shared/TextModal.tsx'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
+import { Search } from 'lucide-react'
 
 export function PreferenceDisplay() {
   const {
@@ -16,61 +16,72 @@ export function PreferenceDisplay() {
     deletePreference,
     updatePreference,
     preferenceErrors,
-  } = usePreference();
+  } = usePreference()
 
   const [editingPreference, setEditingPreference] = useState<Preference | null>(
     null
-  );
+  )
   const [preferenceToDelete, setPreferenceToDelete] = useState<ObjectId | null>(
     null
-  );
-  const [showModalWarning, setShowModalWarning] = useState(false);
-  const [showModalRestriction, setShowModalRestriction] = useState(false);
+  )
+  const [showModalWarning, setShowModalWarning] = useState(false)
+  const [showModalRestriction, setShowModalRestriction] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null;
-      if (editingPreference && target && !target.closest("article")) {
-        setEditingPreference(null);
+      const target = event.target as Element | null
+      if (editingPreference && target && !target.closest('article')) {
+        setEditingPreference(null)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [editingPreference]);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [editingPreference])
 
   useEffect(() => {
     const loadPreferences = async () => {
-      await getPreferences();
-    };
-    loadPreferences();
-  }, []);
+      getPreferences()
+    }
+    loadPreferences()
+  }, [])
 
   const handleEdit = (preference: Preference) => {
-    setEditingPreference(preference);
-  };
+    setEditingPreference(preference)
+  }
 
   const onDelete = async (id: ObjectId) => {
-    await deletePreference(id);
-    setPreferences(preferences.filter((preference) => preference.id !== id));
-    setShowModalWarning(false);
-  };
+    deletePreference(id)
+    setPreferences(preferences.filter((preference) => preference.id !== id))
+    setShowModalWarning(false)
+  }
 
   const handleUpdate = async () => {
     if (editingPreference) {
-      await updatePreference(editingPreference);
+      updatePreference(editingPreference)
       setPreferences(
         preferences.map((preference) =>
           preference.id === editingPreference.id
             ? editingPreference
             : preference
         )
-      );
-      setEditingPreference(null);
+      )
+      setEditingPreference(null)
     }
-  };
+  }
+
+  const filteredPreferences =
+    preferences &&
+    preferences.filter((preference) => {
+      const searchRegex = new RegExp(searchTerm, 'i')
+      return (
+        searchRegex.test(preference.name) ||
+        searchRegex.test(preference.description)
+      )
+    })
 
   return (
     <article
@@ -118,36 +129,54 @@ export function PreferenceDisplay() {
         </div>
       )}
 
-      <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
-        <thead className="bg-[#2f3037]">
-          <tr>
-            <th className="p-3 text-left text-indigo-200" scope="col">
-              Name
-            </th>
-            <th className="p-3 text-left text-indigo-200" scope="col">
-              Description
-            </th>
-            <th className="p-3 text-right text-indigo-200" scope="col">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {preferences?.map((preference) => (
-            <PreferenceRow
-              key={preference.id.toString()}
-              preference={preference}
-              editingPreference={editingPreference}
-              handleUpdate={handleUpdate}
-              handleEdit={handleEdit}
-              setShowModalWarning={setShowModalWarning}
-              setShowModalRestriction={setShowModalRestriction}
-              setEditingPreference={setEditingPreference}
-              setPreferenceToDelete={setPreferenceToDelete}
-            />
-          ))}
-        </tbody>
-      </table>
+      <div className="mb-4 relative">
+        <input
+          type="text"
+          placeholder="Search preferences..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 pl-10 bg-[#26262c] text-indigo-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="Search preferences"
+        />
+        <Search
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
+          size={20}
+        />
+      </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
+          <thead className="bg-[#2f3037]">
+            <tr>
+              <th className="p-3 text-left text-indigo-200" scope="col">
+                Name
+              </th>
+              <th className="p-3 text-left text-indigo-200" scope="col">
+                Description
+              </th>
+              <th className="p-3 text-right text-indigo-200" scope="col">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPreferences &&
+              filteredPreferences.map((preference) => (
+                <PreferenceRow
+                  key={preference.id.toString()}
+                  preference={preference}
+                  editingPreference={editingPreference}
+                  handleUpdate={handleUpdate}
+                  handleEdit={handleEdit}
+                  setShowModalWarning={setShowModalWarning}
+                  setShowModalRestriction={setShowModalRestriction}
+                  setEditingPreference={setEditingPreference}
+                  setPreferenceToDelete={setPreferenceToDelete}
+                />
+              ))}
+          </tbody>
+        </table>
+      </div>
 
       {showModalWarning &&
         createPortal(
@@ -159,7 +188,7 @@ export function PreferenceDisplay() {
           />,
           document.body
         )}
-      
+
       {showModalRestriction &&
         createPortal(
           <TextModal
@@ -169,6 +198,5 @@ export function PreferenceDisplay() {
           document.body
         )}
     </article>
-  );
+  )
 }
-//

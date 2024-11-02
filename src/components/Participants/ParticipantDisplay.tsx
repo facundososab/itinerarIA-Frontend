@@ -7,6 +7,7 @@ import DeleteParticipantWarningModal from '../Participants/DeleteParticipantWarn
 import ParticipantRow from './ParticipantRow.tsx'
 import { useAuth } from '../../context/AuthContext.tsx'
 import { usePreference } from '../../context/PreferenceContext.tsx'
+import { Search } from 'lucide-react'
 
 export function ParticipantsDisplay() {
   const {
@@ -20,32 +21,31 @@ export function ParticipantsDisplay() {
 
   const { getPreferences, preferences } = usePreference()
 
+  const { user } = useAuth()
+  const userId = user?.id
+
+  const [editingParticipant, setEditingParticipant] =
+    useState<Participant | null>(null)
+  const [participantToDelete, setParticipantToDelete] =
+    useState<ObjectId | null>(null)
+  const [showModal, setShowModal] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+
   useEffect(() => {
     const loadPreferences = async () => {
-      await getPreferences()
+      getPreferences()
     }
     loadPreferences()
   }, [])
 
-  const { user } = useAuth()
-  const userId = user?.id
-
   useEffect(() => {
     if (userId) {
       const loadParticipants = async () => {
-        await getAllParticipants(userId)
+        getAllParticipants(userId)
       }
       loadParticipants()
     }
-  }, [])
-
-  const [editingParticipant, setEditingParticipant] =
-    useState<Participant | null>(null)
-
-  const [participantToDelete, setParticipantToDelete] =
-    useState<ObjectId | null>(null)
-
-  const [showModal, setShowModal] = useState(false)
+  }, [userId])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -66,14 +66,14 @@ export function ParticipantsDisplay() {
   }
 
   const onDelete = async (id: ObjectId) => {
-    await deleteParticipant(id)
+    deleteParticipant(id)
     setParticipants(participants.filter((participant) => participant.id !== id))
     setShowModal(false)
   }
 
   const handleUpdate = async () => {
     if (editingParticipant) {
-      await updateParticipant(editingParticipant)
+      updateParticipant(editingParticipant)
       setParticipants(
         participants.map((participant) =>
           participant.id === editingParticipant.id
@@ -84,6 +84,16 @@ export function ParticipantsDisplay() {
       setEditingParticipant(null)
     }
   }
+
+  const filteredParticipants =
+    participants &&
+    participants.filter((participant) => {
+      const searchRegex = new RegExp(searchTerm, 'i')
+      return (
+        searchRegex.test(participant.name) ||
+        searchRegex.test(participant.age.toString())
+      )
+    })
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -123,6 +133,21 @@ export function ParticipantsDisplay() {
         </div>
       )}
 
+      <div className="mb-4 relative">
+        <input
+          type="text"
+          placeholder="Search participants..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 pl-10 bg-[#26262c] text-indigo-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="Search participants"
+        />
+        <Search
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
+          size={20}
+        />
+      </div>
+
       <div className="overflow-x-auto">
         <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
           <thead className="bg-[#2f3037]">
@@ -135,19 +160,20 @@ export function ParticipantsDisplay() {
             </tr>
           </thead>
           <tbody>
-            {participants?.map((participant) => (
-              <ParticipantRow
-                key={participant.id.toString()}
-                participant={participant}
-                editingParticipant={editingParticipant}
-                handleUpdate={handleUpdate}
-                handleEdit={handleEdit}
-                setShowModal={setShowModal}
-                setEditingParticipant={setEditingParticipant}
-                setParticipantToDelete={setParticipantToDelete}
-                preferences={preferences}
-              />
-            ))}
+            {filteredParticipants &&
+              filteredParticipants.map((participant) => (
+                <ParticipantRow
+                  key={participant.id.toString()}
+                  participant={participant}
+                  editingParticipant={editingParticipant}
+                  handleUpdate={handleUpdate}
+                  handleEdit={handleEdit}
+                  setShowModal={setShowModal}
+                  setEditingParticipant={setEditingParticipant}
+                  setParticipantToDelete={setParticipantToDelete}
+                  preferences={preferences}
+                />
+              ))}
           </tbody>
         </table>
       </div>

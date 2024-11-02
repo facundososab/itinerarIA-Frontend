@@ -10,6 +10,10 @@ export const getAllOpinionsRequest = async () => {
   return instance.get("/opiniones");
 }
 
+export const getAllOpinionsByActivityRequest = async (activityId: ObjectId) => {
+  return instance.get(`/opiniones/activity/${activityId}`);
+}
+
 export const getOpinionRequest = async (id: ObjectId) => {
   return instance.get(`/opiniones/${id}`);
 }

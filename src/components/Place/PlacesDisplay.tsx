@@ -1,13 +1,12 @@
-import { useEffect, useState } from "react";
-import { usePlace } from "../../context/PlaceContext.tsx";
-import Place from "../../interfaces/Place.ts";
-import { ObjectId } from "@mikro-orm/mongodb";
-import { createPortal } from "react-dom";
-// import DeletePlaceWarningModal from './DeletePlaceWarningModal.tsx'
-import PlaceRow from './PlaceRow.tsx';
-import DeleteWarningModal from '../shared/DeleteWarningModal.tsx';
-import TextModal from '../shared/TextModal.tsx';
-import { useExternalServices } from '../../context/ExternalServicesContext.tsx';
+import { useEffect, useState } from 'react'
+import { usePlace } from '../../context/PlaceContext.tsx'
+import Place from '../../interfaces/Place.ts'
+import { ObjectId } from '@mikro-orm/mongodb'
+import { createPortal } from 'react-dom'
+import PlaceRow from './PlaceRow.tsx'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
+import TextModal from '../shared/TextModal.tsx'
+import { Search } from 'lucide-react'
 
 export function PlacesDisplay() {
   const {
@@ -17,86 +16,76 @@ export function PlacesDisplay() {
     deletePlace,
     updatePlace,
     placeErrors,
-    setPlaceErrors,
-  } = usePlace();
+  } = usePlace()
+
+  const [showModalWarning, setShowModalWarning] = useState(false)
+  const [showModalRestriction, setShowModalRestriction] = useState(false)
+  const [editingPlace, setEditingPlace] = useState<Place | null>(null)
+  const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getAllPlaces();
-    };
-    loadPlaces();
-  }, []);
+      getAllPlaces()
+    }
+    loadPlaces()
+  }, [])
 
-  const [showModalWarning, setShowModalWarning] = useState(false);
-  const [showModalRestriction, setShowModalRestriction] = useState(false);
-  const [editingPlace, setEditingPlace] = useState<Place | null>(null);
-  const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null);
-
-  // Close edit form when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null;
-      if (editingPlace && target && !target.closest("article")) {
-        setEditingPlace(null);
+      const target = event.target as Element | null
+      if (editingPlace && target && !target.closest('article')) {
+        setEditingPlace(null)
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [editingPlace]);
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [editingPlace])
 
   const handleEdit = (place: Place) => {
-    setEditingPlace(place);
-  };
+    setEditingPlace(place)
+  }
 
   const onDelete = async (id: ObjectId) => {
-    try{
-      await deletePlace(id);
-    // Remove deleted place from local state
-    setPlaces(places.filter((place) => place.id !== id));
-    setShowModalWarning(false);
+    try {
+      deletePlace(id)
+      setPlaces(places.filter((place) => place.id !== id))
+      setShowModalWarning(false)
+    } catch (error: any) {
+      console.log(error)
     }
-    catch(error:any){
-      console.log(error);
-    }
-  };
+  }
 
   const handleUpdate = async () => {
     if (editingPlace) {
       try {
-        await updatePlace(editingPlace);
+        updatePlace(editingPlace)
         setPlaces(
           places.map((place) =>
             place.id === editingPlace.id ? editingPlace : place
           )
-        );
-        setEditingPlace(null);
+        )
+        setEditingPlace(null)
       } catch (err: any) {
-        console.log(err);
+        console.log(err)
       }
     }
-  };
+  }
 
-  const { externalServices, getAllExternalServices } = useExternalServices();
-
-  useEffect(() => {
-    const loadExternalServices = async () => {
-      await getAllExternalServices();
-    };
-    loadExternalServices();
-  }, []);
-
-  // const handleDelete = async (place: Place) => {
-  //   const hasAnyService = externalServices.some((service) => service.place.id === place.id);
-  //   if (hasAnyService) {
-  //     setShowModalRestriction(true);
-  //   } else {
-  //     setPlaceToDelete(place.id);
-  //     setShowModalWarning(true);
-  //   }
-  // };
+  const filteredPlaces =
+    places &&
+    places.filter((place) => {
+      const searchRegex = new RegExp(searchTerm, 'i')
+      return (
+        searchRegex.test(place.name) ||
+        searchRegex.test(place.zipCode) ||
+        searchRegex.test(place.province) ||
+        searchRegex.test(place.country)
+      )
+    })
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -137,58 +126,87 @@ export function PlacesDisplay() {
         </div>
       )}
 
-    <div className="overflow-x-auto">
+      <div className="mb-4 relative">
+        <input
+          type="text"
+          placeholder="Search places..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full p-2 pl-10 bg-[#26262c] text-indigo-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          aria-label="Search places"
+        />
+        <Search
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
+          size={20}
+        />
+      </div>
+
+      <div className="overflow-x-auto">
         <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
           <thead className="bg-[#2f3037]">
-          <tr>
-            <th className="p-3 text-left" scope="col">Name</th>
-            <th className="p-3 text-left" scope="col">Latitude</th>
-            <th className="p-3 text-left" scope="col">Longitude</th>
-            <th className="p-3 text-left" scope="col">Zip code</th>
-            <th className="p-3 text-left" scope="col">Province / State</th>
-            <th className="p-3 text-left" scope="col">Country</th>
-            <th className="p-3 text-left" scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {places?.map((place) => (
-            <PlaceRow
-              key={place.id.toString()}
-              place={place}
-              editingPlace={editingPlace}
-              handleUpdate={handleUpdate}
-              handleEdit={handleEdit}
-              setShowModalWarning={setShowModalWarning}
-              setShowModalRestriction={setShowModalRestriction}
-              setEditingPlace={setEditingPlace}
-              setPlaceToDelete={setPlaceToDelete}
-              places={places}
-            />
-          ))}
-        </tbody>
-      </table>
+            <tr>
+              <th className="p-3 text-left" scope="col">
+                Name
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Latitude
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Longitude
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Zip code
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Province / State
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Country
+              </th>
+              <th className="p-3 text-left" scope="col">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPlaces &&
+              filteredPlaces.map((place) => (
+                <PlaceRow
+                  key={place.id.toString()}
+                  place={place}
+                  editingPlace={editingPlace}
+                  handleUpdate={handleUpdate}
+                  handleEdit={handleEdit}
+                  setShowModalWarning={setShowModalWarning}
+                  setShowModalRestriction={setShowModalRestriction}
+                  setEditingPlace={setEditingPlace}
+                  setPlaceToDelete={setPlaceToDelete}
+                  places={places}
+                />
+              ))}
+          </tbody>
+        </table>
 
-      {showModalWarning &&
-        createPortal(
-          <DeleteWarningModal
-            onClose={() => setShowModalWarning(false)}
-            onDelete={onDelete}
-            id={placeToDelete}
-            text="Are you sure you want to delete this place?"
-          />,
-          document.body
-        )}
-      
-      {showModalRestriction &&
-        createPortal(
-          <TextModal
-            onClose={() => setShowModalRestriction(false)}
-            text="You cannot delete this place because it has external services or itineraries associated with it."
-          />,
-          document.body
-        )}
-    </div>
+        {showModalWarning &&
+          createPortal(
+            <DeleteWarningModal
+              onClose={() => setShowModalWarning(false)}
+              onDelete={onDelete}
+              id={placeToDelete}
+              text="Are you sure you want to delete this place?"
+            />,
+            document.body
+          )}
+
+        {showModalRestriction &&
+          createPortal(
+            <TextModal
+              onClose={() => setShowModalRestriction(false)}
+              text="You cannot delete this place because it has external services or itineraries associated with it."
+            />,
+            document.body
+          )}
+      </div>
     </article>
-  );
+  )
 }
-
