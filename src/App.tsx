@@ -26,6 +26,7 @@ import { ExternalServicesProvider } from './context/ExternalServicesContext.tsx'
 function App() {
   return (
     <div>
+      <BrowserRouter>
       <AuthProvider>
         <ItineraryProvider>
 
@@ -35,7 +36,7 @@ function App() {
                 <PlacesProvider>
                   <PreferenceProvider>
                     <ParticipantProvider>
-                      <BrowserRouter>
+                      
                         <Header />
                         <Routes>
                           <Route path="/" element={<HomePage />} />
@@ -66,7 +67,6 @@ function App() {
                           </Route>
                           <Route path="*" element={<NotFoundPage />} />
                         </Routes>
-                      </BrowserRouter>
                     </ParticipantProvider>
                   </PreferenceProvider>
                 </PlacesProvider>
@@ -75,6 +75,8 @@ function App() {
           </ExternalServicesProvider>
         </ItineraryProvider>
       </AuthProvider>
+      </BrowserRouter>
+      
     </div>
   )
 }

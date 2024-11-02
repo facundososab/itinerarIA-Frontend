@@ -31,7 +31,6 @@ export function PlacesDisplay() {
   const [showModalRestriction, setShowModalRestriction] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null);
-  const [showModal, setShowModal] = useState(false);
 
   // Close edit form when clicking outside
   useEffect(() => {
@@ -89,20 +88,23 @@ export function PlacesDisplay() {
     loadExternalServices();
   }, []);
 
-  const handleDelete = async (place: Place) => {
-    const hasAnyService = externalServices.some((service) => service.lugar.id === place.id);
-    if (hasAnyService) {
-      setShowModalRestriction(true);
-    } else {
-      setPlaceToDelete(place.id);
-      setShowModalWarning(true);
-    }
-  };
+  // const handleDelete = async (place: Place) => {
+  //   const hasAnyService = externalServices.some((service) => service.place.id === place.id);
+  //   if (hasAnyService) {
+  //     setShowModalRestriction(true);
+  //   } else {
+  //     setPlaceToDelete(place.id);
+  //     setShowModalWarning(true);
+  //   }
+  // };
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
       {placeErrors.length > 0 && (
-        <div className="bg-red-900 border-l-4 border-red-500 p-4 mb-6">
+        <div
+          className="bg-red-900 border-l-4 border-red-500 p-4 mb-6"
+          role="alert"
+        >
           <div className="flex">
             <div className="flex-shrink-0">
               <svg
@@ -135,16 +137,17 @@ export function PlacesDisplay() {
         </div>
       )}
 
-      <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
-        <thead className="bg-[#2f3037]">
+    <div className="overflow-x-auto">
+        <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
+          <thead className="bg-[#2f3037]">
           <tr>
-            <th className="p-3 text-left">Name</th>
-            <th className="p-3 text-left">Latitude</th>
-            <th className="p-3 text-left">Longitude</th>
-            <th className="p-3 text-left">Zip code</th>
-            <th className="p-3 text-left">Province / State</th>
-            <th className="p-3 text-left">Country</th>
-            <th className="p-3 text-left">Actions</th>
+            <th className="p-3 text-left" scope="col">Name</th>
+            <th className="p-3 text-left" scope="col">Latitude</th>
+            <th className="p-3 text-left" scope="col">Longitude</th>
+            <th className="p-3 text-left" scope="col">Zip code</th>
+            <th className="p-3 text-left" scope="col">Province / State</th>
+            <th className="p-3 text-left" scope="col">Country</th>
+            <th className="p-3 text-left" scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -184,6 +187,7 @@ export function PlacesDisplay() {
           />,
           document.body
         )}
+    </div>
     </article>
   );
 }

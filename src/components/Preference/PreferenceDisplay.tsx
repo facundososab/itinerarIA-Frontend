@@ -5,6 +5,8 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { createPortal } from "react-dom";
 import DeletePreferenceWarningModal from "./DeletePreferenceWarningModal.tsx";
 import PreferenceRow from "./PreferenceRow.tsx";
+import TextModal from "../shared/TextModal.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 
 export function PreferenceDisplay() {
   const {
@@ -22,7 +24,8 @@ export function PreferenceDisplay() {
   const [preferenceToDelete, setPreferenceToDelete] = useState<ObjectId | null>(
     null
   );
-  const [showModal, setShowModal] = useState(false);
+  const [showModalWarning, setShowModalWarning] = useState(false);
+  const [showModalRestriction, setShowModalRestriction] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,7 +55,7 @@ export function PreferenceDisplay() {
   const onDelete = async (id: ObjectId) => {
     await deletePreference(id);
     setPreferences(preferences.filter((preference) => preference.id !== id));
-    setShowModal(false);
+    setShowModalWarning(false);
   };
 
   const handleUpdate = async () => {
@@ -137,7 +140,8 @@ export function PreferenceDisplay() {
               editingPreference={editingPreference}
               handleUpdate={handleUpdate}
               handleEdit={handleEdit}
-              setShowModal={setShowModal}
+              setShowModalWarning={setShowModalWarning}
+              setShowModalRestriction={setShowModalRestriction}
               setEditingPreference={setEditingPreference}
               setPreferenceToDelete={setPreferenceToDelete}
             />
@@ -145,15 +149,26 @@ export function PreferenceDisplay() {
         </tbody>
       </table>
 
-      {showModal &&
+      {showModalWarning &&
         createPortal(
-          <DeletePreferenceWarningModal
-            onClose={() => setShowModal(false)}
+          <DeleteWarningModal
+            onClose={() => setShowModalWarning(false)}
             onDelete={onDelete}
-            PreferenceId={preferenceToDelete}
+            id={preferenceToDelete}
+            text="Are you sure you want to delete this preference?"
+          />,
+          document.body
+        )}
+      
+      {showModalRestriction &&
+        createPortal(
+          <TextModal
+            onClose={() => setShowModalRestriction(false)}
+            text="You cannot delete this preference because it has participants associated with it."
           />,
           document.body
         )}
     </article>
   );
 }
+//

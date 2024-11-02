@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { UserCircleIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, LogOutIcon, UserIcon } from 'lucide-react'
+import { Button } from '@headlessui/react'
 
 interface ProfileMenuProps {
   isOpen: boolean
@@ -60,17 +61,18 @@ const ProfileMenu: React.FC<ProfileMenuProps> = ({
               <UserIcon className="inline-block h-4 w-4 mr-2" />
               My Account
             </NavLink>
-            <NavLink
-              to="/login"
+            
+            <Button
+              //to="/login"
               onClick={() => {
                 logout()
                 toggleProfile()
               }}
-              className="block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037]"
+              className="w-full block px-4 py-2 text-sm text-indigo-300 hover:bg-[#2f3037] text-left"
             >
               <LogOutIcon className="inline-block h-4 w-4 mr-2" />
               Log out
-            </NavLink>
+            </Button>
           </div>
         )}
       </div>

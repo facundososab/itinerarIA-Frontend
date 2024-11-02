@@ -2,6 +2,9 @@ import { PencilIcon, TrashIcon } from 'lucide-react'
 import Preference from '../../interfaces/Preference.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
 import { useState } from 'react'
+import { useParticipant } from '../../context/ParticipantContext.tsx'
+import { useEffect } from 'react'
+import { useAuth } from '../../context/AuthContext.tsx'
 
 export default function PreferenceRow({
   preference,
@@ -9,7 +12,8 @@ export default function PreferenceRow({
   setEditingPreference,
   handleUpdate,
   handleEdit,
-  setShowModal,
+  setShowModalWarning,
+  setShowModalRestriction,
   setPreferenceToDelete,
 }: {
   preference: Preference
@@ -17,10 +21,22 @@ export default function PreferenceRow({
   setEditingPreference: (preference: Preference | null) => void
   handleUpdate: () => void
   handleEdit: (preference: Preference) => void
-  setShowModal: (show: boolean) => void
+  setShowModalWarning: (show: boolean) => void
+  setShowModalRestriction: (show: boolean) => void
   setPreferenceToDelete: (id: ObjectId) => void
 }) {
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const {participants, getAllParticipants} = useParticipant();
+  const {user} = useAuth();
+
+  useEffect(() => {
+    const loadParticipants = async () => {
+        if (user) {
+            await getAllParticipants(user.id);
+        }
+    };
+    loadParticipants();
+}, []);
 
   const validate = () => {
     const newErrors: { [key: string]: string } = {}
@@ -46,6 +62,18 @@ export default function PreferenceRow({
       setErrors({}) // Clear errors
     }
   }
+
+  const handleDelete = async (preference: Preference) => {
+    const idPreference = preference.id;
+    const hasAnyParticipant = await participants?.some((participant) => participant.preferences.map((preference) => preference.id === idPreference));
+
+    if (hasAnyParticipant) {
+        setShowModalRestriction(true);
+    } else {
+        setShowModalWarning(true);
+        setPreferenceToDelete(preference.id);
+    }
+};
 
   return (
     <tr key={preference.id.toString()} className="border-b border-[#393a41]">
@@ -120,10 +148,7 @@ export default function PreferenceRow({
               <PencilIcon className="w-4 h-4" />
             </button>
             <button
-              onClick={() => {
-                setShowModal(true)
-                setPreferenceToDelete(preference.id)
-              }}
+              onClick={() => handleDelete(preference)}
               className="bg-red-600 text-white p-2 rounded hover:bg-red-700"
             >
               <TrashIcon className="w-4 h-4" />

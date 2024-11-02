@@ -50,11 +50,11 @@ export default function ParticipantRow({
     if (editingParticipant?.age === undefined) {
       newErrors.age = 'Age is required'
     } else if (
-      typeof editingParticipant.age !== 'number' ||
-      editingParticipant.age < 1 || // Ensure age is at least 1
+      //typeof editingParticipant.age !== 'number' ||
+      editingParticipant.age < 1 ||
       editingParticipant.age > 110
     ) {
-      newErrors.age = 'Age must be a positive number between 1 and 110'
+      newErrors.age = 'Age must be between 1 and 110'
     }
 
     // Validation for disability
@@ -64,9 +64,9 @@ export default function ParticipantRow({
     }
 
     // Validation for preferences
-    if (selectedPreferences.length === 0) {
-      newErrors.preferences = 'You must select at least one preference'
-    }
+    // if (selectedPreferences.length === 0) {
+    //   newErrors.preferences = 'You must select at least one preference'
+    // }
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0 // Returns true if there are no errors

@@ -32,12 +32,12 @@ export default function NewPlaceForm({
     })
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
-            <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
+        <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-2">
+      <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
                 <button
                     onClick={onClose}
                     className="absolute top-2 right-2 text-indigo-300 hover:text-indigo-100 transition-colors duration-200"
-                    aria-label="Close"
+          aria-label="Close"
                 >
                     <X size={24} />
                 </button>
