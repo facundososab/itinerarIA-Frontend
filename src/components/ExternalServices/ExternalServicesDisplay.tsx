@@ -34,7 +34,6 @@ export function ExternalServicesDisplay() {
     useState<ObjectId | null>(null)
   const [showModal, setShowModal] = useState(false)
 
-  // Close editing form if clicked outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Element | null
