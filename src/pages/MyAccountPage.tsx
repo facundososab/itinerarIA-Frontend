@@ -25,14 +25,11 @@ export default function MyAccountPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (formData) {
-      try {
-        updateUser(formData)
-        setEditMode(false)
-        setSuccessMessage('Your profile has been updated successfully!')
-        setTimeout(() => setSuccessMessage(null), 5000) // Clear message after 5 seconds
-      } catch (err: any) {}
+    formData && updateUser(formData)
+    if (authErrors.length === 0) {
+      setEditMode(false)
+      setSuccessMessage('Your profile has been updated successfully!')
+      setTimeout(() => setSuccessMessage(null), 5000) // Clear message after 5 seconds
     }
   }
 
@@ -99,15 +96,15 @@ export default function MyAccountPage() {
               </div>
               <div>
                 <label
-                  htmlFor="nombres"
+                  htmlFor="names"
                   className="block text-sm font-medium text-indigo-300"
                 >
                   First Name
                 </label>
                 <input
                   type="text"
-                  name="nombres"
-                  id="nombres"
+                  name="names"
+                  id="names"
                   className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   value={formData.names}
                   onChange={handleInputChange}
@@ -116,15 +113,15 @@ export default function MyAccountPage() {
               </div>
               <div>
                 <label
-                  htmlFor="apellidos"
+                  htmlFor="lastName"
                   className="block text-sm font-medium text-indigo-300"
                 >
                   Last Name
                 </label>
                 <input
                   type="text"
-                  name="apellidos"
-                  id="apellidos"
+                  name="lastName"
+                  id="lastName"
                   className="mt-1 block w-full h-12 px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   value={formData.lastName}
                   onChange={handleInputChange}
@@ -158,7 +155,7 @@ export default function MyAccountPage() {
               </div>
               <div>
                 <label
-                  htmlFor="fechaNacimiento"
+                  htmlFor="dateOfBirth"
                   className="block text-sm font-medium text-indigo-300"
                 >
                   Date of Birth (DD/MM/YYYY)
@@ -172,8 +169,8 @@ export default function MyAccountPage() {
                   </div>
                   <input
                     type="date"
-                    name="fechaNacimiento"
-                    id="fechaNacimiento"
+                    name="dateOfBirth"
+                    id="dateOfBirth"
                     className="mt-1 block w-full h-12 pl-10 pr-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     value={String(formData.dateOfBirth).split('T')[0]}
                     onChange={handleInputChange}

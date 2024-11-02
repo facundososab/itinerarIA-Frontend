@@ -90,8 +90,7 @@ export const AuthProvider = ({ children }: any) => {
       setUser(res.data.data)
       setAuthErrors([])
     } catch (err: any) {
-      const errorData = err.response.data.message
-      setAuthErrors(errorData)
+      setAuthErrors(err.response.data.message)
     }
   }
 
