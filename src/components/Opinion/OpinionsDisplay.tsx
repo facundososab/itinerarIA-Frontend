@@ -1,75 +1,66 @@
-import { X, Star, Edit2, Trash2, Check, X as Cancel } from "lucide-react";
-import Activity from "../../interfaces/Activity.ts";
-import Opinion from "../../interfaces/Opinion.ts";
-import { /*useCallback,*/ useCallback, useEffect, useState } from "react";
-import { useOpinion } from "../../context/OpinionContext.tsx";
-import { ObjectId } from "@mikro-orm/mongodb";
-import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import { X, Star, Edit2, Trash2, Check, X as Cancel } from 'lucide-react'
+import Activity from '../../interfaces/Activity.ts'
+import Opinion from '../../interfaces/Opinion.ts'
+import { useEffect, useState } from 'react'
+import { useOpinion } from '../../context/OpinionContext.tsx'
+import { ObjectId } from '@mikro-orm/mongodb'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
 
 export default function OpinionsDisplay({
   onClose,
   activity,
 }: {
-  onClose: () => void;
-  activity: Activity;
+  onClose: () => void
+  activity: Activity
 }) {
-  const { getAllOpinions, opinions, updateOpinion, deleteOpinion } =
-    useOpinion();
-  const [activityOpinions, setActivityOpinions] = useState<Opinion[]>([]);
-  const [showDeleteOpinionModal, setShowDeleteOpinionModal] = useState(false);
-  const [editingOpinionId, setEditingOpinionId] = useState<string | null>(null);
-  const [opinionToDelete, setOpinionToDelete] = useState<ObjectId | null>(null);
+  const { getAllOpinionsByActivity, opinions, updateOpinion, deleteOpinion } =
+    useOpinion()
+  const [showDeleteOpinionModal, setShowDeleteOpinionModal] = useState(false)
+  const [editingOpinionId, setEditingOpinionId] = useState<string | null>(null)
+  const [opinionToDelete, setOpinionToDelete] = useState<ObjectId | null>(null)
   const [editForm, setEditForm] = useState({
     rating: 0,
-    comment: "",
-  });
-
-  const loadOpinions = useCallback(async () => {
-    console.log("entra aca");
-    await getAllOpinions();
-    if (opinions)
-      setActivityOpinions(
-        opinions.filter(
-          (opinion) =>
-            opinion?.activity?.id?.toString() === activity?.id?.toString()
-        )
-      );
-    console.log(activityOpinions, opinions, "opiniones");
-  }, [getAllOpinions, opinions]);
+    comment: '',
+  })
 
   useEffect(() => {
-    loadOpinions();
-  }, []);
+    async function loadOpinions() {
+      getAllOpinionsByActivity(activity.id)
+    }
+    loadOpinions()
+    console.log('opinions', opinions)
+  }, [])
 
   const onDelete = async () => {
     if (opinionToDelete) {
-      deleteOpinion(opinionToDelete);
-      setShowDeleteOpinionModal(false);
+      deleteOpinion(opinionToDelete)
+      setShowDeleteOpinionModal(false)
     }
-  };
+    setOpinionToDelete(null)
+  }
+
   const onUpdate = async (opinion: Opinion) => {
     const updatedOpinion = {
       ...opinion,
       rating: editForm.rating,
       comment: editForm.comment,
-    };
-    await updateOpinion(updatedOpinion);
-    setEditingOpinionId(null);
-    loadOpinions();
-  };
+    }
+    updateOpinion(updatedOpinion)
+    setEditingOpinionId(null)
+  }
 
   const startEditing = (opinion: Opinion) => {
-    setEditingOpinionId(opinion.id.toString());
+    setEditingOpinionId(opinion.id.toString())
     setEditForm({
       rating: opinion.rating,
       comment: opinion.comment,
-    });
-  };
+    })
+  }
 
   const cancelEditing = () => {
-    setEditingOpinionId(null);
-    setEditForm({ rating: 0, comment: "" });
-  };
+    setEditingOpinionId(null)
+    setEditForm({ rating: 0, comment: '' })
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 px-4 sm:px-0">
@@ -85,10 +76,10 @@ export default function OpinionsDisplay({
           Opinions for {activity.name}
         </h2>
 
-        {activityOpinions && activityOpinions.length > 0 ? (
+        {opinions && opinions.length > 0 ? (
           <div className="space-y-6">
             <ul className="space-y-4">
-              {activityOpinions.map((opinion: Opinion) => (
+              {opinions.map((opinion: Opinion) => (
                 <li
                   key={opinion.id.toString()}
                   className="bg-[#26262c] p-4 rounded-lg"
@@ -109,13 +100,13 @@ export default function OpinionsDisplay({
                                 size={18}
                                 className={
                                   star <= editForm.rating
-                                    ? "text-yellow-400"
-                                    : "text-gray-400"
+                                    ? 'text-yellow-400'
+                                    : 'text-gray-400'
                                 }
                                 fill={
                                   star <= editForm.rating
-                                    ? "currentColor"
-                                    : "none"
+                                    ? 'currentColor'
+                                    : 'none'
                                 }
                               />
                             </button>
@@ -129,11 +120,11 @@ export default function OpinionsDisplay({
                               size={18}
                               className={
                                 star <= opinion.rating
-                                  ? "text-yellow-400"
-                                  : "text-gray-400"
+                                  ? 'text-yellow-400'
+                                  : 'text-gray-400'
                               }
                               fill={
-                                star <= opinion.rating ? "currentColor" : "none"
+                                star <= opinion.rating ? 'currentColor' : 'none'
                               }
                             />
                           ))}
@@ -141,7 +132,7 @@ export default function OpinionsDisplay({
                       )}
                     </div>
                     <span className="text-sm text-gray-400">
-                      {opinion.user?.username || "Anonymous"}
+                      {opinion.user?.username || 'Anonymous'}
                     </span>
                   </div>
 
@@ -183,8 +174,8 @@ export default function OpinionsDisplay({
                         </button>
                         <button
                           onClick={() => {
-                            setShowDeleteOpinionModal(true);
-                            setOpinionToDelete(opinion.id);
+                            setShowDeleteOpinionModal(true)
+                            setOpinionToDelete(opinion.id)
                           }}
                           className="p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200"
                           aria-label="Delete activity"
@@ -213,5 +204,5 @@ export default function OpinionsDisplay({
         )}
       </div>
     </div>
-  );
+  )
 }

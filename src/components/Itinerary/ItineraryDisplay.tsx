@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
-import { useItinerary } from "../../context/ItineraryContext";
-import { useActivity } from "../../context/ActivityContext";
-import { NewActivityButton } from "../Activity/NewActivityButton";
-import ActivityForm from "../Activity/ActivityForm";
+import { useCallback, useEffect, useState } from 'react'
+import { useItinerary } from '../../context/ItineraryContext'
+import { useActivity } from '../../context/ActivityContext'
+import { NewActivityButton } from '../Activity/NewActivityButton'
+import ActivityForm from '../Activity/ActivityForm'
 import {
   Search,
   Compass,
@@ -13,25 +13,25 @@ import {
   Trash2,
   MessageSquareMore,
   Eye,
-} from "lucide-react";
-import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+} from 'lucide-react'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
 //import { createPortal } from "react-dom";
-import { ObjectId } from "@mikro-orm/mongodb";
-import Activity from "../../interfaces/Activity.ts";
-import UpdateActivityModal from "../Activity/UpdateActivityModal.tsx";
-import ExternalServicesModal from "./ExternalServicesModal.tsx";
-import { createPortal } from "react-dom";
-import ParticipantsModal from "./ParticipantsModal.tsx";
-import { usePlace } from "../../context/PlaceContext.tsx";
-import { useAuth } from "../../context/AuthContext.tsx";
-import { useOpinion } from "../../context/OpinionContext.tsx";
-import Opinion from "../../interfaces/Opinion.ts";
-import OpinionForm from "../Opinion/OpinionForm.tsx";
-import OpinionsDisplay from "../Opinion/OpinionsDisplay.tsx";
-import Place from "../../interfaces/Place.ts";
+import { ObjectId } from '@mikro-orm/mongodb'
+import Activity from '../../interfaces/Activity.ts'
+import UpdateActivityModal from '../Activity/UpdateActivityModal.tsx'
+import ExternalServicesModal from './ExternalServicesModal.tsx'
+import { createPortal } from 'react-dom'
+import ParticipantsModal from './ParticipantsModal.tsx'
+import { usePlace } from '../../context/PlaceContext.tsx'
+import { useAuth } from '../../context/AuthContext.tsx'
+import { useOpinion } from '../../context/OpinionContext.tsx'
+import Opinion from '../../interfaces/Opinion.ts'
+import OpinionForm from '../Opinion/OpinionForm.tsx'
+import OpinionsDisplay from '../Opinion/OpinionsDisplay.tsx'
+import Place from '../../interfaces/Place.ts'
 
 export function ItineraryDisplay() {
-  const { CurrentItinerary, itineraries } = useItinerary();
+  const { CurrentItinerary, itineraries } = useItinerary()
 
   const {
     getAllActivities,
@@ -41,75 +41,75 @@ export function ItineraryDisplay() {
     updateActivity,
     setActivities,
     activityErrors,
-  } = useActivity();
-  const { user } = useAuth();
-  const { createOpinion, getAllOpinions, opinions } = useOpinion();
-  const { getAllPlaces, places } = usePlace();
-  const [showActivityForm, setShowActivityForm] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  } = useActivity()
+  const { user } = useAuth()
+  const { createOpinion, getAllOpinions, opinions } = useOpinion()
+  const { getAllPlaces, places } = usePlace()
+  const [showActivityForm, setShowActivityForm] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
 
   const [activityToUpdate, setActivityToUpdate] = useState<
     Activity | undefined
-  >(undefined);
+  >(undefined)
   const [activityToDelete, setActivityToDelete] = useState<ObjectId | null>(
     null
-  );
+  )
 
   const [filteredActivities, setFilteredActivities] = useState<
     Activity[] | null
-  >(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedPlace, setSelectedPlace] = useState<string>("");
-  const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null);
-  const [transportFilter, setTransportFilter] = useState<boolean | null>(null);
+  >(null)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedPlace, setSelectedPlace] = useState<string>('')
+  const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null)
+  const [transportFilter, setTransportFilter] = useState<boolean | null>(null)
   // const [scheduleFilter, setScheduleFilter] = useState<string>("");
-  const [showOpinionForm, setShowOpinionForm] = useState(false);
+  const [showOpinionForm, setShowOpinionForm] = useState(false)
   const [activityForOpinion, setActivityForOpinion] = useState<Activity | null>(
     null
-  );
-  const [showOpinionsDisplay, setShowOpinionsDisplay] = useState(false);
-  const [participantsModal, setParticipantsModal] = useState(false);
-  const [externalServicesModal, setExternalServicesModal] = useState(false);
+  )
+  const [showOpinionsDisplay, setShowOpinionsDisplay] = useState(false)
+  const [participantsModal, setParticipantsModal] = useState(false)
+  const [externalServicesModal, setExternalServicesModal] = useState(false)
   const [selectedActivityOpinions, setSelectedActivityOpinions] =
-    useState<Activity | null>(null);
-  const [isCreatedOrUpdated, setIsCreatedOrUpdated] = useState(false);
-  const [itineraryPlace, setItineraryPlace] = useState<Place | null>(null);
+    useState<Activity | null>(null)
+  const [isCreatedOrUpdated, setIsCreatedOrUpdated] = useState(false)
+  const [itineraryPlace, setItineraryPlace] = useState<Place | null>(null)
 
   const loadActivities = useCallback(async () => {
-    await getAllActivities();
-  }, [CurrentItinerary, getAllActivities, activities]);
+    await getAllActivities()
+  }, [CurrentItinerary, getAllActivities, activities])
 
   const loadOpinions = useCallback(async () => {
-    await getAllOpinions();
-  }, [getAllOpinions, opinions]);
+    await getAllOpinions()
+  }, [getAllOpinions, opinions])
   useEffect(() => {
     const loadPlaces = async () => {
-      await getAllPlaces();
+      await getAllPlaces()
       places?.find((place) => {
         if (CurrentItinerary?.place?.id?.toString() === place?.id?.toString()) {
-          setItineraryPlace(place);
+          setItineraryPlace(place)
         }
-      });
-    };
-    loadPlaces();
-  }, [CurrentItinerary, itineraries]);
+      })
+    }
+    loadPlaces()
+  }, [CurrentItinerary, itineraries])
 
   useEffect(() => {
     async function loadData() {
-      await loadActivities();
-      await loadOpinions();
+      await loadActivities()
+      await loadOpinions()
     }
-    loadData();
-    setIsCreatedOrUpdated(false);
-  }, [isCreatedOrUpdated]);
+    loadData()
+    setIsCreatedOrUpdated(false)
+  }, [isCreatedOrUpdated])
 
   useEffect(() => {
     if (CurrentItinerary && activities) {
       let filtered = activities.filter(
         (activity) =>
           activity.itinerary?.id?.toString() === CurrentItinerary.id?.toString()
-      );
+      )
 
       if (searchTerm) {
         filtered = filtered.filter(
@@ -118,25 +118,25 @@ export function ItineraryDisplay() {
             activity.description
               .toLowerCase()
               .includes(searchTerm.toLowerCase())
-        );
+        )
       }
 
       if (selectedPlace) {
         filtered = filtered.filter(
           (activity) => activity.place.id.toString() === selectedPlace
-        );
+        )
       }
 
       if (outdoorFilter !== null) {
         filtered = filtered.filter(
           (activity) => activity.outdoor === outdoorFilter
-        );
+        )
       }
 
       if (transportFilter !== null) {
         filtered = filtered.filter(
           (activity) => activity.transport === transportFilter
-        );
+        )
       }
 
       // if (scheduleFilter) {
@@ -155,7 +155,7 @@ export function ItineraryDisplay() {
       //   });
       // }
 
-      setFilteredActivities(filtered);
+      setFilteredActivities(filtered)
     }
   }, [
     CurrentItinerary,
@@ -165,56 +165,56 @@ export function ItineraryDisplay() {
     outdoorFilter,
     transportFilter,
     //scheduleFilter,
-  ]);
+  ])
 
   const handleViewOpinions = (activity: Activity) => {
-    setSelectedActivityOpinions(activity);
-    setShowOpinionsDisplay(true);
-  };
+    setSelectedActivityOpinions(activity)
+    setShowOpinionsDisplay(true)
+  }
 
   const handleCreateActivity = async (newActivity: Activity) => {
     if (CurrentItinerary) {
       createActivity({
         ...newActivity,
         itinerary: CurrentItinerary.id,
-      } as Activity);
-      setShowActivityForm(false);
-      console.log("entre aca");
-      setIsCreatedOrUpdated(true);
-      loadActivities();
+      } as Activity)
+      setShowActivityForm(false)
+      console.log('entre aca')
+      setIsCreatedOrUpdated(true)
+      loadActivities()
     }
-  };
+  }
   const onUpdateActivity = (data: Activity) => {
     if (CurrentItinerary) {
-      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
-      updateActivity({ ...updatedActivity } as Activity);
+      const updatedActivity = { ...data, itinerary: CurrentItinerary.id }
+      updateActivity({ ...updatedActivity } as Activity)
     }
     const updatedActivities = activities.map((activity) =>
       activity.id === data.id ? data : activity
-    );
-    setActivities(updatedActivities);
-    setShowUpdateModal(false);
-    setIsCreatedOrUpdated(true);
-    loadActivities();
-  };
+    )
+    setActivities(updatedActivities)
+    setShowUpdateModal(false)
+    setIsCreatedOrUpdated(true)
+    loadActivities()
+  }
   const onDeleteActivity = (activityId: ObjectId) => {
-    console.log("Deleting activity", activityId);
-    deleteActivity(activityId);
-    setShowDeleteModal(false);
-  };
+    console.log('Deleting activity', activityId)
+    deleteActivity(activityId)
+    setShowDeleteModal(false)
+  }
   const handleCreateOpinion = async (opinion: Opinion) => {
-    console.log(opinion);
+    console.log(opinion)
     if (activityForOpinion) {
       createOpinion({
         ...opinion,
         activity: activityForOpinion.id,
         user: user?.id,
-      } as Opinion);
-      setShowOpinionForm(false);
-      setIsCreatedOrUpdated(true);
-      loadOpinions();
+      } as Opinion)
+      setShowOpinionForm(false)
+      setIsCreatedOrUpdated(true)
+      loadOpinions()
     }
-  };
+  }
 
   return (
     <div className="space-y-6 p-6 bg-[#1c1c21] rounded-lg shadow-lg">
@@ -238,8 +238,8 @@ export function ItineraryDisplay() {
           </button>
           <button
             onClick={() => {
-              setExternalServicesModal(true);
-              console.log(externalServicesModal);
+              setExternalServicesModal(true)
+              console.log(externalServicesModal)
             }}
             className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
           >
@@ -323,10 +323,10 @@ export function ItineraryDisplay() {
           </div>
           <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
             <select
-              value={outdoorFilter === null ? "" : outdoorFilter.toString()}
+              value={outdoorFilter === null ? '' : outdoorFilter.toString()}
               onChange={(e) =>
                 setOutdoorFilter(
-                  e.target.value === "" ? null : e.target.value === "true"
+                  e.target.value === '' ? null : e.target.value === 'true'
                 )
               }
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -336,10 +336,10 @@ export function ItineraryDisplay() {
               <option value="false">Indoor</option>
             </select>
             <select
-              value={transportFilter === null ? "" : transportFilter.toString()}
+              value={transportFilter === null ? '' : transportFilter.toString()}
               onChange={(e) =>
                 setTransportFilter(
-                  e.target.value === "" ? null : e.target.value === "true"
+                  e.target.value === '' ? null : e.target.value === 'true'
                 )
               }
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -377,13 +377,13 @@ export function ItineraryDisplay() {
                     <div className="flex flex-wrap space-x-4 text-sm text-gray-500">
                       <span className="flex items-center">
                         <Compass size={16} className="mr-1 text-indigo-400" />
-                        {activity.outdoor ? "Outdoor" : "Indoor"}
+                        {activity.outdoor ? 'Outdoor' : 'Indoor'}
                       </span>
                       <span className="flex items-center">
                         <Truck size={16} className="mr-1 text-indigo-400" />
                         {activity.transport
-                          ? "Transport needed"
-                          : "No transport"}
+                          ? 'Transport needed'
+                          : 'No transport'}
                       </span>
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1 text-indigo-400" />
@@ -407,8 +407,8 @@ export function ItineraryDisplay() {
                   <div className="flex space-x-2 mt-4 sm:mt-0">
                     <button
                       onClick={() => {
-                        setShowUpdateModal(true);
-                        setActivityToUpdate(activity);
+                        setShowUpdateModal(true)
+                        setActivityToUpdate(activity)
                       }}
                       className="p-2 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200"
                       aria-label="Edit activity"
@@ -417,8 +417,8 @@ export function ItineraryDisplay() {
                     </button>
                     <button
                       onClick={() => {
-                        setShowOpinionForm(true);
-                        setActivityForOpinion(activity);
+                        setShowOpinionForm(true)
+                        setActivityForOpinion(activity)
                       }}
                       className="p-2 rounded-full bg-blue-800 hover:bg-blue-950 transition-colors duration-200"
                       aria-label="Create Opinion"
@@ -434,8 +434,8 @@ export function ItineraryDisplay() {
                     </button>
                     <button
                       onClick={() => {
-                        setShowDeleteModal(true);
-                        setActivityToDelete(activity.id);
+                        setShowDeleteModal(true)
+                        setActivityToDelete(activity.id)
                       }}
                       className="p-2 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200"
                       aria-label="Delete activity"
@@ -512,5 +512,5 @@ export function ItineraryDisplay() {
         />
       )}
     </div>
-  );
+  )
 }
