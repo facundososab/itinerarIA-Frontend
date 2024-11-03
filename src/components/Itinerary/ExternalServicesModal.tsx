@@ -1,29 +1,29 @@
-import { useEffect } from 'react'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { useExternalServices } from '../../context/ExternalServicesContext'
-import { X, MapPin, Clock, Globe, Phone } from 'lucide-react'
+import { useEffect } from "react";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { useExternalServices } from "../../context/ExternalServicesContext";
+import { X, MapPin, Clock, Globe, Phone } from "lucide-react";
 
 export default function ExternalServicesModal({
   idLugar,
   onClose,
 }: {
-  idLugar: ObjectId | undefined
-  onClose: () => void
+  idLugar: ObjectId | undefined;
+  onClose: () => void;
 }) {
   const { externalServices, getAllExternalServicesByPlace } =
-    useExternalServices()
+    useExternalServices();
 
   useEffect(() => {
-    console.log(externalServices)
+    console.log(externalServices);
     const loadServices = async (idLugar: ObjectId) => {
-      getAllExternalServicesByPlace(idLugar)
-      console.log('Loading external services for place', idLugar)
-    }
+      getAllExternalServicesByPlace(idLugar);
+      console.log("Loading external services for place", idLugar);
+    };
 
     if (idLugar) {
-      loadServices(idLugar)
+      loadServices(idLugar);
     }
-  }, []) // Asegúrate de incluir la función aquí
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -41,7 +41,7 @@ export default function ExternalServicesModal({
               <X size={24} />
             </button>
           </div>
-          {externalServices.length > 0 ? (
+          {externalServices && externalServices.length > 0 && (
             <ul className="space-y-6">
               {externalServices.map((service, i) => (
                 <li key={i} className="bg-[#26262c] rounded-lg p-4 shadow-md">
@@ -82,13 +82,15 @@ export default function ExternalServicesModal({
                 </li>
               ))}
             </ul>
-          ) : (
-            <p className="text-indigo-300 text-center py-8">
-              No external services available for this location.
+          )}
+          {!externalServices && (
+            <p className="text-indigo-300">
+              No external services found for this place
             </p>
           )}
         </div>
       </div>
+      p
     </div>
-  )
+  );
 }

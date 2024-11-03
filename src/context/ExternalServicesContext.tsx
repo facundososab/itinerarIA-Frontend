@@ -4,8 +4,8 @@ import {
   useContext,
   useEffect,
   useState,
-} from 'react'
-import ExternalService from '../interfaces/ExternalService.ts'
+} from "react";
+import ExternalService from "../interfaces/ExternalService.ts";
 import {
   createExternalServiceRequest,
   deleteExternalServiceRequest,
@@ -13,8 +13,8 @@ import {
   getExternalServiceRequest,
   getExternalServicesByPlaceRequest,
   updateExternalServiceRequest,
-} from '../auth/externalService.ts'
-import { ObjectId } from '@mikro-orm/mongodb'
+} from "../auth/externalService.ts";
+import { ObjectId } from "@mikro-orm/mongodb";
 
 export const ExternalServicesContext = createContext({
   externalServices: [] as ExternalService[],
@@ -29,103 +29,103 @@ export const ExternalServicesContext = createContext({
   deleteExternalService: (_id: ObjectId) => {},
   externalServiceErrors: [],
   setExternalServiceErrors: (_externalServiceErrors: []) => {},
-})
+});
 
 export const useExternalServices = () => {
-  const context = useContext(ExternalServicesContext)
+  const context = useContext(ExternalServicesContext);
   if (!context) {
     throw new Error(
-      'useExternalServices must be used within a ExternalServicesProvider'
-    )
+      "useExternalServices must be used within a ExternalServicesProvider"
+    );
   }
-  return context
-}
+  return context;
+};
 
 export function ExternalServicesProvider({
   children,
 }: {
-  children: ReactNode
+  children: ReactNode;
 }) {
   const [externalServices, setExternalServices] = useState<ExternalService[]>(
     []
-  )
+  );
   const [externalService, setExternalService] =
-    useState<ExternalService | null>(null)
+    useState<ExternalService | null>(null);
 
-  const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([])
+  const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([]);
 
   const getAllExternalServices = async () => {
     try {
-      const res = await getAllExternalServicesRequest()
-      res && setExternalServices(res.data.data)
+      const res = await getAllExternalServicesRequest();
+      res && setExternalServices(res.data.data);
     } catch (err: any) {
-      setExternalServiceErrors(err.response.data.message)
+      setExternalServiceErrors(err.response.data.message);
     }
-  }
+  };
 
-  const getAllExternalServicesByPlace = async (id: ObjectId) => {
+  const getAllExternalServicesByPlace = async (placeId: ObjectId) => {
     try {
-      const res = await getExternalServicesByPlaceRequest(id)
-      res && setExternalServices(res.data.data)
+      const res = await getExternalServicesByPlaceRequest(placeId);
+      res && setExternalServices(res.data.data);
     } catch (err: any) {
-      console.log(err.response.data.message)
-      setExternalServiceErrors(err.response.data.message)
+      console.log(err.response.data.message);
+      setExternalServiceErrors(err.response.data.message);
     }
-  }
+  };
 
   const getOneExternalService = async (id: ObjectId) => {
     try {
-      const res = await getExternalServiceRequest(id)
-      setExternalService(res.data.data)
+      const res = await getExternalServiceRequest(id);
+      setExternalService(res.data.data);
     } catch (err: any) {
-      setExternalServiceErrors(err.response.data.message)
+      setExternalServiceErrors(err.response.data.message);
     }
-  }
+  };
 
   const createExternalService = async (externalService: ExternalService) => {
     try {
-      const res = await createExternalServiceRequest(externalService)
+      const res = await createExternalServiceRequest(externalService);
       setExternalServices((prevExternalServices) => [
         ...(prevExternalServices || []),
         res.data.data,
-      ])
+      ]);
     } catch (err: any) {
-      console.log(err, 'err')
-      setExternalServiceErrors(err.response.data.message)
+      console.log(err, "err");
+      setExternalServiceErrors(err.response.data.message);
     }
-  }
+  };
 
   const updateExternalService = async (externalService: ExternalService) => {
     try {
-      await updateExternalServiceRequest(externalService)
+      await updateExternalServiceRequest(externalService);
       setExternalServices(
         externalServices.map((es) =>
           es.id === externalService.id ? externalService : es
         )
-      )
+      );
     } catch (err: any) {
-      setExternalServiceErrors(err.response.data.message)
+      setExternalServiceErrors(err.response.data.message);
     }
-  }
+  };
 
   const deleteExternalService = async (id: ObjectId) => {
     try {
-      const res = await deleteExternalServiceRequest(id)
-      setExternalService(res.data.data)
+      const res = await deleteExternalServiceRequest(id);
+      setExternalService(res.data.data);
     } catch (err: any) {
-      setExternalServiceErrors(err.response.data.message)
+      setExternalServiceErrors(err.response.data.message);
     }
-  }
+  };
 
   //Elimino msj despues de 2 segundos
   useEffect(() => {
     if (externalServiceErrors.length > 0) {
       const timer = setTimeout(() => {
-        setExternalServiceErrors([])
-      }, 4000)
-      return () => clearTimeout(timer)
+        setExternalServiceErrors([]);
+      }, 4000);
+      return () => clearTimeout(timer);
     }
-  }, [externalServiceErrors])
+  }, [externalServiceErrors]);
 
   return (
     <ExternalServicesContext.Provider
@@ -146,5 +146,5 @@ export function ExternalServicesProvider({
     >
       {children}
     </ExternalServicesContext.Provider>
-  )
+  );
 }
