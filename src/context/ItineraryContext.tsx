@@ -21,6 +21,7 @@ export const ItineraryContext = createContext({
   updateItinerary: (_itinerary: Itinerary) => {},
   deleteItinerary: (_id: ObjectId) => {},
   CurrentItinerary: null as Itinerary | null,
+  setCurrentItinerary: (_itinerary: Itinerary) => {},
   // handleNewItinerary: (_itinerary: Itinerary) => {},
   handleSelectItinerary: (_id: ObjectId) => {},
   itineraryErrors: [] as string[],
@@ -68,9 +69,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const createItinerary = async (itinerary: Itinerary) => {
     try {
-      console.log(itinerary);
       itinerary.user = user ? user.id : null;
       const res = await createItineraryRequest(itinerary);
+      console.log(res);
       // itineraries?.push(res.data.data)
       setItineraries([...(itineraries as Itinerary[]), res.data.data]);
       // handleNewItinerary(res.data.data);
@@ -80,6 +81,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
       console.log(res.data);
     } catch (error: any) {
+      console.log(error);
       const errorData = error.response.data.message;
       setItineraryErrors(errorData);
     }
@@ -152,6 +154,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
         // handleNewItinerary,
         handleSelectItinerary,
         itineraryErrors,
+        setCurrentItinerary,
       }}
     >
       {children}

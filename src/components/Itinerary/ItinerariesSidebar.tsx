@@ -55,13 +55,16 @@ export default function ItinerariesSidebar() {
   }, []);
 
   useEffect(() => {
-    // itineraries ? setItineraries(itineraries) : null;
     if (itineraries) {
       setFilteredItineraries(
         selectedPlace
           ? itineraries.filter(
               (itinerary) =>
-                itinerary.place?.id.toString() === selectedPlace.toString()
+                itinerary.place?.id.toString() === selectedPlace.toString() ||
+                itinerary.activities.some(
+                  (activity) =>
+                    activity.place?.toString() === selectedPlace.toString()
+                )
             )
           : itineraries
       );
