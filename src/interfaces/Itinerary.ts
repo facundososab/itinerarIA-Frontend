@@ -7,7 +7,8 @@ export default interface Itinerary {
     id: ObjectId,
     title: string,
     description: string,
-    duration: number,
+    dayStart: Date,
+    dayEnd: Date,
     user: ObjectId | null,
     place : Place 
     preferences: string,

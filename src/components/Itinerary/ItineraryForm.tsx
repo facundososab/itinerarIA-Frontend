@@ -126,6 +126,7 @@ export default function InputNewItinerary({
                   id="description"
                   type="text"
                   {...register("description", {
+                    required: "Description is required",
                     minLength: {
                       value: 10,
                       message:
@@ -147,7 +148,7 @@ export default function InputNewItinerary({
                 )}
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   htmlFor="duration"
                   className="block text-sm font-medium text-indigo-300"
@@ -175,6 +176,51 @@ export default function InputNewItinerary({
                 {errors.duration?.message && (
                   <p className="mt-1 text-sm text-red-400">
                     {errors.duration.message}
+                  </p>
+                )}
+              </div> */}
+              <div>
+                <label
+                  htmlFor="dayStart"
+                  className="block text-sm font-medium text-indigo-300"
+                >
+                  Start date
+                </label>
+                <input
+                  id="dayStart"
+                  type="date"
+                  {...register("dayStart", {
+                    required: "Start day is required",
+                  })}
+                  className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Enter itinerary start date"
+                />
+                {errors.dayStart?.message && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.dayStart.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="duration"
+                  className="block text-sm font-medium text-indigo-300"
+                >
+                  End date
+                </label>
+                <input
+                  id="dayEnd"
+                  type="date"
+                  {...register("dayEnd", {
+                    required: "End day is required",
+                  })}
+                  className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Enter itinerary dayEnd"
+                />
+                {errors.dayEnd?.message && (
+                  <p className="mt-1 text-sm text-red-400">
+                    {errors.dayEnd.message}
                   </p>
                 )}
               </div>

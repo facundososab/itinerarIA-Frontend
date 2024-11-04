@@ -18,8 +18,9 @@ export default function ItinerariesSidebar() {
     updateItinerary,
     // CurrentItinerary,
     itineraries,
-    setItineraries,
+    // setItineraries,
     getItineraries,
+    itineraryErrors,
   } = useItinerary();
   const { places, getAllPlaces } = usePlace();
   const { user } = useAuth();
@@ -37,9 +38,9 @@ export default function ItinerariesSidebar() {
     Itinerary[] | null
   >(itineraries);
 
-  const loadPlaces = useCallback(async () => {
-    await getAllPlaces();
-  }, [getAllPlaces, itineraries]);
+  // const loadPlaces = useCallback(async () => {
+  //   await getAllPlaces();
+  // }, [getAllPlaces, itineraries]);
 
   const loadItineraries = useCallback(async () => {
     if (user) await getItineraries(user?.id);
@@ -102,6 +103,43 @@ export default function ItinerariesSidebar() {
           />
         </div>
       </div>
+      {itineraryErrors && itineraryErrors?.length > 0 && (
+        <div
+          className="bg-red-50 border-l-4 border-red-400 p-4 mb-6"
+          role="alert"
+          aria-live="assertive"
+        >
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                There were some errors with your itinerary
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <ul className="list-disc pl-5 space-y-1">
+                  {itineraryErrors.map((error, index) => (
+                    <li key={index}>{error}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="overflow-y-auto flex-grow">
         {filteredItineraries?.length === 0 && (
           <div className="p-4 text-gray-500 text-center">
@@ -120,7 +158,14 @@ export default function ItinerariesSidebar() {
               </div>
               <div className="text-sm text-gray-500 flex items-center">
                 <CalendarIcon className="h-4 w-4 mr-2" />
-                {itinerary.duration} days
+                {(
+                  Math.abs(
+                    new Date(itinerary.dayEnd).getTime() -
+                      new Date(itinerary.dayStart).getTime()
+                  ) /
+                  (1000 * 60 * 60 * 24)
+                ).toFixed(0)}{" "}
+                {"days"}
               </div>
               <div className="text-sm text-gray-500 flex items-center">
                 <MapPin className="h-4 w-4 mr-2" />
