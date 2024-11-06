@@ -29,7 +29,6 @@ import Opinion from "../../interfaces/Opinion.ts";
 import OpinionForm from "../Opinion/OpinionForm.tsx";
 import OpinionsDisplay from "../Opinion/OpinionsDisplay.tsx";
 import Place from "../../interfaces/Place.ts";
-
 export function ItineraryDisplay() {
   const { CurrentItinerary, itineraries } = useItinerary();
 

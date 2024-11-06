@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { createPortal } from "react-dom";
-import { X, Check, Plus, Trash2 } from "lucide-react";
+import { X, Check, Plus, Trash2, WandSparklesIcon } from "lucide-react";
 import { ObjectId } from "@mikro-orm/mongodb";
 import Itinerary from "../../interfaces/Itinerary";
 import Preference from "../../interfaces/Preference";
@@ -12,16 +12,13 @@ import { useParticipant } from "../../context/ParticipantContext";
 import FavoriteParticipantsModal from "./FavoriteParticipantsModal";
 import { useAuth } from "../../context/AuthContext";
 
-export default function InputNewItinerary({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function ItineraryForm({ onClose }: { onClose: () => void }) {
   const [favoriteParticipantsModal, setFavoriteParticipantsModal] =
     useState(false);
 
   const { user } = useAuth();
-  const { createItinerary, itineraries } = useItinerary();
+  const { createItinerary, itineraries, createItineraryWithIA } =
+    useItinerary();
   const { places, getAllPlaces } = usePlace();
   const { preferences, getPreferences } = usePreference();
   const { getAllParticipants: getFavoriteParticipants } = useParticipant();
@@ -64,10 +61,14 @@ export default function InputNewItinerary({
   };
 
   const onCreate = handleSubmit((data) => {
-    createItinerary(data);
+    const submitter = document.activeElement?.getAttribute("name");
+    if (submitter !== "isIA") {
+      createItinerary(data);
+    } else {
+      createItineraryWithIA(data);
+    }
     onClose();
   });
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-4 overflow-y-auto">
       <div className="bg-[#1c1c21] rounded-lg shadow-lg relative">
@@ -82,7 +83,7 @@ export default function InputNewItinerary({
           <h2 className="text-2xl font-bold text-indigo-100 mb-6">
             New Itinerary
           </h2>
-          <form onSubmit={onCreate} className="space-y-6">
+          <form className="space-y-6" onSubmit={onCreate}>
             <div className="space-y-4">
               <div>
                 <label
@@ -445,9 +446,18 @@ export default function InputNewItinerary({
             <div>
               <button
                 type="submit"
+                name="notIA"
                 className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
               >
                 Create Itinerary
+              </button>
+              <button
+                type="submit"
+                name="isIA"
+                className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-colors duration-200 flex items-center justify-center mt-3"
+              >
+                <WandSparklesIcon className="h-5 w-5 mr-2" />
+                Generate Itinerary
               </button>
             </div>
           </form>

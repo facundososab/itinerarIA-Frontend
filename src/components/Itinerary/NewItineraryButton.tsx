@@ -1,10 +1,10 @@
-import InputNewItinerary from './ItineraryForm.tsx'
-import { createPortal } from 'react-dom'
-import { useState } from 'react'
-import { PlusIcon } from 'lucide-react'
+import ItineraryForm from "./ItineraryForm";
+import { createPortal } from "react-dom";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
 
 export function NewItineraryButton() {
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
   return (
     <>
       <button
@@ -16,9 +16,9 @@ export function NewItineraryButton() {
       </button>
       {showModal &&
         createPortal(
-          <InputNewItinerary onClose={() => setShowModal(false)} />,
+          <ItineraryForm onClose={() => setShowModal(false)} />,
           document.body
         )}
     </>
-  )
+  );
 }
