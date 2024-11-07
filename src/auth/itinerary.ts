@@ -3,7 +3,11 @@ import Itinerary from '../interfaces/Itinerary'
 import { ObjectId } from "@mikro-orm/mongodb";
 
 export const createItineraryRequest = (itinerary: Itinerary) => {
-  return instance.post('/itinerarios', itinerary)
+  return instance.post('/itinerarios/', itinerary)
+}
+
+export const createItineraryWithIARequest = (itinerary:Itinerary) =>{
+  return instance.post('/itinerarios/ia',itinerary)
 }
 
 export const getItinerariesRequest = async (userId: ObjectId) => {

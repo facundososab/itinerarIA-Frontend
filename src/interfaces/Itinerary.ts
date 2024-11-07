@@ -4,10 +4,11 @@ import Activity from "./Activity";
 import Participant from "./Participant.ts";
 
 export default interface Itinerary {
-    id: ObjectId,
+    id: ObjectId ,
     title: string,
     description: string,
-    duration: number,
+    dayStart: Date,
+    dayEnd: Date,
     user: ObjectId | null,
     place : Place 
     preferences: string,

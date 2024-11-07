@@ -1,6 +1,5 @@
 import { ObjectId } from "@mikro-orm/mongodb";
 import Itinerary from "../../interfaces/Itinerary.ts";
-import { useAuth } from "../../context/AuthContext.tsx";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Check, Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
@@ -37,8 +36,7 @@ function UpdateItineraryModal({
       participants: [],
     },
   });
-  const { itineraries } = useAuth();
-  const { CurrentItinerary } = useItinerary();
+  const { CurrentItinerary, itineraries } = useItinerary();
   const { getAllActivities, activities } = useActivity();
   const { preferences } = usePreference();
 
@@ -65,6 +63,12 @@ function UpdateItineraryModal({
     control,
     name: "participants",
   });
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   if (!itineraryToUpdate) return null;
   const onEdit = handleSubmit((data) => {
     const itineraryUpdate: Itinerary = {
@@ -100,7 +104,8 @@ function UpdateItineraryModal({
     if (itineraryToUpdate) {
       setValue("title", itineraryToUpdate.title);
       setValue("description", itineraryToUpdate.description);
-      setValue("duration", itineraryToUpdate.duration);
+      setValue("dayStart", formatDate(new Date(itineraryToUpdate.dayStart)));
+      setValue("dayEnd", formatDate(new Date(itineraryToUpdate.dayEnd)));
       setValue("place", itineraryToUpdate.place.id);
       setValue("participants", itineraryToUpdate.participants);
     }
@@ -181,7 +186,7 @@ function UpdateItineraryModal({
             )}
           </div>
 
-          <div>
+          {/* <div>
             <label
               htmlFor="duration"
               className="block text-sm font-medium text-indigo-300"
@@ -203,6 +208,51 @@ function UpdateItineraryModal({
             {errors.duration?.message && (
               <p className="mt-1 text-sm text-red-400">
                 {errors.duration.message}
+              </p>
+            )}
+          </div> */}
+          <div>
+            <label
+              htmlFor="dayStart"
+              className="block text-sm font-medium text-indigo-300"
+            >
+              Start date
+            </label>
+            <input
+              id="dayStart"
+              type="date"
+              {...register("dayStart", {
+                required: "Start day is required",
+              })}
+              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter itinerary start date"
+            />
+            {errors.dayStart?.message && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.dayStart.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label
+              htmlFor="duration"
+              className="block text-sm font-medium text-indigo-300"
+            >
+              End date
+            </label>
+            <input
+              id="dayEnd"
+              type="date"
+              {...register("dayEnd", {
+                required: "End day is required",
+              })}
+              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter itinerary dayEnd"
+            />
+            {errors.dayEnd?.message && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.dayEnd.message}
               </p>
             )}
           </div>
