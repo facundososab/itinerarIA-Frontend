@@ -10,8 +10,8 @@ Lista de dependencias y versiones necesarias para ejecutar el proyecto:
 Instrucciones para clonar el repositorio e instalar dependencias:
 
 ```bash
-git clone https://github.com/tuusuario/nombre-proyecto.git
-cd nombre-proyecto
+git clone https://github.com/facundososab/itinerarIA-Frontend.git
+cd itinerarIA-Frontend
 npm install
 ```
 
