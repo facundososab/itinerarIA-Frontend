@@ -1,13 +1,12 @@
 # ItinerarIA - Frontend
 
-## Requisitos previos
-Lista de dependencias y versiones necesarias para ejecutar el proyecto:
-- Node.js (versión 21.7.1 o superior)
+## Prerequisites
+List of necessary dependencies and versions to run the project:
+- Node.js (version 21.7.1 or higher)
 - npm
 
-## Instalación
-
-Instrucciones para clonar el repositorio e instalar dependencias:
+## Installation
+Instructions to clone the repository and install dependencies:
 
 ```bash
 git clone https://github.com/facundososab/itinerarIA-Frontend.git
@@ -15,22 +14,22 @@ cd itinerarIA-Frontend
 npm install
 ```
 
-Debe crear un archivo .env para definir la ruta del backend de la aplicación, de la siguiente manera:
+You must create a .env file to define the Backend API URL for the application as follows:
 
 ```bash
 VITE_API_URL = 'http://example:1000'
 ```
-Por defecto será http://localhost:3000
+By default, it will be set to http://localhost:3000.
 
-## Uso
-Cómo ejecutar la aplicación en un entorno de desarrollo:
+## Usage
+How to run the application in a development environment:
 
 ```bash
 npm run dev
 ```
 
-Esto abrirá la aplicación en http://localhost:5173 (puedes ajustar la URL en el archivo vite.config.ts).
+This will open the application at http://localhost:5173 (you can adjust the URL in the vite.config.ts file).
 
-Para que la aplicación funcione correctamente, el backend debe estar ejecutandose ([ItinerarIA-Backend](https://github.com/TomasSanchezMachado/itinerarIA-Backend))
+To ensure the application runs correctly, the backend must be running. You can find it here: ([ItinerarIA-Backend](https://github.com/TomasSanchezMachado/itinerarIA-Backend))
 
 
