@@ -9,8 +9,9 @@ export default interface Activity {
     description: string;
     outdoor: boolean;
     transport:boolean;
-    schedule:string;
+    scheduleStart:string;
+    scheduleEnd:string;
     place: Place;
-    itinerary: ObjectId;
+    itinerary: Itinerary;
     opinions: Opinion[];
 }

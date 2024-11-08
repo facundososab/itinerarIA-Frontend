@@ -72,14 +72,18 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const createItinerary = async (itinerary: Itinerary) => {
     try {
-      itinerary.user = user ? user.id : null;
+      if (user) {
+        itinerary.user = user;
+      } else {
+        throw new Error("User is not logged in");
+      }
       const res = await createItineraryRequest(itinerary);
       console.log(res);
       if (res.status === 201) {
         // itineraries?.push(res.data.data);
         setItineraries([...(itineraries as Itinerary[]), res.data.data]);
         handleNewItinerary(res.data.data);
-        if (itinerary.user) await getItineraries(itinerary.user);
+        if (itinerary.user) await getItineraries(itinerary.user.id);
         console.log(itineraries);
         setItineraryErrors([]);
         console.log(res.data);
@@ -95,13 +99,17 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     setIsLoaded(false);
     setCurrentItinerary(null);
     try {
-      itinerary.user = user ? user.id : null;
+      if (user) {
+        itinerary.user = user;
+      } else {
+        throw new Error("User is not logged in");
+      }
       const res = await createItineraryWithIARequest(itinerary);
       console.log(res);
       // itineraries?.push(res.data.data);
       setItineraries([...(itineraries as Itinerary[]), res.data.data]);
       handleNewItinerary(res.data.data);
-      if (itinerary.user) await getItineraries(itinerary.user);
+      if (itinerary.user) await getItineraries(itinerary.user.id);
       console.log(itineraries);
       setItineraryErrors([]);
 
@@ -151,7 +159,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       );
       itineraries ? setItineraries(newItineraries as Itinerary[]) : null;
       handleNewItinerary(itineraryUpdated);
-      if (itinerary.user) await getItineraries(itinerary.user);
+      if (itinerary.user) await getItineraries(itinerary.user.id);
       setItineraryErrors([]);
     } catch (error: any) {
       const errorData = error.response.data.message;

@@ -175,7 +175,7 @@ export function ItineraryDisplay() {
     if (CurrentItinerary) {
       createActivity({
         ...newActivity,
-        itinerary: CurrentItinerary.id,
+        itinerary: CurrentItinerary,
       } as Activity);
       setShowActivityForm(false);
       console.log("entre aca");
@@ -185,7 +185,7 @@ export function ItineraryDisplay() {
   };
   const onUpdateActivity = (data: Activity) => {
     if (CurrentItinerary) {
-      const updatedActivity = { ...data, itinerary: CurrentItinerary.id };
+      const updatedActivity = { ...data, itinerary: CurrentItinerary };
       updateActivity({ ...updatedActivity } as Activity);
     }
     const updatedActivities = activities.map((activity) =>
@@ -202,13 +202,11 @@ export function ItineraryDisplay() {
     setShowDeleteModal(false);
   };
   const handleCreateOpinion = async (opinion: Opinion) => {
-    console.log(opinion);
-    console.log(user);
     if (activityForOpinion) {
       createOpinion({
         ...opinion,
-        activity: activityForOpinion.id,
-        user: user?.id,
+        activity: activityForOpinion,
+        user: user,
       } as Opinion);
       setShowOpinionForm(false);
       setIsCreatedOrUpdated(true);
@@ -387,13 +385,9 @@ export function ItineraryDisplay() {
                       </span>
                       <span className="flex items-center">
                         <Clock size={16} className="mr-1 text-indigo-400" />
-                        {
-                          /* {new Date(
-                          activity.schedule
-                        ).toLocaleTimeString()} -{" "}
-                        {new Date(activity.schedule).toLocaleTimeString()} */
-                          activity.schedule
-                        }
+                        {activity.scheduleStart}
+                        {" - "}
+                        {activity.scheduleEnd}
                       </span>
                     </div>
                     <p className="text-sm font-semibold text-gray-400 mt-2">

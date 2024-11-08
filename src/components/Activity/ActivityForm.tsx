@@ -127,31 +127,45 @@ export default function ActivityForm({
           <div>
             <div>
               <label
-                htmlFor="schedule"
+                htmlFor="scheduleStart"
                 className="block text-sm font-medium text-indigo-300"
               >
-                Schedule
+                Schedule start
               </label>
               <input
-                id="schedule"
-                typeof="text"
-                {...register("schedule", {
-                  minLength: {
-                    value: 3,
-                    message: "Schedule must be at least 3 characters long",
-                  },
-                  maxLength: {
-                    value: 25,
-                    message: "Schedule must be at most 25 characters long",
-                  },
+                id="scheduleStart"
+                type="time"
+                {...register("scheduleStart", {
                   required: "Schedule is required",
                 })}
                 className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter activity schedule"
+                placeholder="Enter activity schedule start"
               />
-              {errors.schedule?.message && (
+              {errors.scheduleStart?.message && (
                 <p className="mt-1 text-sm text-red-400">
-                  {errors.schedule.message}
+                  {errors.scheduleStart.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <label
+                htmlFor="scheduleEnd"
+                className="mt-2 block text-sm font-medium text-indigo-300"
+              >
+                Schedule end
+              </label>
+              <input
+                id="scheduleEnd"
+                type="time"
+                {...register("scheduleEnd", {
+                  required: "Schedule end is required",
+                })}
+                className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter activity schedule end"
+              />
+              {errors.scheduleEnd?.message && (
+                <p className="mt-1 text-sm text-red-400">
+                  {errors.scheduleEnd.message}
                 </p>
               )}
             </div>
