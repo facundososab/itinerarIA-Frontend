@@ -29,6 +29,9 @@ import Opinion from "../../interfaces/Opinion.ts";
 import OpinionForm from "../Opinion/OpinionForm.tsx";
 import OpinionsDisplay from "../Opinion/OpinionsDisplay.tsx";
 import Place from "../../interfaces/Place.ts";
+import SuccessMessage from "../ui/SuccessMessage.tsx";
+import DeleteMessage from "../ui/DeletedMessage.tsx";
+
 export function ItineraryDisplay() {
   const { CurrentItinerary, itineraries } = useItinerary();
 
@@ -42,7 +45,14 @@ export function ItineraryDisplay() {
     activityErrors,
   } = useActivity();
   const { user } = useAuth();
-  const { createOpinion, getAllOpinions, opinions } = useOpinion();
+  const {
+    createOpinion,
+    getAllOpinions,
+    opinions,
+    isCreated,
+    isDeleted,
+    isUpdated,
+  } = useOpinion();
   const { getAllPlaces, places } = usePlace();
   const [showActivityForm, setShowActivityForm] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -62,7 +72,7 @@ export function ItineraryDisplay() {
   const [selectedPlace, setSelectedPlace] = useState<string>("");
   const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null);
   const [transportFilter, setTransportFilter] = useState<boolean | null>(null);
-  // const [scheduleFilter, setScheduleFilter] = useState<string>("");
+  const [scheduleFilter, setScheduleFilter] = useState<string>("");
   const [showOpinionForm, setShowOpinionForm] = useState(false);
   const [activityForOpinion, setActivityForOpinion] = useState<Activity | null>(
     null
@@ -138,21 +148,31 @@ export function ItineraryDisplay() {
         );
       }
 
-      // if (scheduleFilter) {
-      //   filtered = filtered.filter((activity) => {
-      //     const activityTime = new Date(activity.schedule).getHours();
-      //     switch (scheduleFilter) {
-      //       case "morning":
-      //         return activityTime >= 6 && activityTime < 12;
-      //       case "afternoon":
-      //         return activityTime >= 12 && activityTime < 18;
-      //       case "evening":
-      //         return activityTime >= 18 || activityTime < 6;
-      //       default:
-      //         return true;
-      //     }
-      //   });
-      // }
+      if (scheduleFilter) {
+        filtered = filtered.filter((activity) => {
+          const startTime = new Date(activity.scheduleStart).getHours();
+          const endTime = new Date(activity.scheduleEnd).getHours();
+
+          const isInTimeRange = (startRange: number, endRange: number) => {
+            if (startRange > endRange) {
+              return startTime >= startRange || endTime < endRange;
+            } else {
+              return startTime < endRange && endTime > startRange;
+            }
+          };
+
+          switch (scheduleFilter) {
+            case "morning":
+              return isInTimeRange(6, 12);
+            case "afternoon":
+              return isInTimeRange(12, 18);
+            case "evening":
+              return isInTimeRange(18, 6);
+            default:
+              return true;
+          }
+        });
+      }
 
       setFilteredActivities(filtered);
     }
@@ -163,7 +183,7 @@ export function ItineraryDisplay() {
     selectedPlace,
     outdoorFilter,
     transportFilter,
-    //scheduleFilter,
+    scheduleFilter,
   ]);
 
   const handleViewOpinions = (activity: Activity) => {
@@ -346,7 +366,7 @@ export function ItineraryDisplay() {
               <option value="true">Transport Needed</option>
               <option value="false">No Transport Needed</option>
             </select>
-            {/* <select
+            <select
               value={scheduleFilter}
               onChange={(e) => setScheduleFilter(e.target.value)}
               className="px-4 py-2 rounded-lg bg-[#1c1c21] border border-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -355,9 +375,16 @@ export function ItineraryDisplay() {
               <option value="morning">Morning</option>
               <option value="afternoon">Afternoon</option>
               <option value="evening">Evening</option>
-            </select> */}
+            </select>
           </div>
         </div>
+        {isCreated && (
+          <SuccessMessage message="Opinion created successfully!" />
+        )}
+        {isUpdated && (
+          <SuccessMessage message="Opinion updated successfully!" />
+        )}
+        {isDeleted && <DeleteMessage message="Opinion deleted successfully!" />}
 
         {filteredActivities?.length ? (
           <ul className="space-y-4">

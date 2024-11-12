@@ -10,6 +10,8 @@ import Itinerary from "../../interfaces/Itinerary.ts";
 import UpdateItineraryModal from "./UpdateItineraryModal.tsx";
 import { usePlace } from "../../context/PlaceContext.tsx";
 import { useAuth } from "../../context/AuthContext.tsx";
+import SuccessMessage from "../ui/SuccessMessage.tsx";
+import DeletedMessage from "../ui/DeletedMessage.tsx";
 
 export default function ItinerariesSidebar() {
   const {
@@ -21,6 +23,9 @@ export default function ItinerariesSidebar() {
     // setItineraries,
     getItineraries,
     itineraryErrors,
+    isCreated,
+    isDeleted,
+    isUpdated,
   } = useItinerary();
   const { places, getAllPlaces } = usePlace();
   const { user } = useAuth();
@@ -143,8 +148,17 @@ export default function ItinerariesSidebar() {
           </div>
         </div>
       )}
+      {isCreated && <SuccessMessage message="Itinerary created successfully" />}
+      {isUpdated && <SuccessMessage message="Itinerary updated successfully" />}
+      {isDeleted && <DeletedMessage message="Itinerary deleted successfully" />}
+
       <div className="overflow-y-auto flex-grow">
-        {filteredItineraries?.length === 0 && (
+        {!itineraries && (
+          <div className="p-4 text-gray-500 text-center">
+            No itineraries found, create a new one
+          </div>
+        )}
+        {filteredItineraries?.length === 0 && itineraries && (
           <div className="p-4 text-gray-500 text-center">
             No itineraries found for this place
           </div>
