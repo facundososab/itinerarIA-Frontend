@@ -26,7 +26,6 @@ export default function NewExternalServiceForm({
   }, [])
 
   const onCreate = handleSubmit(async (data) => {
-    console.log(data.place, 'lugar del serv externo')
     createExternalService(data)
     onClose()
   })
@@ -307,11 +306,11 @@ export default function NewExternalServiceForm({
               {...register('phoneNumber', {
                 minLength: {
                   value: 10,
-                  message: 'Website must be 10 characters long',
+                  message: 'Phone number must be 10 characters long',
                 },
                 maxLength: {
                   value: 10,
-                  message: 'Website must be 10 characters long',
+                  message: 'Phone number must be 10 characters long',
                 },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"

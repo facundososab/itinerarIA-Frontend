@@ -26,3 +26,8 @@ export const deleteExternalServiceRequest = async(id: ObjectId) => {
   return instance.delete(`/externalServices/${id}`);
 }
 
+// Para el CU de publicidad
+
+export const acceptPublicityRequest = async (id: ObjectId) => {
+  return instance.post(`/externalServices/acceptRequest/${id}`);
+}
