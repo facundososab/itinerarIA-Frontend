@@ -1,5 +1,7 @@
 import { PencilIcon, TrashIcon } from 'lucide-react'
-import ExternalService from '../../interfaces/ExternalService.ts'
+import ExternalService, {
+  ExternalServiceStatus,
+} from '../../interfaces/ExternalService.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
 import Place from '../../interfaces/Place.ts'
 import { useState } from 'react'
@@ -10,8 +12,10 @@ export default function ExternalServiceRow({
   setEditingService,
   handleUpdate,
   handleEdit,
-  setShowModal,
+  setShowDeleteModal,
+  setShowAcceptModal,
   setExternalServiceToDelete,
+  setExternalServiceToAccept,
   places,
 }: {
   service: ExternalService
@@ -20,8 +24,10 @@ export default function ExternalServiceRow({
   setEditingService: (service: ExternalService | null) => void
   handleUpdate: () => void
   handleEdit: (service: ExternalService) => void
-  setShowModal: (show: boolean) => void
+  setShowDeleteModal: (show: boolean) => void
+  setShowAcceptModal: (show: boolean) => void
   setExternalServiceToDelete: (id: ObjectId) => void
+  setExternalServiceToAccept: (id: ObjectId) => void
 }) {
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
@@ -288,6 +294,29 @@ export default function ExternalServiceRow({
       </td>
       <td className="p-3">
         {editingService?.id === service.id ? (
+          <select
+            name="status"
+            id="status"
+            className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
+            value={editingService.status}
+            onChange={(e) =>
+              setEditingService({
+                ...editingService,
+                status: e.target.value as ExternalServiceStatus,
+              })
+            }
+          >
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="PENDING">PENDING</option>
+            <option value="CANCELED">CANCELED</option>
+          </select>
+        ) : (
+          service.status
+        )}
+      </td>
+
+      <td className="p-3">
+        {editingService?.id === service.id ? (
           <div className="flex gap-2">
             <button
               onClick={handleSave}
@@ -302,6 +331,16 @@ export default function ExternalServiceRow({
               Cancel
             </button>
           </div>
+        ) : service.status === ExternalServiceStatus.Pending ? (
+          <button
+            className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+            onClick={() => {
+              setShowAcceptModal(true)
+              setExternalServiceToAccept(service.id)
+            }}
+          >
+            <span className="text-white-400">Accept Request </span>
+          </button>
         ) : (
           <div className="flex gap-2">
             <button
@@ -312,7 +351,7 @@ export default function ExternalServiceRow({
             </button>
             <button
               onClick={() => {
-                setShowModal(true)
+                setShowDeleteModal(true)
                 setExternalServiceToDelete(service.id)
               }}
               className="bg-red-500 text-white p-2 rounded hover:bg-red-700"

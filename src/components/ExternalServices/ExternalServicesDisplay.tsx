@@ -6,7 +6,8 @@ import { createPortal } from 'react-dom'
 import ExternalServiceRow from './ExternalServiceRow.tsx'
 import { usePlace } from '../../context/PlaceContext.tsx'
 import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
-import { Search } from 'lucide-react'
+import { Search, Filter, AlertCircle } from 'lucide-react'
+import AcceptPublicityRequestModal from './AcceptPublicityRequestModal.tsx'
 
 export function ExternalServicesDisplay() {
   const {
@@ -16,6 +17,7 @@ export function ExternalServicesDisplay() {
     deleteExternalService,
     updateExternalService,
     externalServiceErrors,
+    acceptPublicity,
   } = useExternalServices()
 
   const { places, getAllPlaces } = usePlace()
@@ -25,8 +27,12 @@ export function ExternalServicesDisplay() {
   )
   const [externalServiceToDelete, setExternalServiceToDelete] =
     useState<ObjectId | null>(null)
-  const [showModal, setShowModal] = useState(false)
+  const [externalServiceToAccept, setExternalServiceToAccept] =
+    useState<ObjectId | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showAcceptModal, setShowAcceptModal] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState('ALL')
 
   useEffect(() => {
     const loadPlaces = async () => {
@@ -64,7 +70,12 @@ export function ExternalServicesDisplay() {
   const onDelete = async (id: ObjectId) => {
     deleteExternalService(id)
     setExternalServices(externalServices.filter((service) => service.id !== id))
-    setShowModal(false)
+    setShowDeleteModal(false)
+  }
+
+  const onAccept = async (id: ObjectId) => {
+    acceptPublicity(id)
+    setShowAcceptModal(false)
   }
 
   const handleUpdate = async () => {
@@ -74,18 +85,20 @@ export function ExternalServicesDisplay() {
     }
   }
 
-  const filteredServices =
-    externalServices &&
-    externalServices.filter((service) => {
-      const searchRegex = new RegExp(searchTerm, 'i')
-      return (
-        searchRegex.test(service.serviceType) ||
-        searchRegex.test(service.name) ||
-        searchRegex.test(service.description) ||
-        searchRegex.test(service.adress) ||
-        searchRegex.test(service.place?.name || '')
-      )
-    })
+  const filteredServices = externalServices.filter((service) => {
+    const searchRegex = new RegExp(searchTerm, 'i')
+    const matchesSearch =
+      searchRegex.test(service.serviceType) ||
+      searchRegex.test(service.name) ||
+      searchRegex.test(service.description) ||
+      searchRegex.test(service.adress) ||
+      searchRegex.test(service.place?.name || '')
+
+    const matchesStatus =
+      statusFilter === 'ALL' || service.status === statusFilter
+
+    return matchesSearch && matchesStatus
+  })
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -126,80 +139,126 @@ export function ExternalServicesDisplay() {
         </div>
       )}
 
-      <div className="mb-4 relative">
-        <input
-          type="text"
-          placeholder="Search external services..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-2 pl-10 bg-[#26262c] text-indigo-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          aria-label="Search external services"
-        />
-        <Search
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
-          size={20}
-        />
+      <div className="mb-4 flex items-center space-x-4">
+        <div className="relative flex-grow">
+          <input
+            type="text"
+            placeholder="Search external services..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full p-2 pl-10 bg-[#26262c] text-indigo-100 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Search external services"
+          />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
+            size={20}
+          />
+        </div>
+        <div className="relative">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="appearance-none w-full bg-[#26262c] border border-indigo-500 text-indigo-100 py-2 px-4 pr-8 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Filter by status"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="PENDING">PENDING</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="CANCELED">CANCELED</option>
+          </select>
+          <Filter
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-indigo-300"
+            size={20}
+          />
+        </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
-          <thead className="bg-[#2f3037]">
-            <tr>
-              <th className="p-3 text-left" scope="col">
-                Type
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Name
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Description
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Address
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Place
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Schedule
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Website
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Phone number
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredServices &&
-              filteredServices.map((service) => (
+      {filteredServices.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
+            <thead className="bg-[#2f3037]">
+              <tr>
+                <th className="p-3 text-left" scope="col">
+                  Type
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Name
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Description
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Address
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Place
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Schedule
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Website
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Phone number
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Status
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredServices.map((service) => (
                 <ExternalServiceRow
                   key={service.id.toString()}
                   service={service}
                   editingService={editingService}
                   handleUpdate={handleUpdate}
                   handleEdit={handleEdit}
-                  setShowModal={setShowModal}
+                  setShowDeleteModal={setShowDeleteModal}
+                  setShowAcceptModal={setShowAcceptModal}
                   setEditingService={setEditingService}
                   setExternalServiceToDelete={setExternalServiceToDelete}
+                  setExternalServiceToAccept={setExternalServiceToAccept}
                   places={places}
                 />
               ))}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+          <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+          <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+            No external services found
+          </h2>
+          <p className="text-indigo-300 text-center">
+            Try adjusting your search or filter criteria to find external
+            services.
+          </p>
+        </div>
+      )}
 
-      {showModal &&
+      {showDeleteModal &&
         createPortal(
           <DeleteWarningModal
-            onClose={() => setShowModal(false)}
+            onClose={() => setShowDeleteModal(false)}
             onDelete={onDelete}
             id={externalServiceToDelete}
             text="Are you sure you want to delete this external service?"
+          />,
+          document.body
+        )}
+
+      {showAcceptModal &&
+        createPortal(
+          <AcceptPublicityRequestModal
+            onClose={() => setShowAcceptModal(false)}
+            onAccept={onAccept}
+            ExternalServiceId={externalServiceToAccept}
           />,
           document.body
         )}

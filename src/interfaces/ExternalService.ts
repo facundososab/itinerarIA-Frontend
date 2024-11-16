@@ -11,4 +11,11 @@ export default interface ExternalService {
   website?: string,
   phoneNumber?: string,
   place: Place,
+  status: ExternalServiceStatus,
+}
+
+export enum ExternalServiceStatus {
+  Pending = 'PENDING',
+  Active = 'ACTIVE',
+  Canceled = 'CANCELED',
 }

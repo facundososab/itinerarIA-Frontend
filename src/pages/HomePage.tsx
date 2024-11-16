@@ -3,6 +3,7 @@ import { MapIcon, ClockIcon, ThumbsUpIcon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.tsx'
 import { useEffect } from 'react'
 import ItineraryLanding from '../img/itinerary-landing.svg'
+import ExternalServicePublicityForm from './ExternalServicePublicityForm.tsx'
 
 export default function Component() {
   const { isAuthenticated } = useAuth()
@@ -13,6 +14,7 @@ export default function Component() {
       navigate('/itinerarios')
     }
   }, [isAuthenticated])
+
   return (
     <div className="min-h-screen bg-night">
       <main>
@@ -191,6 +193,28 @@ export default function Component() {
                   </dl>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* New section for External Service Advertisement */}
+        <div
+          className="bg-[#1c1c21] py-16 sm:py-24 lg:py-32"
+          id="advertise-service"
+        >
+          <div className="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
+            <h2 className="text-base font-semibold tracking-wider text-indigo-400 uppercase">
+              For Service Providers
+            </h2>
+            <p className="mt-2 text-3xl font-extrabold text-indigo-100 tracking-tight sm:text-4xl">
+              Advertise Your Service
+            </p>
+            <p className="mt-5 max-w-prose mx-auto text-xl text-indigo-300">
+              Are you a service provider in the travel industry? Reach more
+              travelers by advertising your service on our platform.
+            </p>
+            <div className="mt-12">
+              <ExternalServicePublicityForm />
             </div>
           </div>
         </div>
