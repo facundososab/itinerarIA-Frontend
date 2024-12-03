@@ -28,6 +28,9 @@ export const ItineraryContext = createContext({
   handleSelectItinerary: (_id: ObjectId) => {},
   itineraryErrors: [] as string[],
   isLoaded: false || true,
+  isCreated: false || true,
+  isDeleted: false || true,
+  isUpdated: false || true,
 });
 
 export const useItinerary = () => {
@@ -46,6 +49,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   );
   const [itineraryErrors, setItineraryErrors] = useState([]);
   const [isLoaded, setIsLoaded] = useState(true);
+  const [isCreated, setIsCreated] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
   const handleDeleteItinerary = useCallback(
     () => setCurrentItinerary(null),
     [itineraries]
@@ -71,18 +77,26 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   };
 
   const createItinerary = async (itinerary: Itinerary) => {
+    setIsCreated(false);
+    setIsUpdated(false);
+    setIsDeleted(false);
     try {
-      itinerary.user = user ? user.id : null;
+      if (user) {
+        itinerary.user = user;
+      } else {
+        throw new Error("User is not logged in");
+      }
       const res = await createItineraryRequest(itinerary);
       console.log(res);
       if (res.status === 201) {
         // itineraries?.push(res.data.data);
         setItineraries([...(itineraries as Itinerary[]), res.data.data]);
         handleNewItinerary(res.data.data);
-        if (itinerary.user) await getItineraries(itinerary.user);
+        if (itinerary.user) await getItineraries(itinerary.user.id);
         console.log(itineraries);
         setItineraryErrors([]);
         console.log(res.data);
+        setIsCreated(true);
       }
     } catch (error: any) {
       console.log(error);
@@ -94,21 +108,24 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   const createItineraryWithIA = async (itinerary: Itinerary) => {
     setIsLoaded(false);
     setCurrentItinerary(null);
+    setIsCreated(false);
+    setIsUpdated(false);
+    setIsDeleted(false);
     try {
-      itinerary.user = user ? user.id : null;
+      if (user) {
+        itinerary.user = user;
+      } else {
+        throw new Error("User is not logged in");
+      }
       const res = await createItineraryWithIARequest(itinerary);
-      console.log(res);
-      // itineraries?.push(res.data.data);
       setItineraries([...(itineraries as Itinerary[]), res.data.data]);
       handleNewItinerary(res.data.data);
-      if (itinerary.user) await getItineraries(itinerary.user);
-      console.log(itineraries);
+      if (itinerary.user) await getItineraries(itinerary.user.id);
       setItineraryErrors([]);
-
-      console.log(res.data);
+      setIsCreated(true);
     } catch (error: any) {
-      console.log(error);
       const errorData = error.response.data.message;
+      console.log(errorData);
       setItineraryErrors(errorData);
     } finally {
       setIsLoaded(true);
@@ -116,6 +133,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   };
 
   const deleteItinerary = async (id: ObjectId) => {
+    setIsCreated(false);
+    setIsUpdated(false);
+    setIsDeleted(false);
     try {
       const res = await deleteItineraryRequest(id);
       if (res.status === 204) {
@@ -125,7 +145,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
             )
           : null;
         handleDeleteItinerary();
-        console.log("itinerary deleted");
+        setIsDeleted(true);
       }
     } catch (error) {
       console.log(error);
@@ -143,6 +163,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   };
 
   const updateItinerary = async (itinerary: Itinerary) => {
+    setIsCreated(false);
+    setIsUpdated(false);
+    setIsDeleted(false);
     try {
       const res = await updateItineraryRequest(itinerary);
       const itineraryUpdated: Itinerary = res.data.data;
@@ -151,8 +174,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       );
       itineraries ? setItineraries(newItineraries as Itinerary[]) : null;
       handleNewItinerary(itineraryUpdated);
-      if (itinerary.user) await getItineraries(itinerary.user);
+      if (itinerary.user) await getItineraries(itinerary.user.id);
       setItineraryErrors([]);
+      setIsUpdated(true);
     } catch (error: any) {
       const errorData = error.response.data.message;
       console.error(error);
@@ -185,6 +209,9 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
         setCurrentItinerary,
         createItineraryWithIA,
         isLoaded,
+        isCreated,
+        isDeleted,
+        isUpdated,
       }}
     >
       {children}

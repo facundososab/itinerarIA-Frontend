@@ -127,7 +127,6 @@ export default function ItineraryForm({ onClose }: { onClose: () => void }) {
                   id="description"
                   type="text"
                   {...register("description", {
-                    required: "Description is required",
                     minLength: {
                       value: 10,
                       message:
@@ -148,38 +147,6 @@ export default function ItineraryForm({ onClose }: { onClose: () => void }) {
                   </p>
                 )}
               </div>
-
-              {/* <div>
-                <label
-                  htmlFor="duration"
-                  className="block text-sm font-medium text-indigo-300"
-                >
-                  Duration (in days)
-                </label>
-                <input
-                  id="duration"
-                  type="number"
-                  {...register("duration", {
-                    valueAsNumber: true,
-                    required: "Duration is required",
-                    min: {
-                      value: 1,
-                      message: "Duration must be at least 1 day",
-                    },
-                    max: {
-                      value: 30,
-                      message: "Duration must be at most 30 days",
-                    },
-                  })}
-                  className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter itinerary duration"
-                />
-                {errors.duration?.message && (
-                  <p className="mt-1 text-sm text-red-400">
-                    {errors.duration.message}
-                  </p>
-                )}
-              </div> */}
               <div>
                 <label
                   htmlFor="dayStart"

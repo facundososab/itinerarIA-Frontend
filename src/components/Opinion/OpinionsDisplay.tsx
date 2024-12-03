@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { useOpinion } from "../../context/OpinionContext.tsx";
 import { ObjectId } from "@mikro-orm/mongodb";
 import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
-import { useAuth } from "../../context/AuthContext.tsx";
 
 export default function OpinionsDisplay({
   onClose,
@@ -16,7 +15,6 @@ export default function OpinionsDisplay({
 }) {
   const { getAllOpinionsByActivity, opinions, updateOpinion, deleteOpinion } =
     useOpinion();
-  const { user } = useAuth();
   const [showDeleteOpinionModal, setShowDeleteOpinionModal] = useState(false);
   const [editingOpinionId, setEditingOpinionId] = useState<string | null>(null);
   const [opinionToDelete, setOpinionToDelete] = useState<ObjectId | null>(null);

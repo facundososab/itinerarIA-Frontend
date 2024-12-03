@@ -63,12 +63,6 @@ function UpdateItineraryModal({
     control,
     name: "participants",
   });
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
   if (!itineraryToUpdate) return null;
   const onEdit = handleSubmit((data) => {
     const itineraryUpdate: Itinerary = {
@@ -104,9 +98,9 @@ function UpdateItineraryModal({
     if (itineraryToUpdate) {
       setValue("title", itineraryToUpdate.title);
       setValue("description", itineraryToUpdate.description);
-      setValue("dayStart", formatDate(new Date(itineraryToUpdate.dayStart)));
-      setValue("dayEnd", formatDate(new Date(itineraryToUpdate.dayEnd)));
-      setValue("place", itineraryToUpdate.place.id);
+      setValue("dayStart", itineraryToUpdate.dayStart);
+      setValue("dayEnd", itineraryToUpdate.dayEnd);
+      setValue("place", itineraryToUpdate.place);
       setValue("participants", itineraryToUpdate.participants);
     }
   }, [itineraryToUpdate]);

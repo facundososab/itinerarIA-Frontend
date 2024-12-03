@@ -29,6 +29,9 @@ export const OpinionsContext = createContext({
   deleteOpinion: (_id: ObjectId) => {},
   opinionErrors: [] as string[],
   setOpinionErrors: (_opinionErrors: []) => {},
+  isCreated: false || true,
+  isDeleted: false || true,
+  isUpdated: false || true,
 });
 
 export const useOpinion = () => {
@@ -41,16 +44,13 @@ export const useOpinion = () => {
 
 export function OpinionsProvider({ children }: { children: ReactNode }) {
   const [opinions, setOpinions] = useState<Opinion[]>([]);
-  // const { user } = useAuth();
 
   const [opinion, setOpinion] = useState<Opinion | null>(null);
 
   const [opinionErrors, setOpinionErrors] = useState([]);
-
-  // const handleDeleteOpinion = useCallback(
-  //   () => setCurrentOpinion(null),
-  //   [opinions]
-  // );
+  const [isCreated, setIsCreated] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const [isUpdated, setIsUpdated] = useState(false);
 
   const getAllOpinions = async () => {
     try {
@@ -73,12 +73,6 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
       console.log(err.response.data.message);
     }
   };
-  // const handleNewOpinion = useCallback(
-  //   (opinion: Opinion) => {
-  //     setCurrentOpinion(opinion)
-  //   },
-  //   [getAllOpinions, opinions]
-  // )
 
   const getOneOpinion = async (id: ObjectId) => {
     try {
@@ -90,40 +84,38 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
   };
 
   const createOpinion = async (opinion: Opinion) => {
+    setIsCreated(false);
     try {
       const res = await createOpinionRequest(opinion);
       if (res.status === 201) {
-        setOpinions((prevOpinions) => [...prevOpinions, res.data.data]);
-        //handleNewOpinion(res.data.data)
+        if (opinions.length === 0) {
+          setOpinions([res.data.data]);
+        } else {
+          setOpinions((prevOpinions) => [...prevOpinions, res.data.data]);
+        }
         console.log(opinions);
+        setIsCreated(true);
         setOpinionErrors([]);
       }
     } catch (err: any) {
       const errorData = err.response.data;
       setOpinionErrors(errorData);
-      console.log(errorData);
-      console.log(opinionErrors);
+      console.log(err);
     }
   };
 
   const updateOpinion = async (opinion: Opinion) => {
+    setIsUpdated(false);
     try {
       const res = await updateOpinionRequest(opinion);
       const opinionUpdated: Opinion = res.data.data;
-      // const newOpinions = opinions?.map((opinion) =>
-      //   opinion.id === opinionUpdated.id ? opinionUpdated : opinion
-      // );
-      // setOpinions(newOpinions);
-      // console.log(res.data.data);
       setOpinions(
         opinions.map((opinion) =>
           opinion.id === opinionUpdated.id ? opinionUpdated : opinion
         )
       );
-      // console.log(opinions, "opinions en el contexto");
-      //handleNewOpinion(opinionUpdated)
-      // console.log(res);
       setOpinionErrors([]);
+      setIsUpdated(true);
     } catch (err: any) {
       console.log(err.response.data.message);
       setOpinionErrors(err.response.data.message);
@@ -132,12 +124,12 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
   };
 
   const deleteOpinion = async (id: ObjectId) => {
+    setIsDeleted(false);
     try {
-      console.log("entra al deleteOpinion con este id:", id);
-      console.log("opinions", opinions);
       await deleteOpinionRequest(id);
       setOpinions(opinions.filter((opinion) => opinion.id !== id));
-      console.log("opinion deleted");
+      setOpinionErrors([]);
+      setIsDeleted(true);
     } catch (err: any) {
       setOpinionErrors(err.response.data.message);
     }
@@ -168,6 +160,9 @@ export function OpinionsProvider({ children }: { children: ReactNode }) {
         deleteOpinion,
         opinionErrors,
         setOpinionErrors,
+        isCreated,
+        isDeleted,
+        isUpdated,
       }}
     >
       {children}
