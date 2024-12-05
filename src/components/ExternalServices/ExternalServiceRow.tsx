@@ -342,7 +342,7 @@ export default function ExternalServiceRow({
             <span className="text-white-400">Accept Request </span>
           </button>
         ) : (
-          <div className="flex gap-2">
+          <div className="flex gap-2 justify-center">
             <button
               onClick={() => handleEdit(service)}
               className="bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700"

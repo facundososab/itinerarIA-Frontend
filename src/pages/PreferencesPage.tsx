@@ -1,8 +1,19 @@
 import { PreferenceDisplay } from '../components/Preference/PreferenceDisplay.tsx'
 import { NewPreferenceButton } from '../components/Preference/NewPreferenceButton.tsx'
 import { PreferenceProvider } from '../context/PreferenceContext.tsx'
+import { useAuth } from '../context/AuthContext.tsx'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export default function PreferencePage() {
+  const { isAdmin } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/')
+    }
+  }, [isAdmin])
   return (
     <PreferenceProvider>
       <main className="min-h-screen bg-raisin-black text-indigo-100">

@@ -1,7 +1,19 @@
+import { useEffect } from 'react'
 import { ExternalServicesDisplay } from '../components/ExternalServices/ExternalServicesDisplay.tsx'
 import { NewExternalServiceButton } from '../components/ExternalServices/NewExternalServiceButton.tsx'
+import { useAuth } from '../context/AuthContext.tsx'
+import { useNavigate } from 'react-router-dom'
 
 export default function ExternalServicesPage() {
+  const { isAdmin } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/')
+    }
+  }, [isAdmin])
+
   return (
     <>
       <main className="min-h-screen bg-raisin-black text-indigo-100">
