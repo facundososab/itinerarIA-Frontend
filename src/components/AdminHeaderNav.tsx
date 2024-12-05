@@ -13,7 +13,6 @@ export const AdminHeaderNav = ({
     { to: '/externalServices', label: 'External Services' },
     { to: '/places', label: 'Places' },
     { to: '/preferences', label: 'Preferences' },
-    { to: '/favorites', label: 'Favorites' },
   ]
 
   return (

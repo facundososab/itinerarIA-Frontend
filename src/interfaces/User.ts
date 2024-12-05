@@ -9,5 +9,6 @@ export default interface User {
     mail: string;
     phoneNumber: string;
     dateOfBirth: string;
+    isAdmin: boolean;
 }
 

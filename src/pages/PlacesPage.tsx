@@ -1,8 +1,19 @@
-import { PlacesDisplay } from '../components/Place/PlacesDisplay.tsx';
-import NewPlaceForm from '../components/Place/NewPlaceForm.tsx';
-import { NewButton } from '../components/shared/NewButton.tsx';
+import { PlacesDisplay } from '../components/Place/PlacesDisplay.tsx'
+import NewPlaceForm from '../components/Place/NewPlaceForm.tsx'
+import { NewButton } from '../components/shared/NewButton.tsx'
+import { useAuth } from '../context/AuthContext.tsx'
+import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export default function PlacesPage() {
+  const { isAdmin } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/')
+    }
+  }, [isAdmin])
   return (
     <>
       <main className="min-h-screen bg-raisin-black text-indigo-100">
@@ -14,13 +25,16 @@ export default function PlacesPage() {
                   Places
                 </h1>
               </div>
-              <NewButton text="Add a new Place" NewForm={NewPlaceForm} aria-label="Add new place button" />
+              <NewButton
+                text="Add a new Place"
+                NewForm={NewPlaceForm}
+                aria-label="Add new place button"
+              />
             </div>
           </div>
         </header>
-          <PlacesDisplay />
+        <PlacesDisplay />
       </main>
     </>
-  );
+  )
 }
-
