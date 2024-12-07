@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import User from "../interfaces/User";
+import { Eye, EyeOff } from "lucide-react";
 
 function LoginForm() {
   const {
@@ -23,6 +24,7 @@ function LoginForm() {
       navigate("/itinerarios");
     }
   }, [isAuthenticated]);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="flex flex-col justify-center px-4 sm:px-6 lg:px-8">
@@ -102,6 +104,7 @@ function LoginForm() {
             )}
           </div>
 
+          {/* Password Field with Toggle */}
           <div>
             <label
               htmlFor="password"
@@ -112,12 +115,20 @@ function LoginForm() {
             <div className="mt-1 relative rounded-md shadow-sm">
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"} // Dynamic type based on toggle
                 aria-invalid={errors.password ? "true" : "false"}
                 {...register("password", { required: "Password is required" })}
                 className="block w-full px-3 py-2 bg-davys-gray border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 placeholder="Enter your password"
               />
+              {/* Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
             </div>
             {errors.password?.message && (
               <p

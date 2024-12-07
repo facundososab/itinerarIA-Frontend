@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import { usePreference } from '../../context/PreferenceContext'
-import Preference from '../../interfaces/Preference'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { createPortal } from 'react-dom'
-import PreferenceRow from './PreferenceRow.tsx'
-import TextModal from '../shared/TextModal.tsx'
-import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
-import { Search } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { usePreference } from "../../context/PreferenceContext";
+import Preference from "../../interfaces/Preference";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { createPortal } from "react-dom";
+import PreferenceRow from "./PreferenceRow.tsx";
+import TextModal from "../shared/TextModal.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import { AlertCircle, Search } from "lucide-react";
 
 export function PreferenceDisplay() {
   const {
@@ -16,72 +16,84 @@ export function PreferenceDisplay() {
     deletePreference,
     updatePreference,
     preferenceErrors,
-  } = usePreference()
+  } = usePreference();
 
   const [editingPreference, setEditingPreference] = useState<Preference | null>(
     null
-  )
+  );
   const [preferenceToDelete, setPreferenceToDelete] = useState<ObjectId | null>(
     null
-  )
-  const [showModalWarning, setShowModalWarning] = useState(false)
-  const [showModalRestriction, setShowModalRestriction] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+  );
+  const [showModalWarning, setShowModalWarning] = useState(false);
+  const [showModalRestriction, setShowModalRestriction] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null
-      if (editingPreference && target && !target.closest('article')) {
-        setEditingPreference(null)
+      const target = event.target as Element | null;
+      if (editingPreference && target && !target.closest("article")) {
+        setEditingPreference(null);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [editingPreference])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editingPreference]);
 
   useEffect(() => {
     const loadPreferences = async () => {
-      getPreferences()
-    }
-    loadPreferences()
-  }, [])
+      getPreferences();
+    };
+    loadPreferences();
+  }, []);
 
   const handleEdit = (preference: Preference) => {
-    setEditingPreference(preference)
-  }
+    setEditingPreference(preference);
+  };
 
   const onDelete = async (id: ObjectId) => {
-    deletePreference(id)
-    setPreferences(preferences.filter((preference) => preference.id !== id))
-    setShowModalWarning(false)
-  }
+    deletePreference(id);
+    setPreferences(preferences.filter((preference) => preference.id !== id));
+    setShowModalWarning(false);
+  };
 
   const handleUpdate = async () => {
     if (editingPreference) {
-      updatePreference(editingPreference)
+      updatePreference(editingPreference);
       setPreferences(
         preferences.map((preference) =>
           preference.id === editingPreference.id
             ? editingPreference
             : preference
         )
-      )
-      setEditingPreference(null)
+      );
+      setEditingPreference(null);
     }
+  };
+  if (!preferences) {
+    return (
+      <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+        <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+        <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+          No preferences found
+        </h2>
+        <p className="text-indigo-300 text-center">
+          Try adding a new preference to get started.
+        </p>
+      </div>
+    );
   }
-
   const filteredPreferences =
     preferences &&
     preferences.filter((preference) => {
-      const searchRegex = new RegExp(searchTerm, 'i')
+      const searchRegex = new RegExp(searchTerm, "i");
       return (
         searchRegex.test(preference.name) ||
         searchRegex.test(preference.description)
-      )
-    })
+      );
+    });
 
   return (
     <article
@@ -144,24 +156,24 @@ export function PreferenceDisplay() {
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
-          <thead className="bg-[#2f3037]">
-            <tr>
-              <th className="p-3 text-left text-indigo-200" scope="col">
-                Name
-              </th>
-              <th className="p-3 text-left text-indigo-200" scope="col">
-                Description
-              </th>
-              <th className="p-3 text-right text-indigo-200" scope="col">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPreferences &&
-              filteredPreferences.map((preference) => (
+      {filteredPreferences.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
+            <thead className="bg-[#2f3037]">
+              <tr>
+                <th className="p-3 text-left text-indigo-200" scope="col">
+                  Name
+                </th>
+                <th className="p-3 text-left text-indigo-200" scope="col">
+                  Description
+                </th>
+                <th className="p-3 text-right text-indigo-200" scope="col">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPreferences.map((preference) => (
                 <PreferenceRow
                   key={preference.id.toString()}
                   preference={preference}
@@ -174,9 +186,21 @@ export function PreferenceDisplay() {
                   setPreferenceToDelete={setPreferenceToDelete}
                 />
               ))}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+          <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+          <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+            No favourite participants found
+          </h2>
+          <p className="text-indigo-300 text-center">
+            Try adjusting your search or filter criteria to find favourite
+            participants.
+          </p>
+        </div>
+      )}
 
       {showModalWarning &&
         createPortal(
@@ -198,5 +222,5 @@ export function PreferenceDisplay() {
           document.body
         )}
     </article>
-  )
+  );
 }

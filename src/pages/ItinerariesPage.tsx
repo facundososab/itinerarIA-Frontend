@@ -10,8 +10,7 @@ import Loader from "../components/ui/Loader.tsx";
 
 export default function ItinerariesPage() {
   const { user } = useAuth();
-  const { CurrentItinerary, getItineraries, isLoaded, setCurrentItinerary } =
-    useItinerary();
+  const { CurrentItinerary, getItineraries, isLoaded } = useItinerary();
 
   useEffect(() => {
     const loadItineraries = async () => {

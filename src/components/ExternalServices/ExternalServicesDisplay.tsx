@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react'
-import { useExternalServices } from '../../context/ExternalServicesContext'
-import ExternalService from '../../interfaces/ExternalService'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { createPortal } from 'react-dom'
-import ExternalServiceRow from './ExternalServiceRow.tsx'
-import { usePlace } from '../../context/PlaceContext.tsx'
-import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
-import { Search, Filter, AlertCircle } from 'lucide-react'
-import AcceptPublicityRequestModal from './AcceptPublicityRequestModal.tsx'
+import { useEffect, useState } from "react";
+import { useExternalServices } from "../../context/ExternalServicesContext";
+import ExternalService from "../../interfaces/ExternalService";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { createPortal } from "react-dom";
+import ExternalServiceRow from "./ExternalServiceRow.tsx";
+import { usePlace } from "../../context/PlaceContext.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import { Search, Filter, AlertCircle } from "lucide-react";
+import AcceptPublicityRequestModal from "./AcceptPublicityRequestModal.tsx";
 
 export function ExternalServicesDisplay() {
   const {
@@ -18,87 +18,101 @@ export function ExternalServicesDisplay() {
     updateExternalService,
     externalServiceErrors,
     acceptPublicity,
-  } = useExternalServices()
+  } = useExternalServices();
 
-  const { places, getAllPlaces } = usePlace()
+  const { places, getAllPlaces } = usePlace();
 
   const [editingService, setEditingService] = useState<ExternalService | null>(
     null
-  )
+  );
   const [externalServiceToDelete, setExternalServiceToDelete] =
-    useState<ObjectId | null>(null)
+    useState<ObjectId | null>(null);
   const [externalServiceToAccept, setExternalServiceToAccept] =
-    useState<ObjectId | null>(null)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [showAcceptModal, setShowAcceptModal] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('ALL')
+    useState<ObjectId | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getAllPlaces()
-    }
-    loadPlaces()
-  }, [])
+      getAllPlaces();
+    };
+    loadPlaces();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null
-      if (editingService && target && !target.closest('article')) {
-        setEditingService(null)
+      const target = event.target as Element | null;
+      if (editingService && target && !target.closest("article")) {
+        setEditingService(null);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [editingService])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editingService]);
 
   useEffect(() => {
     const loadExternalServices = async () => {
-      getAllExternalServices()
-    }
-    loadExternalServices()
-  }, [])
+      getAllExternalServices();
+    };
+    loadExternalServices();
+  }, []);
 
   const handleEdit = (service: ExternalService) => {
-    setEditingService(service)
-  }
+    setEditingService(service);
+  };
 
   const onDelete = async (id: ObjectId) => {
-    deleteExternalService(id)
-    setExternalServices(externalServices.filter((service) => service.id !== id))
-    setShowDeleteModal(false)
-  }
+    deleteExternalService(id);
+    setExternalServices(
+      externalServices.filter((service) => service.id !== id)
+    );
+    setShowDeleteModal(false);
+  };
 
   const onAccept = async (id: ObjectId) => {
-    acceptPublicity(id)
-    setShowAcceptModal(false)
-  }
+    acceptPublicity(id);
+    setShowAcceptModal(false);
+  };
 
   const handleUpdate = async () => {
     if (editingService) {
-      updateExternalService(editingService)
-      setEditingService(null)
+      updateExternalService(editingService);
+      setEditingService(null);
     }
+  };
+  if (!externalServices) {
+    return (
+      <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+        <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+        <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+          No external services found
+        </h2>
+        <p className="text-indigo-300 text-center">
+          Try creating a new external service to get started.
+        </p>
+      </div>
+    );
   }
-
   const filteredServices = externalServices.filter((service) => {
-    const searchRegex = new RegExp(searchTerm, 'i')
+    const searchRegex = new RegExp(searchTerm, "i");
     const matchesSearch =
       searchRegex.test(service.serviceType) ||
       searchRegex.test(service.name) ||
       searchRegex.test(service.description) ||
       searchRegex.test(service.adress) ||
-      searchRegex.test(service.place?.name || '')
+      searchRegex.test(service.place?.name || "");
 
     const matchesStatus =
-      statusFilter === 'ALL' || service.status === statusFilter
+      statusFilter === "ALL" || service.status === statusFilter;
 
-    return matchesSearch && matchesStatus
-  })
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -263,5 +277,5 @@ export function ExternalServicesDisplay() {
           document.body
         )}
     </article>
-  )
+  );
 }
