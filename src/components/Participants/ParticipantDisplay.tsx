@@ -8,6 +8,8 @@ import ParticipantRow from "./ParticipantRow.tsx";
 import { useAuth } from "../../context/AuthContext.tsx";
 import { usePreference } from "../../context/PreferenceContext.tsx";
 import { AlertCircle, Search } from "lucide-react";
+import SuccessMessage from "../ui/SuccessMessage.tsx";
+import DeletedMessage from "../ui/DeletedMessage.tsx";
 
 export function ParticipantsDisplay() {
   const {
@@ -17,6 +19,9 @@ export function ParticipantsDisplay() {
     deleteParticipant,
     updateParticipant,
     participantErrors,
+    isCreated,
+    isUpdated,
+    isDeleted,
   } = useParticipant();
 
   const { getPreferences, preferences } = usePreference();
@@ -162,6 +167,15 @@ export function ParticipantsDisplay() {
           size={20}
         />
       </div>
+      {isCreated && (
+        <SuccessMessage message="Participant created successfully!" />
+      )}
+      {isUpdated && (
+        <SuccessMessage message="Participant updated successfully!" />
+      )}
+      {isDeleted && (
+        <DeletedMessage message="Participant deleted successfully!" />
+      )}
 
       {filteredParticipants.length > 0 ? (
         <div className="overflow-x-auto">

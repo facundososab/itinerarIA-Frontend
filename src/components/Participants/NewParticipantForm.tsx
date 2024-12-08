@@ -1,63 +1,63 @@
-import { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useParticipant } from '../../context/ParticipantContext.tsx'
-import Participant from '../../interfaces/Participant.ts'
-import { X } from 'lucide-react'
-import { usePreference } from '../../context/PreferenceContext.tsx'
-import Preference from '../../interfaces/Preference.ts'
-import { useAuth } from '../../context/AuthContext.tsx'
-import { Check } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useParticipant } from "../../context/ParticipantContext.tsx";
+import Participant from "../../interfaces/Participant.ts";
+import { X } from "lucide-react";
+import { usePreference } from "../../context/PreferenceContext.tsx";
+import Preference from "../../interfaces/Preference.ts";
+import { useAuth } from "../../context/AuthContext.tsx";
+import { Check } from "lucide-react";
 
 export default function NewParticipantForm({
   onClose,
 }: {
-  onClose: () => void
+  onClose: () => void;
 }) {
-  const { createFavoriteParticipant, participantErrors } = useParticipant()
-  const { preferences, getPreferences } = usePreference()
+  const { createFavoriteParticipant, participantErrors } = useParticipant();
+  const { preferences, getPreferences } = usePreference();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Participant>()
+  } = useForm<Participant>();
 
   useEffect(() => {
     const loadPreferences = async () => {
-      getPreferences()
-    }
-    loadPreferences()
-  }, [])
+      getPreferences();
+    };
+    loadPreferences();
+  }, []);
 
   const [selectedPreferences, setSelectedPreferences] = useState<Preference[]>(
     []
-  )
+  );
 
-  const { user } = useAuth()
+  const { user } = useAuth();
 
   const onCreate = handleSubmit(async (data) => {
-    console.log(data)
-    console.log(selectedPreferences)
-    if (!user) return
+    console.log(data);
+    console.log(selectedPreferences);
+    if (!user) return;
     createFavoriteParticipant({
       ...data,
       preferences: selectedPreferences,
       user: user.id,
-    })
-    onClose()
-  })
+    });
+    onClose();
+  });
 
   const handlePreferenceToggle = (preference: Preference) => {
     setSelectedPreferences((prev) => {
       if (prev.includes(preference)) {
-        return prev.filter((p) => p !== preference)
+        return prev.filter((p) => p !== preference);
       } else {
-        return [...prev, preference]
+        return [...prev, preference];
       }
-    })
-  }
+    });
+  };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-2">
+    <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
       <div className="bg-[#1c1c21] p-6 rounded-lg shadow-lg max-w-md w-full relative">
         <button
           onClick={onClose}
@@ -114,16 +114,16 @@ export default function NewParticipantForm({
             <input
               id="name"
               type="text"
-              {...register('name', {
+              {...register("name", {
                 minLength: {
                   value: 3,
-                  message: 'Name must be at least 3 characters long',
+                  message: "Name must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 20,
-                  message: 'Name must be at most 20 characters long',
+                  message: "Name must be at most 20 characters long",
                 },
-                required: 'Name is required',
+                required: "Name is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter name"
@@ -142,16 +142,12 @@ export default function NewParticipantForm({
             <input
               id="age"
               type="number"
-              {...register('age', {
+              {...register("age", {
                 min: {
                   value: 0,
-                  message: 'Age must be a positive number',
+                  message: "Age must be a positive number",
                 },
-                max: {
-                  value: 110,
-                  message: 'Age must be less than 110',
-                },
-                required: 'Age is required',
+                required: "Age is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter age"
@@ -170,8 +166,8 @@ export default function NewParticipantForm({
             <select
               required
               id="disability"
-              {...register('disability', {
-                setValueAs: (value) => value === 'true', // Convierte el valor a booleano
+              {...register("disability", {
+                setValueAs: (value) => value === "true", // Convierte el valor a booleano
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             >
@@ -192,10 +188,10 @@ export default function NewParticipantForm({
             >
               Preferences
             </label>
-            <div className="flex flex-wrap mt-2 gap-2">
+            <div className="flex flex-wrap mt-2 space-x-2">
               {preferences &&
                 preferences.map((preference) => {
-                  const isSelected = selectedPreferences.includes(preference)
+                  const isSelected = selectedPreferences.includes(preference);
                   return (
                     <label
                       key={preference.id.toString()}
@@ -208,26 +204,26 @@ export default function NewParticipantForm({
                         onClick={() => handlePreferenceToggle(preference)}
                         className="hidden"
                         value={preference.id.toString()}
-                        {...register('preferences')}
+                        {...register("preferences")}
                       />
                       <button
                         onClick={(e) => {
-                          e.preventDefault()
-                          handlePreferenceToggle(preference)
+                          e.preventDefault();
+                          handlePreferenceToggle(preference);
                         }}
                         className={`flex items-center justify-between px-3 py-1 rounded-full text-sm font-medium hover:ring-2 hover:ring-offset-2 hover:ring-indigo-500 transition-colors duration-200 ${
                           isSelected
-                            ? 'bg-indigo-600 text-white'
-                            : 'bg-[#26262c] text-indigo-300 hover:bg-indigo-700 hover:text-white'
+                            ? "bg-indigo-600 text-white"
+                            : "bg-[#26262c] text-indigo-300 hover:bg-indigo-700 hover:text-white"
                         }`}
                       >
                         <span>{preference.name}</span>
                         {isSelected && (
                           <Check size={16} className="ml-2" />
-                        )}{' '}
+                        )}{" "}
                       </button>
                     </label>
-                  )
+                  );
                 })}
             </div>
           </div>
@@ -243,5 +239,5 @@ export default function NewParticipantForm({
         </form>
       </div>
     </div>
-  )
+  );
 }

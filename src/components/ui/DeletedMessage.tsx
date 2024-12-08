@@ -5,7 +5,7 @@ interface DeleteMessageProps {
   message: string;
 }
 
-export default function DeleteMessage({ message }: DeleteMessageProps) {
+export default function DeletedMessage({ message }: DeleteMessageProps) {
   const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
 
   useEffect(() => {

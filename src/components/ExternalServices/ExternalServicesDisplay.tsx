@@ -8,6 +8,8 @@ import { usePlace } from "../../context/PlaceContext.tsx";
 import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
 import { Search, Filter, AlertCircle } from "lucide-react";
 import AcceptPublicityRequestModal from "./AcceptPublicityRequestModal.tsx";
+import SuccessMessage from "../ui/SuccessMessage.tsx";
+import DeletedMessage from "../ui/DeletedMessage.tsx";
 
 export function ExternalServicesDisplay() {
   const {
@@ -18,6 +20,9 @@ export function ExternalServicesDisplay() {
     updateExternalService,
     externalServiceErrors,
     acceptPublicity,
+    isCreated,
+    isDeleted,
+    isUpdated,
   } = useExternalServices();
 
   const { places, getAllPlaces } = usePlace();
@@ -186,6 +191,15 @@ export function ExternalServicesDisplay() {
           />
         </div>
       </div>
+      {isCreated && (
+        <SuccessMessage message="External service created successfully" />
+      )}
+      {isUpdated && (
+        <SuccessMessage message="External service updated successfully" />
+      )}
+      {isDeleted && (
+        <DeletedMessage message="External service deleted successfully" />
+      )}
 
       {filteredServices.length > 0 ? (
         <div className="overflow-x-auto">
