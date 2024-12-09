@@ -15,6 +15,7 @@ import {
   getParticipantsRequest,
   updateParticipantRequest,
 } from "../auth/participant.ts";
+import { useAuth } from "./AuthContext.tsx";
 
 export const ParticipantContext = createContext({
   participant: null as Participant | null,
@@ -42,6 +43,7 @@ export const useParticipant = () => {
 };
 
 export function ParticipantProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   const [participants, setParticipants] = useState<Participant[]>([]);
 
   const [participant, setParticipant] = useState<Participant | null>(null);
@@ -70,6 +72,8 @@ export function ParticipantProvider({ children }: { children: ReactNode }) {
     setIsUpdated(false);
     setIsDeleted(false);
     try {
+      if (!user) return;
+      participant.user = user;
       const res = await createFavoriteParticipantRequest(participant);
       setParticipants([...participants, res.data.data]);
       setIsCreated(true);

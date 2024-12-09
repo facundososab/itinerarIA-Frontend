@@ -41,7 +41,6 @@ export default function NewParticipantForm({
     createFavoriteParticipant({
       ...data,
       preferences: selectedPreferences,
-      user: user.id,
     });
     onClose();
   });
