@@ -3,29 +3,29 @@ import Itinerary from '../interfaces/Itinerary'
 import { ObjectId } from "@mikro-orm/mongodb";
 
 export const createItineraryRequest = (itinerary: Itinerary) => {
-  return instance.post('/itinerarios/', itinerary)
+  return instance.post('/itineraries/', itinerary)
 }
 
 export const createItineraryWithIARequest = (itinerary:Itinerary) =>{
-  return instance.post('/itinerarios/ia',itinerary)
+  return instance.post('/itineraries/ia',itinerary)
 }
 
 export const getItinerariesRequest = async (userId: ObjectId) => {
-  return instance.get(`/itinerarios/${userId}`)
+  return instance.get(`/itineraries/${userId}`)
 }
 
 export const getItinerariesByUserRequest = async (userId: ObjectId) => {
-  return instance.get(`/itinerarios/user/${userId}`)
+  return instance.get(`/itineraries/user/${userId}`)
 }
 
 export const getItineraryRequest = async (id: ObjectId) => {
-  return instance.get(`/itinerarios/${id}`)
+  return instance.get(`/itineraries/${id}`)
 }
 
 export const updateItineraryRequest = async (itinerary: Itinerary) => {
-  return instance.patch(`/itinerarios/${itinerary.id}`,itinerary )
+  return instance.patch(`/itineraries/${itinerary.id}`,itinerary )
 }
 
 export const deleteItineraryRequest = (id: ObjectId) => {
-  return instance.delete(`/itinerarios/${id}`)
+  return instance.delete(`/itineraries/${id}`)
 }
