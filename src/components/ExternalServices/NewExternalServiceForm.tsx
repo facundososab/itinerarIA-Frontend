@@ -4,15 +4,13 @@ import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
 import ExternalService from '../../interfaces/ExternalService.ts'
 import { X } from 'lucide-react'
 import { usePlace } from '../../context/PlaceContext.tsx'
-import Loader from '../ui/Loader.tsx'
 
 export default function NewExternalServiceForm({
   onClose,
 }: {
   onClose: () => void
 }) {
-  const { createExternalService, externalServiceErrors, isLoading } =
-    useExternalServices()
+  const { createExternalService, externalServiceErrors } = useExternalServices()
   const { places, getAllPlaces } = usePlace()
   const {
     register,
@@ -333,7 +331,6 @@ export default function NewExternalServiceForm({
               Create External Service
             </button>
           </div>
-          {isLoading && <Loader />}
         </form>
       </div>
     </div>
