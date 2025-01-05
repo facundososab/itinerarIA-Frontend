@@ -125,6 +125,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       setIsCreated(true);
     } catch (error: any) {
       const errorData = error.response.data.message;
+      console.log(error);
       console.log(errorData);
       setItineraryErrors(errorData);
     } finally {
@@ -153,6 +154,10 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
   };
 
   const getItineraries = async (userId: ObjectId) => {
+    setIsCreated(false);
+    setIsUpdated(false);
+    setIsDeleted(false);
+    setCurrentItinerary(null);
     const res = await getItinerariesByUserRequest(userId);
     setItineraries(res.data.data);
   };

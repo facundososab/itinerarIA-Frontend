@@ -33,7 +33,9 @@ export const ExternalServicesContext = createContext({
   acceptPublicity: (_id: ObjectId) => {},
   externalServiceErrors: [],
   setExternalServiceErrors: (_externalServiceErrors: []) => {},
-  isLoading: true || false,
+  isUpdated: false || true,
+  isCreated: false || true,
+  isDeleted: false || true,
 })
 
 export const useExternalServices = () => {
@@ -58,93 +60,91 @@ export function ExternalServicesProvider({
     useState<ExternalService | null>(null)
 
   const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([])
-
-  const [isLoading, setIsLoading] = useState(false)
+  const [isUpdated, setIsUpdated] = useState(false)
+  const [isCreated, setIsCreated] = useState(false)
+  const [isDeleted, setIsDeleted] = useState(false)
 
   const getAllExternalServices = async () => {
     try {
-      setIsLoading(true)
+      setIsCreated(false)
+      setIsUpdated(false)
+      setIsDeleted(false)
       const res = await getAllExternalServicesRequest()
       res && setExternalServices(res.data.data)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const getAllExternalServicesByPlace = async (placeId: ObjectId) => {
     try {
-      setIsLoading(true)
       const res = await getExternalServicesByPlaceRequest(placeId)
       res && setExternalServices(res.data.data)
     } catch (err: any) {
       console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const getOneExternalService = async (id: ObjectId) => {
     try {
-      setIsLoading(true)
       const res = await getExternalServiceRequest(id)
       setExternalService(res.data.data)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const createExternalService = async (externalService: ExternalService) => {
+    setIsCreated(false)
+    setIsUpdated(false)
+    setIsDeleted(false)
     try {
-      setIsLoading(true)
       const res = await createExternalServiceRequest(externalService)
       setExternalServices((prevExternalServices) => [
         ...(prevExternalServices || []),
         res.data.data,
       ])
+      setIsCreated(true)
     } catch (err: any) {
       console.log(err, 'err')
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const updateExternalService = async (externalService: ExternalService) => {
+    setIsCreated(false)
+    setIsUpdated(false)
+    setIsDeleted(false)
+
     try {
-      setIsLoading(true)
       await updateExternalServiceRequest(externalService)
       setExternalServices(
         externalServices.map((es) =>
           es.id === externalService.id ? externalService : es
         )
       )
+      setIsUpdated(true)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const deleteExternalService = async (id: ObjectId) => {
+    setIsCreated(false)
+    setIsUpdated(false)
+    setIsDeleted(false)
     try {
-      setIsLoading(true)
       const res = await deleteExternalServiceRequest(id)
       setExternalService(res.data.data)
+      setIsDeleted(true)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
 
   const acceptPublicity = async (id: ObjectId) => {
     try {
-      setIsLoading(true)
       await acceptPublicityRequest(id)
       setExternalServices(
         externalServices.map((es) =>
@@ -153,8 +153,6 @@ export function ExternalServicesProvider({
       )
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
-    } finally {
-      setIsLoading(false)
     }
   }
   //Elimino msj despues de 2 segundos
@@ -183,7 +181,9 @@ export function ExternalServicesProvider({
         acceptPublicity,
         externalServiceErrors,
         setExternalServiceErrors,
-        isLoading,
+        isUpdated,
+        isCreated,
+        isDeleted,
       }}
     >
       {children}

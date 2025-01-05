@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react'
-import { useParticipant } from '../../context/ParticipantContext'
-import Participant from '../../interfaces/Participant'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { createPortal } from 'react-dom'
-import DeleteParticipantWarningModal from '../Participants/DeleteParticipantWarningModal.tsx'
-import ParticipantRow from './ParticipantRow.tsx'
-import { useAuth } from '../../context/AuthContext.tsx'
-import { usePreference } from '../../context/PreferenceContext.tsx'
-import { Search } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { useParticipant } from "../../context/ParticipantContext";
+import Participant from "../../interfaces/Participant";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { createPortal } from "react-dom";
+import DeleteParticipantWarningModal from "../Participants/DeleteParticipantWarningModal.tsx";
+import ParticipantRow from "./ParticipantRow.tsx";
+import { useAuth } from "../../context/AuthContext.tsx";
+import { usePreference } from "../../context/PreferenceContext.tsx";
+import { AlertCircle, Search } from "lucide-react";
+import SuccessMessage from "../ui/SuccessMessage.tsx";
+import DeletedMessage from "../ui/DeletedMessage.tsx";
 
 export function ParticipantsDisplay() {
   const {
@@ -17,83 +19,101 @@ export function ParticipantsDisplay() {
     deleteParticipant,
     updateParticipant,
     participantErrors,
-  } = useParticipant()
+    isCreated,
+    isUpdated,
+    isDeleted,
+  } = useParticipant();
 
-  const { getPreferences, preferences } = usePreference()
+  const { getPreferences, preferences } = usePreference();
 
-  const { user } = useAuth()
-  const userId = user?.id
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const [editingParticipant, setEditingParticipant] =
-    useState<Participant | null>(null)
+    useState<Participant | null>(null);
   const [participantToDelete, setParticipantToDelete] =
-    useState<ObjectId | null>(null)
-  const [showModal, setShowModal] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
+    useState<ObjectId | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadPreferences = async () => {
-      getPreferences()
-    }
-    loadPreferences()
-  }, [])
+      getPreferences();
+    };
+    loadPreferences();
+  }, []);
 
   useEffect(() => {
     if (userId) {
       const loadParticipants = async () => {
-        getAllParticipants(userId)
-      }
-      loadParticipants()
+        getAllParticipants(userId);
+      };
+      loadParticipants();
     }
-  }, [userId])
+  }, [userId]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null
-      if (editingParticipant && target && !target.closest('article')) {
-        setEditingParticipant(null)
+      const target = event.target as Element | null;
+      if (editingParticipant && target && !target.closest("article")) {
+        setEditingParticipant(null);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [editingParticipant])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editingParticipant]);
 
   const handleEdit = (participant: Participant) => {
-    setEditingParticipant(participant)
-  }
+    setEditingParticipant(participant);
+  };
 
   const onDelete = async (id: ObjectId) => {
-    deleteParticipant(id)
-    setParticipants(participants.filter((participant) => participant.id !== id))
-    setShowModal(false)
-  }
+    deleteParticipant(id);
+    setParticipants(
+      participants.filter((participant) => participant.id !== id)
+    );
+    setShowModal(false);
+  };
 
   const handleUpdate = async () => {
     if (editingParticipant) {
-      updateParticipant(editingParticipant)
+      updateParticipant(editingParticipant);
       setParticipants(
         participants.map((participant) =>
           participant.id === editingParticipant.id
             ? editingParticipant
             : participant
         )
-      )
-      setEditingParticipant(null)
+      );
+      setEditingParticipant(null);
     }
+  };
+  if (participants.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+        <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+        <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+          No favourite participants found
+        </h2>
+        <p className="text-indigo-300 text-center">
+          Try adding a new favourite participant to get started.
+        </p>
+      </div>
+    );
   }
 
   const filteredParticipants =
     participants &&
     participants.filter((participant) => {
-      const searchRegex = new RegExp(searchTerm, 'i')
+      const searchRegex = new RegExp(searchTerm, "i");
       return (
         searchRegex.test(participant.name) ||
         searchRegex.test(participant.age.toString())
-      )
-    })
+      );
+    });
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -147,21 +167,30 @@ export function ParticipantsDisplay() {
           size={20}
         />
       </div>
+      {isCreated && (
+        <SuccessMessage message="Participant created successfully!" />
+      )}
+      {isUpdated && (
+        <SuccessMessage message="Participant updated successfully!" />
+      )}
+      {isDeleted && (
+        <DeletedMessage message="Participant deleted successfully!" />
+      )}
 
-      <div className="overflow-x-auto">
-        <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
-          <thead className="bg-[#2f3037]">
-            <tr>
-              <th className="p-3 text-left">Name</th>
-              <th className="p-3 text-left">Age</th>
-              <th className="p-3 text-left">Disability</th>
-              <th className="p-3 text-left">Preferences</th>
-              <th className="p-3 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredParticipants &&
-              filteredParticipants.map((participant) => (
+      {filteredParticipants.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full bg-[#26262c] rounded-lg overflow-hidden">
+            <thead className="bg-[#2f3037]">
+              <tr>
+                <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Age</th>
+                <th className="p-3 text-left">Disability</th>
+                <th className="p-3 text-left">Preferences</th>
+                <th className="p-3 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredParticipants.map((participant) => (
                 <ParticipantRow
                   key={participant.id.toString()}
                   participant={participant}
@@ -174,9 +203,21 @@ export function ParticipantsDisplay() {
                   preferences={preferences}
                 />
               ))}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+          <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+          <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+            No favourite participants found
+          </h2>
+          <p className="text-indigo-300 text-center">
+            Try adjusting your search or filter criteria to find favourite
+            participants.
+          </p>
+        </div>
+      )}
 
       {showModal &&
         createPortal(
@@ -188,5 +229,5 @@ export function ParticipantsDisplay() {
           document.body
         )}
     </article>
-  )
+  );
 }

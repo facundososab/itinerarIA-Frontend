@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react'
-import { usePlace } from '../../context/PlaceContext.tsx'
-import Place from '../../interfaces/Place.ts'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { createPortal } from 'react-dom'
-import PlaceRow from './PlaceRow.tsx'
-import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
-import TextModal from '../shared/TextModal.tsx'
-import { Search } from 'lucide-react'
+import { useEffect, useState } from "react";
+import { usePlace } from "../../context/PlaceContext.tsx";
+import Place from "../../interfaces/Place.ts";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { createPortal } from "react-dom";
+import PlaceRow from "./PlaceRow.tsx";
+import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
+import TextModal from "../shared/TextModal.tsx";
+import { AlertCircle, Search } from "lucide-react";
 
 export function PlacesDisplay() {
   const {
@@ -16,76 +16,86 @@ export function PlacesDisplay() {
     deletePlace,
     updatePlace,
     placeErrors,
-  } = usePlace()
+  } = usePlace();
 
-  const [showModalWarning, setShowModalWarning] = useState(false)
-  const [showModalRestriction, setShowModalRestriction] = useState(false)
-  const [editingPlace, setEditingPlace] = useState<Place | null>(null)
-  const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
+  const [showModalWarning, setShowModalWarning] = useState(false);
+  const [showModalRestriction, setShowModalRestriction] = useState(false);
+  const [editingPlace, setEditingPlace] = useState<Place | null>(null);
+  const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const loadPlaces = async () => {
-      getAllPlaces()
-    }
-    loadPlaces()
-  }, [])
+      getAllPlaces();
+    };
+    loadPlaces();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element | null
-      if (editingPlace && target && !target.closest('article')) {
-        setEditingPlace(null)
+      const target = event.target as Element | null;
+      if (editingPlace && target && !target.closest("article")) {
+        setEditingPlace(null);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [editingPlace])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editingPlace]);
 
   const handleEdit = (place: Place) => {
-    setEditingPlace(place)
-  }
+    setEditingPlace(place);
+  };
 
   const onDelete = async (id: ObjectId) => {
     try {
-      deletePlace(id)
-      setPlaces(places.filter((place) => place.id !== id))
-      setShowModalWarning(false)
+      deletePlace(id);
+      setPlaces(places.filter((place) => place.id !== id));
+      setShowModalWarning(false);
     } catch (error: any) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   const handleUpdate = async () => {
     if (editingPlace) {
       try {
-        updatePlace(editingPlace)
+        updatePlace(editingPlace);
         setPlaces(
           places.map((place) =>
             place.id === editingPlace.id ? editingPlace : place
           )
-        )
-        setEditingPlace(null)
+        );
+        setEditingPlace(null);
       } catch (err: any) {
-        console.log(err)
+        console.log(err);
       }
     }
-  }
-
-  const filteredPlaces =
-    places &&
-    places.filter((place) => {
-      const searchRegex = new RegExp(searchTerm, 'i')
-      return (
-        searchRegex.test(place.name) ||
-        searchRegex.test(place.zipCode) ||
-        searchRegex.test(place.province) ||
-        searchRegex.test(place.country)
-      )
-    })
+  };
+  console.log(places);
+  if (places.length === 0)
+    return (
+      <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+        <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+        <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+          No places found
+        </h2>
+        <p className="text-indigo-300 text-center">
+          Try creating a new place to get started.
+        </p>
+      </div>
+    );
+  const filteredPlaces = places.filter((place) => {
+    const searchRegex = new RegExp(searchTerm, "i");
+    return (
+      searchRegex.test(place.name) ||
+      searchRegex.test(place.zipCode) ||
+      searchRegex.test(place.province) ||
+      searchRegex.test(place.country)
+    );
+  });
 
   return (
     <article className="p-6 bg-[#1c1c21] text-indigo-100">
@@ -141,36 +151,36 @@ export function PlacesDisplay() {
         />
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
-          <thead className="bg-[#2f3037]">
-            <tr>
-              <th className="p-3 text-left" scope="col">
-                Name
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Latitude
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Longitude
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Zip code
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Province / State
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Country
-              </th>
-              <th className="p-3 text-left" scope="col">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPlaces &&
-              filteredPlaces.map((place) => (
+      {filteredPlaces.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-[#26262c] rounded-lg overflow-hidden">
+            <thead className="bg-[#2f3037]">
+              <tr>
+                <th className="p-3 text-left" scope="col">
+                  Name
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Latitude
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Longitude
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Zip code
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Province / State
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Country
+                </th>
+                <th className="p-3 text-left" scope="col">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPlaces.map((place) => (
                 <PlaceRow
                   key={place.id.toString()}
                   place={place}
@@ -184,29 +194,40 @@ export function PlacesDisplay() {
                   places={places}
                 />
               ))}
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center bg-[#26262c] rounded-lg p-8 mt-4">
+          <AlertCircle className="text-indigo-400 w-16 h-16 mb-4" />
+          <h2 className="text-2xl font-bold text-indigo-100 mb-2">
+            No places found
+          </h2>
+          <p className="text-indigo-300 text-center">
+            Try adjusting your search or filter criteria to find places.
+          </p>
+        </div>
+      )}
 
-        {showModalWarning &&
-          createPortal(
-            <DeleteWarningModal
-              onClose={() => setShowModalWarning(false)}
-              onDelete={onDelete}
-              id={placeToDelete}
-              text="Are you sure you want to delete this place?"
-            />,
-            document.body
-          )}
+      {showModalWarning &&
+        createPortal(
+          <DeleteWarningModal
+            onClose={() => setShowModalWarning(false)}
+            onDelete={onDelete}
+            id={placeToDelete}
+            text="Are you sure you want to delete this place?"
+          />,
+          document.body
+        )}
 
-        {showModalRestriction &&
-          createPortal(
-            <TextModal
-              onClose={() => setShowModalRestriction(false)}
-              text="You cannot delete this place because it has external services or itineraries associated with it."
-            />,
-            document.body
-          )}
-      </div>
+      {showModalRestriction &&
+        createPortal(
+          <TextModal
+            onClose={() => setShowModalRestriction(false)}
+            text="You cannot delete this place because it has external services or itineraries associated with it."
+          />,
+          document.body
+        )}
     </article>
-  )
+  );
 }
