@@ -33,6 +33,7 @@ export const ExternalServicesContext = createContext({
   acceptPublicity: (_id: ObjectId) => {},
   externalServiceErrors: [],
   setExternalServiceErrors: (_externalServiceErrors: []) => {},
+  isLoading: true || false,
 })
 
 export const useExternalServices = () => {
@@ -58,36 +59,48 @@ export function ExternalServicesProvider({
 
   const [externalServiceErrors, setExternalServiceErrors] = useState<[]>([])
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const getAllExternalServices = async () => {
     try {
+      setIsLoading(true)
       const res = await getAllExternalServicesRequest()
       res && setExternalServices(res.data.data)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const getAllExternalServicesByPlace = async (placeId: ObjectId) => {
     try {
+      setIsLoading(true)
       const res = await getExternalServicesByPlaceRequest(placeId)
       res && setExternalServices(res.data.data)
     } catch (err: any) {
       console.log(err.response.data.message)
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const getOneExternalService = async (id: ObjectId) => {
     try {
+      setIsLoading(true)
       const res = await getExternalServiceRequest(id)
       setExternalService(res.data.data)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const createExternalService = async (externalService: ExternalService) => {
     try {
+      setIsLoading(true)
       const res = await createExternalServiceRequest(externalService)
       setExternalServices((prevExternalServices) => [
         ...(prevExternalServices || []),
@@ -96,11 +109,14 @@ export function ExternalServicesProvider({
     } catch (err: any) {
       console.log(err, 'err')
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const updateExternalService = async (externalService: ExternalService) => {
     try {
+      setIsLoading(true)
       await updateExternalServiceRequest(externalService)
       setExternalServices(
         externalServices.map((es) =>
@@ -109,20 +125,26 @@ export function ExternalServicesProvider({
       )
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const deleteExternalService = async (id: ObjectId) => {
     try {
+      setIsLoading(true)
       const res = await deleteExternalServiceRequest(id)
       setExternalService(res.data.data)
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const acceptPublicity = async (id: ObjectId) => {
     try {
+      setIsLoading(true)
       await acceptPublicityRequest(id)
       setExternalServices(
         externalServices.map((es) =>
@@ -131,6 +153,8 @@ export function ExternalServicesProvider({
       )
     } catch (err: any) {
       setExternalServiceErrors(err.response.data.message)
+    } finally {
+      setIsLoading(false)
     }
   }
   //Elimino msj despues de 2 segundos
@@ -159,6 +183,7 @@ export function ExternalServicesProvider({
         acceptPublicity,
         externalServiceErrors,
         setExternalServiceErrors,
+        isLoading,
       }}
     >
       {children}
