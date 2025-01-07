@@ -584,6 +584,7 @@ export function ItineraryDisplay() {
           <ExternalServicesModal
             onClose={() => setExternalServicesModal(false)}
             idLugar={CurrentItinerary?.place?.id || undefined}
+            activities={CurrentItinerary?.activities || undefined}
           />,
           document.body
         )}

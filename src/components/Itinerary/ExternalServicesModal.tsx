@@ -3,19 +3,25 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { useExternalServices } from "../../context/ExternalServicesContext";
 import { X, MapPin, Clock, Globe, Phone } from "lucide-react";
 import { ExternalServiceStatus } from "../../interfaces/ExternalService.ts";
+import Activity from "../../interfaces/Activity.ts";
 
 export default function ExternalServicesModal({
   idLugar,
   onClose,
+  activities,
 }: {
   idLugar: ObjectId | undefined;
   onClose: () => void;
+  activities: Activity[] | undefined;
 }) {
   const { externalServices, getAllExternalServicesByPlace } =
     useExternalServices();
 
+  const activityPlacesId = activities?.map((activity) => activity.place.id);
+
   useEffect(() => {
     console.log(externalServices);
+
     const loadServices = async (idLugar: ObjectId) => {
       getAllExternalServicesByPlace(idLugar);
       console.log("Loading external services for place", idLugar);
@@ -23,6 +29,11 @@ export default function ExternalServicesModal({
 
     if (idLugar) {
       loadServices(idLugar);
+    }
+    if (activityPlacesId) {
+      activityPlacesId.forEach((id) => {
+        loadServices(id);
+      }, []);
     }
   }, []);
 
