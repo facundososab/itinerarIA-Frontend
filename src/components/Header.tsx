@@ -30,7 +30,7 @@ function Header() {
   }, [location])
 
   return (
-    <div className="sticky top-0 z-50">
+    <div className="sticky top-0 z-50 h-16 bg-raisin-black shadow-sm">
       <header
         className={`bg-raisin-black shadow-sm py-2 ${
           isMobileMenuOpen ? 'rounded-b-2xl shadow-lg' : ''

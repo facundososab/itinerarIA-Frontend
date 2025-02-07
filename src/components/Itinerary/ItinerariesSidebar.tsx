@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useState } from "react";
-import { useItinerary } from "../../context/ItineraryContext.tsx";
-import { NewItineraryButton } from "./NewItineraryButton.tsx";
-import { CalendarIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { createPortal } from "react-dom";
-import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
-import { ObjectId } from "@mikro-orm/mongodb";
-import { Edit2 as EditIcon, MapPin, Filter } from "lucide-react";
-import Itinerary from "../../interfaces/Itinerary.ts";
-import UpdateItineraryModal from "./UpdateItineraryModal.tsx";
-import { usePlace } from "../../context/PlaceContext.tsx";
-import { useAuth } from "../../context/AuthContext.tsx";
-import SuccessMessage from "../ui/SuccessMessage.tsx";
-import DeletedMessage from "../ui/DeletedMessage.tsx";
+import { useCallback, useEffect, useState } from 'react'
+import { useItinerary } from '../../context/ItineraryContext.tsx'
+import { NewItineraryButton } from './NewItineraryButton.tsx'
+import { CalendarIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { createPortal } from 'react-dom'
+import DeleteWarningModal from '../shared/DeleteWarningModal.tsx'
+import { ObjectId } from '@mikro-orm/mongodb'
+import { Edit2 as EditIcon, MapPin, Filter } from 'lucide-react'
+import Itinerary from '../../interfaces/Itinerary.ts'
+import UpdateItineraryModal from './UpdateItineraryModal.tsx'
+import { usePlace } from '../../context/PlaceContext.tsx'
+import { useAuth } from '../../context/AuthContext.tsx'
+import SuccessMessage from '../ui/SuccessMessage.tsx'
+import DeletedMessage from '../ui/DeletedMessage.tsx'
 
 export default function ItinerariesSidebar() {
   const {
@@ -26,38 +26,38 @@ export default function ItinerariesSidebar() {
     isCreated,
     isDeleted,
     isUpdated,
-  } = useItinerary();
-  const { places, getAllPlaces } = usePlace();
-  const { user } = useAuth();
+  } = useItinerary()
+  const { places, getAllPlaces } = usePlace()
+  const { user } = useAuth()
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [itineraryToDelete, setItineraryToDelete] = useState<ObjectId | null>(
     null
-  );
+  )
   const [itineraryToUpdate, setItineraryToUpdate] = useState<
     ObjectId | undefined
-  >(undefined);
-  const [selectedPlace, setSelectedPlace] = useState<string>("");
+  >(undefined)
+  const [selectedPlace, setSelectedPlace] = useState<string>('')
   const [filteredItineraries, setFilteredItineraries] = useState<
     Itinerary[] | null
-  >(itineraries);
+  >(itineraries)
 
   // const loadPlaces = useCallback(async () => {
   //   await getAllPlaces();
   // }, [getAllPlaces, itineraries]);
 
   const loadItineraries = useCallback(async () => {
-    if (user) await getItineraries(user?.id);
-  }, [getItineraries, itineraries, user]);
+    if (user) await getItineraries(user?.id)
+  }, [getItineraries, itineraries, user])
 
   useEffect(() => {
     const loadData = async () => {
-      await getAllPlaces();
-      if (user) await getItineraries(user?.id);
-    };
-    loadData();
-  }, []);
+      await getAllPlaces()
+      if (user) await getItineraries(user?.id)
+    }
+    loadData()
+  }, [])
 
   useEffect(() => {
     if (itineraries) {
@@ -72,25 +72,25 @@ export default function ItinerariesSidebar() {
                 )
             )
           : itineraries
-      );
+      )
     }
-  }, [itineraries, selectedPlace]);
+  }, [itineraries, selectedPlace])
 
   const onDelete = (itineraryId: ObjectId) => {
-    deleteItinerary(itineraryId);
-    setShowDeleteModal(false);
-  };
+    deleteItinerary(itineraryId)
+    setShowDeleteModal(false)
+  }
 
   const onUpdate = (data: Itinerary) => {
-    console.log(data);
-    updateItinerary(data);
-    setShowUpdateModal(false);
-    loadItineraries();
-  };
+    console.log(data)
+    updateItinerary(data)
+    setShowUpdateModal(false)
+    loadItineraries()
+  }
 
   return (
-    <div className="w-full sm:w-64 md:w-72 lg:w-80 bg-onyx h-screen flex flex-col">
-      <div className="p-4 space-y-4">
+    <div className="w-full sm:w-64 md:w-72 lg:w-80 bg-onyx h-screen flex flex-col pt-2">
+      <div className="p-4 space-y-4 sticky top-0 bg-onyx z-10 shadow-md">
         <NewItineraryButton />
         <div className="relative">
           <select
@@ -152,7 +152,7 @@ export default function ItinerariesSidebar() {
       {isUpdated && <SuccessMessage message="Itinerary updated successfully" />}
       {isDeleted && <DeletedMessage message="Itinerary deleted successfully" />}
 
-      <div className="overflow-y-auto flex-grow">
+      <div className="overflow-y-auto flex-1 pb-14">
         {!itineraries && (
           <div className="p-4 text-gray-500 text-center">
             No itineraries found, create a new one
@@ -181,22 +181,22 @@ export default function ItinerariesSidebar() {
                       new Date(itinerary.dayStart).getTime()
                   ) /
                   (1000 * 60 * 60 * 24)
-                ).toFixed(0)}{" "}
-                {"days"}
+                ).toFixed(0)}{' '}
+                {'days'}
               </div>
               <div className="text-sm text-gray-500 flex items-center">
                 <MapPin className="h-4 w-4 mr-2" />
                 {itinerary.place.name}
-                {" - "}
+                {' - '}
                 {itinerary.place.country}
               </div>
             </div>
             <div className="flex space-x-2">
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setShowUpdateModal(true);
-                  setItineraryToUpdate(itinerary.id);
+                  e.stopPropagation()
+                  setShowUpdateModal(true)
+                  setItineraryToUpdate(itinerary.id)
                 }}
                 className="p-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200 group"
               >
@@ -204,9 +204,9 @@ export default function ItinerariesSidebar() {
               </button>
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setShowDeleteModal(true);
-                  setItineraryToDelete(itinerary.id);
+                  e.stopPropagation()
+                  setShowDeleteModal(true)
+                  setItineraryToDelete(itinerary.id)
                 }}
                 className="p-1.5 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 group"
               >
@@ -238,5 +238,5 @@ export default function ItinerariesSidebar() {
           document.body
         )}
     </div>
-  );
+  )
 }

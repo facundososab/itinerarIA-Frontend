@@ -1,29 +1,31 @@
-import { useEffect } from "react";
-import ItinerariesSidebar from "../components/Itinerary/ItinerariesSidebar.tsx";
-import { ItineraryDisplay } from "../components/Itinerary/ItineraryDisplay.tsx";
+import { useEffect } from 'react'
+import ItinerariesSidebar from '../components/Itinerary/ItinerariesSidebar.tsx'
+import { ItineraryDisplay } from '../components/Itinerary/ItineraryDisplay.tsx'
 import {
   //ItineraryProvider,
   useItinerary,
-} from "../context/ItineraryContext.tsx";
-import { useAuth } from "../context/AuthContext.tsx";
-import Loader from "../components/ui/Loader.tsx";
+} from '../context/ItineraryContext.tsx'
+import { useAuth } from '../context/AuthContext.tsx'
+import Loader from '../components/ui/Loader.tsx'
 
 export default function ItinerariesPage() {
-  const { user } = useAuth();
-  const { CurrentItinerary, getItineraries, isLoaded } = useItinerary();
+  const { user } = useAuth()
+  const { CurrentItinerary, getItineraries, isLoaded } = useItinerary()
 
   useEffect(() => {
     const loadItineraries = async () => {
       if (user) {
-        getItineraries(user.id);
+        getItineraries(user.id)
       }
-    };
-    loadItineraries();
-  }, []);
+    }
+    loadItineraries()
+  }, [])
 
   return (
-    <div className="flex h-full bg-raisin-black-2">
-      <ItinerariesSidebar />
+    <div className="flex h-full bg-raisin-black-2 fixed left-0 right-0">
+      <div className="relative top-0 h-full bg-raisin-black-2">
+        <ItinerariesSidebar />
+      </div>
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 overflow-y-auto">
           {!CurrentItinerary && isLoaded ? (
@@ -43,5 +45,5 @@ export default function ItinerariesPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
