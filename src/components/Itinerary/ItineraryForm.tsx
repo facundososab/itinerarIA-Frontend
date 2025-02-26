@@ -78,12 +78,12 @@ export default function ItineraryForm({ onClose }: { onClose: () => void }) {
             className="absolute top-4 right-4 text-indigo-300 hover:text-indigo-100 transition-colors duration-200"
             aria-label="Close"
           >
-            <X size={24} />
+            <X id='login-form-close-button' size={24} />
           </button>
           <h2 className="text-2xl font-bold text-indigo-100 mb-6">
             New Itinerary
           </h2>
-          <form className="space-y-6" onSubmit={onCreate}>
+          <form data-test-id='login-form' className="space-y-6" onSubmit={onCreate}>
             <div className="space-y-4">
               <div>
                 <label

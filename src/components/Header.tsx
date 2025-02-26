@@ -49,7 +49,7 @@ function Header() {
                       : 'text-indigo-300 hover:text-indigo-200'
                   }
                 >
-                  <MapIcon className="h-10 w-auto text-indigo-400" />
+                  <MapIcon id='header-map-icon' className="h-10 w-auto text-indigo-400" />
                 </NavLink>
               </div>
 
