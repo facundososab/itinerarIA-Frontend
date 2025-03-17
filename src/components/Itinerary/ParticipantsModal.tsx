@@ -26,7 +26,7 @@ export default function ParticipantsModal({
             <ul className="space-y-6">
               {participants.map((participant, i) => (
                 <li key={i} className="bg-[#26262c] rounded-lg p-4 shadow-md">
-                  <div className="flex justify-between items-start mb-2">
+                  <div className="flex flex-col justify-between items-start mb-2 space-y-2">
                     <h3 className="text-xl font-semibold text-indigo-100">
                       {participant.name}
                     </h3>
@@ -34,15 +34,16 @@ export default function ParticipantsModal({
                       <Calendar size={16} />
                       <span>{participant.age} years old</span>
                     </div>
+                    <div className="flex items-center space-x-2 text-sm text-indigo-300">
+                      <AccessibilityIcon size={16} />
+                      <span>
+                        {participant.disability
+                          ? 'Has disability'
+                          : 'No disability'}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-2 mb-4 text-sm text-indigo-300">
-                    <AccessibilityIcon size={16} />
-                    <span>
-                      {participant.disability
-                        ? 'Has disability'
-                        : 'No disability'}
-                    </span>
-                  </div>
+
                   <div>
                     <h4 className="text-lg font-medium text-indigo-200 mb-2">
                       Preferences

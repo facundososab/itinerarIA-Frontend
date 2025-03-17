@@ -29,8 +29,8 @@ export default function ItinerariesPage() {
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-4 overflow-y-auto">
           {!CurrentItinerary && isLoaded ? (
-            <div className="h-full flex items-center justify-center text-gray-500">
-              No itineraries found. Select an itinerary or create a new one.
+            <div className="h-full flex items-center text-center justify-center text-gray-500">
+              Select an itinerary or create a new itinerary to get started
             </div>
           ) : !isLoaded ? (
             <>

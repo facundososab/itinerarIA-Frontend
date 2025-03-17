@@ -1,41 +1,34 @@
-import { useEffect } from "react";
-import { ObjectId } from "@mikro-orm/mongodb";
-import { useExternalServices } from "../../context/ExternalServicesContext";
-import { X, MapPin, Clock, Globe, Phone } from "lucide-react";
-import { ExternalServiceStatus } from "../../interfaces/ExternalService.ts";
-import Activity from "../../interfaces/Activity.ts";
+import { useEffect } from 'react'
+import { ObjectId } from '@mikro-orm/mongodb'
+import { useExternalServices } from '../../context/ExternalServicesContext'
+import { X, MapPin, Clock, Globe, Phone } from 'lucide-react'
+import { ExternalServiceStatus } from '../../interfaces/ExternalService.ts'
 
 export default function ExternalServicesModal({
   idLugar,
   onClose,
-  activities,
 }: {
-  idLugar: ObjectId | undefined;
-  onClose: () => void;
-  activities: Activity[] | undefined;
+  idLugar: ObjectId | undefined
+  onClose: () => void
 }) {
   const { externalServices, getAllExternalServicesByPlace } =
-    useExternalServices();
-
-  const activityPlacesId = activities?.map((activity) => activity.place.id);
+    useExternalServices()
 
   useEffect(() => {
-    console.log(externalServices);
+    console.log(idLugar)
 
     const loadServices = async (idLugar: ObjectId) => {
-      getAllExternalServicesByPlace(idLugar);
-      console.log("Loading external services for place", idLugar);
-    };
+      getAllExternalServicesByPlace(idLugar)
+      console.log('Loading external services for place', idLugar)
+    }
 
-    if (idLugar) {
-      loadServices(idLugar);
-    }
-    if (activityPlacesId) {
-      activityPlacesId.forEach((id) => {
-        loadServices(id);
-      }, []);
-    }
-  }, []);
+    if (idLugar)
+      async () => {
+        await loadServices(idLugar)
+      }
+
+    console.log('External services', externalServices)
+  }, [])
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -105,7 +98,7 @@ export default function ExternalServicesModal({
               )}
             </ul>
           )}
-          {!externalServices && (
+          {externalServices && externalServices.length === 0 && (
             <p className="text-indigo-300">
               No external services found for this place
             </p>
@@ -114,5 +107,5 @@ export default function ExternalServicesModal({
       </div>
       p
     </div>
-  );
+  )
 }

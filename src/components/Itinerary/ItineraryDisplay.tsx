@@ -258,37 +258,46 @@ export function ItineraryDisplay() {
 
   return (
     <div className="space-y-6 p-6 bg-[#1c1c21] rounded-lg shadow-lg">
-      <div className="flex border-b border-gray-700 pb-4 justify-between">
-        <div>
-          <h2 className="text-3xl font-bold text-indigo-300 mb-2">
-            {CurrentItinerary?.title}
-          </h2>
-          <p className="text-gray-400">{CurrentItinerary?.description}</p>
-          <p className="text-gray-400 flex items-center mt-2">
-            <MapPin size={16} className="mr-2 text-indigo-400" />
-            {itineraryPlace?.name} - {itineraryPlace?.country}
-          </p>
+      <header className="border-b border-gray-700 pb-4">
+        <h1 className="text-3xl text-center sm:text-start font-bold text-indigo-300 mb-2">
+          {CurrentItinerary?.title}
+        </h1>
+        <div className="flex flex-row justify-between items-center">
+          <div>
+            <p className="text-gray-400">{CurrentItinerary?.description}</p>
+            <p className="text-gray-400 flex items-center mt-2">
+              <MapPin size={16} className="mr-2 text-indigo-400" />
+              {itineraryPlace?.name} - {itineraryPlace?.country}
+            </p>
+          </div>
+          <div className="flex flex-col space-y-2 mt-4 sm:mt-0">
+            <button
+              onClick={() => {
+                setParticipantsModal(true)
+                console.log(CurrentItinerary)
+              }}
+              className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
+              aria-label="View Participants"
+            >
+              <span className="font-medium text-sm">View Participants</span>
+            </button>
+            <button
+              onClick={() => {
+                setExternalServicesModal(true)
+                console.log(CurrentItinerary)
+              }}
+              className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
+              aria-label="View External Services"
+            >
+              <span className="font-medium text-sm">
+                View External Services
+              </span>
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col space-y-2 w-1/5">
-          <button
-            onClick={() => setParticipantsModal(true)}
-            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            <span className="font-medium text-sm">View Participants</span>
-          </button>
-          <button
-            onClick={() => {
-              setExternalServicesModal(true)
-              console.log(externalServicesModal)
-            }}
-            className="w-full flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-full hover:bg-blue-600 focus:outline-none transition-all duration-300 shadow-md hover:shadow-lg"
-          >
-            <span className="font-medium text-sm">View External Services</span>
-          </button>
-        </div>
-      </div>
+      </header>
 
-      <div className="flex flex-col sm:flex-row justify-between items-center">
+      <div className="flex justify-between items-center">
         <h3 className="text-xl md:text-2xl font-bold text-indigo-200">
           Activities
         </h3>
@@ -584,7 +593,6 @@ export function ItineraryDisplay() {
           <ExternalServicesModal
             onClose={() => setExternalServicesModal(false)}
             idLugar={CurrentItinerary?.place?.id || undefined}
-            activities={CurrentItinerary?.activities || undefined}
           />,
           document.body
         )}
