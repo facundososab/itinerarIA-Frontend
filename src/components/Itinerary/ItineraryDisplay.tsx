@@ -441,7 +441,7 @@ export function ItineraryDisplay() {
                       {activity.name}
                     </h4>
                     <p className="text-gray-400 mb-2">{activity.description}</p>
-                    <div className="flex flex-wrap space-x-4 text-sm text-gray-500">
+                    <div className="flex flex-col  gap-2 md:flex-row md:space-x-4 text-sm text-gray-500">
                       <span className="flex items-center">
                         <Compass size={16} className="mr-1 text-indigo-400" />
                         {activity.outdoor ? 'Outdoor' : 'Indoor'}
