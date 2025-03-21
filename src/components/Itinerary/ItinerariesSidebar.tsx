@@ -25,6 +25,7 @@ export default function ItinerariesSidebar() {
     isCreated,
     isDeleted,
     isUpdated,
+    CurrentItinerary,
   } = useItinerary()
   const { places, getAllPlaces } = usePlace()
   const { user } = useAuth()
@@ -182,7 +183,10 @@ export default function ItinerariesSidebar() {
             <DeletedMessage message="Itinerary deleted successfully" />
           )}
 
-          <div className="overflow-y-auto flex-1 pb-14">
+          <div
+            data-test-id="itineraries-list"
+            className="overflow-y-auto flex-1 pb-14"
+          >
             {!itineraries && (
               <div className="p-4 text-gray-500 text-center">
                 No itineraries found, create a new one
@@ -196,7 +200,11 @@ export default function ItinerariesSidebar() {
             {filteredItineraries?.map((itinerary, i) => (
               <div
                 key={i}
-                className="p-4 hover:bg-raisin-black-2 cursor-pointer flex justify-between items-center"
+                className={`p-4 hover:bg-raisin-black-2 cursor-pointer flex justify-between items-center ${
+                  CurrentItinerary?.id === itinerary.id
+                    ? 'bg-raisin-black-2'
+                    : ''
+                }`}
                 onClick={() => handleItinerarySelect(itinerary.id)}
               >
                 <div>
@@ -254,7 +262,6 @@ export default function ItinerariesSidebar() {
             onClose={() => setShowUpdateModal(false)}
             onUpdate={onUpdate}
             id={itineraryToUpdate}
-            text="Update itinerary"
             places={places}
           />,
           document.body

@@ -4,7 +4,6 @@ import { useActivity } from '../../context/ActivityContext'
 import { NewActivityButton } from '../Activity/NewActivityButton'
 import ActivityForm from '../Activity/ActivityForm'
 import 'leaflet/dist/leaflet.css'
-import L from 'leaflet'
 import {
   Search,
   Compass,
@@ -34,7 +33,7 @@ import OpinionsDisplay from '../Opinion/OpinionsDisplay.tsx'
 import Place from '../../interfaces/Place.ts'
 import SuccessMessage from '../ui/SuccessMessage.tsx'
 import DeleteMessage from '../ui/DeletedMessage.tsx'
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import { ActivitiesMap } from './ActivitiesMap.tsx'
 
 export function ItineraryDisplay() {
   const { CurrentItinerary, itineraries } = useItinerary()
@@ -69,9 +68,9 @@ export function ItineraryDisplay() {
     null
   )
 
-  const [filteredActivities, setFilteredActivities] = useState<
-    Activity[] | null
-  >(null)
+  const [filteredActivities, setFilteredActivities] = useState<Activity[] | []>(
+    []
+  )
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPlace, setSelectedPlace] = useState<string>('')
   const [outdoorFilter, setOutdoorFilter] = useState<boolean | null>(null)
@@ -90,33 +89,16 @@ export function ItineraryDisplay() {
   const [itineraryPlace, setItineraryPlace] = useState<Place | null>(null)
 
   const loadActivities = useCallback(async () => {
-    await getAllActivities()
+    getAllActivities()
   }, [CurrentItinerary, getAllActivities, activities])
 
   const loadOpinions = useCallback(async () => {
-    await getAllOpinions()
+    getAllOpinions()
   }, [getAllOpinions, opinions])
-  const customIcon = new L.Icon({
-    iconUrl:
-      'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-  })
-
-  const center = [0, 0] // Default center if no activities
-  const zoomLevel = 2 // Default zoom level for a global view
-
-  // Determine the map's center dynamically based on the first activity
-  const mapCenter: [number, number] = filteredActivities?.length
-    ? [
-        filteredActivities[0].place.latitude,
-        filteredActivities[0].place.longitude,
-      ]
-    : (center as [number, number])
 
   useEffect(() => {
     const loadPlaces = async () => {
-      await getAllPlaces()
+      getAllPlaces()
       places?.find((place) => {
         if (CurrentItinerary?.place?.id?.toString() === place?.id?.toString()) {
           setItineraryPlace(place)
@@ -520,35 +502,7 @@ export function ItineraryDisplay() {
       <div className="my-6 pb-6" id="map">
         <h3 className="text-xl md:text-2xl font-bold text-indigo-200">Map</h3>
         <div className="h-96 rounded-lg overflow-hidden shadow-lg mb-6">
-          <MapContainer
-            center={mapCenter}
-            zoom={zoomLevel}
-            style={{ height: '100%', width: '100%' }}
-          >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            {filteredActivities &&
-              filteredActivities.map((activity) => (
-                <Marker
-                  key={activity.id.toString()}
-                  position={[activity.place.latitude, activity.place.longitude]}
-                  icon={customIcon}
-                >
-                  <Popup>
-                    <div>
-                      <h4 className="text-lg font-semibold">{activity.name}</h4>
-                      <p>{activity.description}</p>
-                      <p>
-                        <strong>Place:</strong> {activity.place.name},{' '}
-                        {activity.place.country}
-                      </p>
-                    </div>
-                  </Popup>
-                </Marker>
-              ))}
-          </MapContainer>
+          <ActivitiesMap filteredActivities={filteredActivities} />
         </div>
       </div>
 

@@ -1,32 +1,31 @@
-import { ObjectId } from "@mikro-orm/mongodb";
-import Itinerary from "../../interfaces/Itinerary.ts";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
-import { Check, Plus, Trash2, X } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import Place from "../../interfaces/Place.ts";
-import { useItinerary } from "../../context/ItineraryContext.tsx";
-import Activity from "../../interfaces/Activity.ts";
-import { useActivity } from "../../context/ActivityContext.tsx";
-import Preference from "../../interfaces/Preference.ts";
-import { usePreference } from "../../context/PreferenceContext.tsx";
-import { createPortal } from "react-dom";
-import FavoriteParticipantsModal from "./FavoriteParticipantsModal.tsx";
+import { ObjectId } from '@mikro-orm/mongodb'
+import Itinerary from '../../interfaces/Itinerary.ts'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
+import { Check, Plus, Trash2, X } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import Place from '../../interfaces/Place.ts'
+import { useItinerary } from '../../context/ItineraryContext.tsx'
+import Activity from '../../interfaces/Activity.ts'
+import { useActivity } from '../../context/ActivityContext.tsx'
+import Preference from '../../interfaces/Preference.ts'
+import { usePreference } from '../../context/PreferenceContext.tsx'
+import { createPortal } from 'react-dom'
+import FavoriteParticipantsModal from './FavoriteParticipantsModal.tsx'
 
 function UpdateItineraryModal({
   onClose,
   onUpdate,
   id,
-  text,
   places,
 }: {
-  onClose: () => void;
-  onUpdate: (data: Itinerary) => void;
-  id: ObjectId | undefined;
-  text: string;
-  places: Place[];
+  onClose: () => void
+  onUpdate: (data: Itinerary) => void
+  id: ObjectId | undefined
+  places: Place[]
 }) {
   const {
     register,
+    watch,
     handleSubmit,
     setValue,
     control,
@@ -35,53 +34,53 @@ function UpdateItineraryModal({
     defaultValues: {
       participants: [],
     },
-  });
-  const { CurrentItinerary, itineraries } = useItinerary();
-  const { getAllActivities, activities } = useActivity();
-  const { preferences } = usePreference();
+  })
+  const { CurrentItinerary, itineraries } = useItinerary()
+  const { getAllActivities, activities } = useActivity()
+  const { preferences } = usePreference()
 
   const [filteredActivities, setFilteredActivities] = useState<
     Activity[] | null
-  >(null);
+  >(null)
   const [favoriteParticipantsModal, setFavoriteParticipantsModal] =
-    useState(false);
+    useState(false)
   const itineraryToUpdate = itineraries?.find(
     (itinerary) => itinerary.id === id
-  );
+  )
   const handlePreferenceToggle = (
     preferenceId: ObjectId,
     preferences: Preference[]
   ) => {
     const currentPreferencesIds = preferences.map(
       (preference: Preference) => preference.id
-    );
+    )
     return currentPreferencesIds.includes(preferenceId)
       ? preferences.filter((p: Preference) => p.id !== preferenceId)
-      : [...preferences, { id: preferenceId }];
-  };
+      : [...preferences, { id: preferenceId }]
+  }
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "participants",
-  });
-  if (!itineraryToUpdate) return null;
+    name: 'participants',
+  })
+  if (!itineraryToUpdate) return null
   const onEdit = handleSubmit((data) => {
     const itineraryUpdate: Itinerary = {
       ...data,
       id: itineraryToUpdate.id,
-    };
-    if (!id) return null;
-    onUpdate(itineraryUpdate);
-    onClose();
-  });
+    }
+    if (!id) return null
+    onUpdate(itineraryUpdate)
+    onClose()
+  })
   const loadActivities = useCallback(async () => {
     if (itineraryToUpdate) {
-      await getAllActivities();
+      await getAllActivities()
     }
-  }, [itineraryToUpdate, getAllActivities]);
+  }, [itineraryToUpdate, getAllActivities])
 
   useEffect(() => {
-    loadActivities();
-  }, []);
+    loadActivities()
+  }, [])
 
   useEffect(() => {
     if (itineraryToUpdate && activities) {
@@ -91,19 +90,19 @@ function UpdateItineraryModal({
             activity.itinerary?.id?.toString() ===
             itineraryToUpdate.id?.toString()
         )
-      );
+      )
     }
-  }, [CurrentItinerary, activities]);
+  }, [CurrentItinerary, activities])
   useEffect(() => {
     if (itineraryToUpdate) {
-      setValue("title", itineraryToUpdate.title);
-      setValue("description", itineraryToUpdate.description);
-      setValue("dayStart", itineraryToUpdate.dayStart);
-      setValue("dayEnd", itineraryToUpdate.dayEnd);
-      setValue("place", itineraryToUpdate.place);
-      setValue("participants", itineraryToUpdate.participants);
+      setValue('title', itineraryToUpdate.title)
+      setValue('description', itineraryToUpdate.description)
+      setValue('dayStart', itineraryToUpdate.dayStart)
+      setValue('dayEnd', itineraryToUpdate.dayEnd)
+      setValue('place', itineraryToUpdate.place)
+      setValue('participants', itineraryToUpdate.participants)
     }
-  }, [itineraryToUpdate]);
+  }, [itineraryToUpdate])
   // if (loadingPlaces) return <div>Loading...</div>;
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50">
@@ -116,7 +115,7 @@ function UpdateItineraryModal({
           <X size={24} />
         </button>
         <h2 className="text-2xl font-bold text-indigo-100 mb-4">
-          Update Itinerary {itineraryToUpdate.title}
+          {itineraryToUpdate.title}
         </h2>
         <form onSubmit={onEdit} className="space-y-4">
           <div>
@@ -129,16 +128,16 @@ function UpdateItineraryModal({
             <input
               id="title"
               type="text"
-              {...register("title", {
+              {...register('title', {
                 minLength: {
                   value: 3,
-                  message: "Title must be at least 3 characters long",
+                  message: 'Title must be at least 3 characters long',
                 },
                 maxLength: {
                   value: 20,
-                  message: "Title must be at most 20 characters long",
+                  message: 'Title must be at most 20 characters long',
                 },
-                required: "Title is required",
+                required: 'Title is required',
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter itinerary title"
@@ -160,14 +159,14 @@ function UpdateItineraryModal({
             <input
               id="description"
               type="text"
-              {...register("description", {
+              {...register('description', {
                 minLength: {
                   value: 10,
-                  message: "Description must be at least 10 characters long",
+                  message: 'Description must be at least 10 characters long',
                 },
                 maxLength: {
                   value: 100,
-                  message: "Description must be at most 100 characters long",
+                  message: 'Description must be at most 100 characters long',
                 },
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -190,9 +189,14 @@ function UpdateItineraryModal({
             <input
               id="dayStart"
               type="date"
-              {...register("dayStart", {
-                required: "Start day is required",
+              {...register('dayStart', {
+                required: 'Start day is required',
               })}
+              value={
+                watch('dayStart')
+                  ? new Date(watch('dayStart')).toISOString().split('T')[0]
+                  : ''
+              }
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter itinerary start date"
             />
@@ -205,7 +209,7 @@ function UpdateItineraryModal({
 
           <div>
             <label
-              htmlFor="duration"
+              htmlFor="dayEnd"
               className="block text-sm font-medium text-indigo-300"
             >
               End date
@@ -213,9 +217,14 @@ function UpdateItineraryModal({
             <input
               id="dayEnd"
               type="date"
-              {...register("dayEnd", {
-                required: "End day is required",
+              {...register('dayEnd', {
+                required: 'End day is required',
               })}
+              value={
+                watch('dayEnd')
+                  ? new Date(watch('dayEnd')).toISOString().split('T')[0]
+                  : ''
+              }
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter itinerary dayEnd"
             />
@@ -236,8 +245,8 @@ function UpdateItineraryModal({
               </label>
               <select
                 id="place"
-                {...register("place", {
-                  required: "Place is required",
+                {...register('place', {
+                  required: 'Place is required',
                 })}
                 className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               >
@@ -307,7 +316,7 @@ function UpdateItineraryModal({
                         <input
                           type="text"
                           {...register(`participants.${index}.name`, {
-                            required: "Name is required",
+                            required: 'Name is required',
                           })}
                           className="mt-1 block w-full px-3 py-2 bg-[#1c1c21] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                           placeholder="Enter participant name"
@@ -330,14 +339,14 @@ function UpdateItineraryModal({
                           type="number"
                           {...register(`participants.${index}.age`, {
                             valueAsNumber: true,
-                            required: "Age is required",
+                            required: 'Age is required',
                             min: {
                               value: 0,
-                              message: "Age must be at least 0",
+                              message: 'Age must be at least 0',
                             },
                             max: {
                               value: 120,
-                              message: "Age must be at most 120",
+                              message: 'Age must be at most 120',
                             },
                           })}
                           className="mt-1 block w-full px-3 py-2 bg-[#1c1c21] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -393,8 +402,8 @@ function UpdateItineraryModal({
                                     field.value.some(
                                       (p: Preference) => p.id === preference.id
                                     )
-                                      ? "bg-indigo-600 text-white"
-                                      : "bg-[#1c1c21] text-indigo-300 hover:bg-indigo-700 hover:text-white"
+                                      ? 'bg-indigo-600 text-white'
+                                      : 'bg-[#1c1c21] text-indigo-300 hover:bg-indigo-700 hover:text-white'
                                   }`}
                                 >
                                   {preference.name}
@@ -415,10 +424,10 @@ function UpdateItineraryModal({
                       <p>Name: {field.name}</p>
                       <p>Age: {field.age}</p>
                       <p>
-                        Preferences:{" "}
+                        Preferences:{' '}
                         {field.preferences
                           .map((p: Preference) => p.name)
-                          .join(", ")}
+                          .join(', ')}
                       </p>
                     </div>
                   )}
@@ -448,7 +457,7 @@ function UpdateItineraryModal({
               type="submit"
               className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
             >
-              {text}
+              Update Itinerary
             </button>
           </div>
         </form>
@@ -458,14 +467,14 @@ function UpdateItineraryModal({
           <FavoriteParticipantsModal
             onClose={() => setFavoriteParticipantsModal(false)}
             onSelectParticipant={(participant) => {
-              append(participant);
-              setFavoriteParticipantsModal(false);
+              append(participant)
+              setFavoriteParticipantsModal(false)
             }}
           />,
           document.body
         )}
     </div>
-  );
+  )
 }
 
-export default UpdateItineraryModal;
+export default UpdateItineraryModal
