@@ -56,12 +56,10 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     [itineraries]
   )
 
-  const handleSelectItinerary = (id: ObjectId) => {
-    const selectedItinerary = itineraries?.find(
-      (itinerary) => itinerary.id === id
-    )
-    console.log(selectedItinerary)
-    selectedItinerary ? setCurrentItinerary(selectedItinerary) : null
+  const handleSelectItinerary = async (id: ObjectId) => {
+    const selectedItinerary = await getItineraryRequest(id)
+    console.log(selectedItinerary.data.data)
+    selectedItinerary ? setCurrentItinerary(selectedItinerary.data.data) : null
   }
 
   const createItinerary = async (itinerary: Itinerary) => {

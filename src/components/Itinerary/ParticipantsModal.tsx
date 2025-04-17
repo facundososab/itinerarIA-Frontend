@@ -49,7 +49,7 @@ export default function ParticipantsModal({
                       Preferences
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {participant.preferences.map((preference, j) => (
+                      {/* {participant.preferences.map((preference, j) => (
                         <div
                           key={j}
                           className="px-3 py-1 rounded-full text-sm font-medium bg-indigo-600 text-white flex items-center"
@@ -57,7 +57,7 @@ export default function ParticipantsModal({
                           <Tag size={14} className="mr-1" />
                           {preference.name}
                         </div>
-                      ))}
+                      ))} */}
                     </div>
                   </div>
                 </li>
