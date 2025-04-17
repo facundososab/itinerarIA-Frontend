@@ -28,6 +28,7 @@ export default function ItineraryForm({ onClose }: { onClose: () => void }) {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<Itinerary>({
     defaultValues: {
       participants: [],
@@ -186,6 +187,30 @@ export default function ItineraryForm({ onClose }: { onClose: () => void }) {
                   type="date"
                   {...register("dayEnd", {
                     required: "End day is required",
+                    validate: (value) => {
+                      const startDate = watch("dayStart");
+
+                      if (startDate && new Date(value) < new Date(startDate)) {
+                        return "End date must be after start date";
+                      }
+                      //valido que el itinerario no dure mas de 31 dias
+                      const start = new Date(startDate);
+                      const end = new Date(value);
+                      const diffTime = Math.abs(
+                        end.getTime() - start.getTime()
+                      );
+                      const diffDays = Math.ceil(
+                        diffTime / (1000 * 60 * 60 * 24)
+                      );
+                      if (diffDays > 31) {
+                        return "Itinerary duration must be less than 31 days";
+                      }
+                      //valido que el itinerario tenga mas de 2 dias
+                      if (diffDays < 2) {
+                        return "Itinerary duration must be more than 2 days";
+                      }
+                      return true;
+                    },
                   })}
                   className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Enter itinerary dayEnd"
