@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import {render, screen } from '@testing-library/react'
 import DeletedMessage from '../components/ui/DeletedMessage'
 import { beforeEach } from 'node:test'
 

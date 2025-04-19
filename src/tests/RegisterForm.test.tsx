@@ -1,4 +1,4 @@
-import { test, expect, describe, vi, it } from 'vitest'
+import { expect, describe, vi, it } from 'vitest'
 import RegisterForm from '../components/RegisterForm.tsx'
 import { render, screen } from '@testing-library/react'
 import { beforeEach } from 'vitest'
@@ -45,7 +45,6 @@ vi.mock('../context/AuthContext.tsx', () => {
 })
 
 //Luego de mockear el contexto, importo el contexto real
-import { useAuth } from '../context/AuthContext.tsx'
 
 describe('RegisterForm', () => {
   beforeEach(() => {

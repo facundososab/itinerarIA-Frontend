@@ -17,4 +17,3 @@ export default defineConfig({
   }
 })
 
-console.log("the test has already started")

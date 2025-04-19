@@ -1,4 +1,3 @@
-import { ObjectId } from '@mikro-orm/mongodb'
 
 export default function TextModal({
   onClose,
