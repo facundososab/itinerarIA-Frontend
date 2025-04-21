@@ -7,7 +7,7 @@ export const registerRequest = (user:User) => {
   return instance.post(`/auth/register`, user);
 }
 export const loginRequest = async (user:User) => {
-  return instance.post(`/api/auth/login`, user);
+  return instance.post(`/auth/login`, user);
 }
 export const verifyTokenRequest = async () => { 
   return instance.get(`/auth/verify`);
