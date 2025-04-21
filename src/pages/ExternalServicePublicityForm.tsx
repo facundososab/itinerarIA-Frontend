@@ -19,11 +19,19 @@ export default function ExternalServiceAdForm() {
 
   useEffect(() => {
     async function loadPlaces() {
-      const response = await getAllPlacesRequest()
-      setPlaces(response.data.data)
+      try {
+        const response = await getAllPlacesRequest()
+        const data = response?.data?.data ?? []
+        console.log("Respuesta lugares:", response)
+        setPlaces(data)
+      } catch (error) {
+        console.error("Error al cargar los lugares", error)
+        setPlaces([]) // fallback seguro
+      }
     }
     loadPlaces()
   }, [])
+  
 
   const onCreate = handleSubmit(async (data) => {
     try {
