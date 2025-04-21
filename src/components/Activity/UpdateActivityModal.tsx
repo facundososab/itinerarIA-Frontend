@@ -45,7 +45,8 @@ function UpdateActivityModal({
     setValue("description", activityToUpdate.description);
     setValue("outdoor", activityToUpdate.outdoor);
     setValue("transport", activityToUpdate.transport);
-    setValue("schedule", activityToUpdate.schedule);
+    setValue("scheduleStart", activityToUpdate.scheduleStart);
+    setValue("scheduleEnd", activityToUpdate.scheduleEnd);
   }, [activities, activityToUpdate]);
   // if (loadingPlaces) return <div>Loading...</div>;
   return (
@@ -148,15 +149,15 @@ function UpdateActivityModal({
 
           <div>
             <label
-              htmlFor="schedule"
+              htmlFor="scheduleStart"
               className="block text-sm font-medium text-indigo-300"
             >
-              Schedule
+              Schedule Start
             </label>
             <input
-              id="schedule"
+              id="scheduleStart"
               typeof="text"
-              {...register("schedule", {
+              {...register("scheduleStart", {
                 minLength: {
                   value: 3,
                   message: "Schedule must be at least 3 characters long",
@@ -170,12 +171,45 @@ function UpdateActivityModal({
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter activity schedule"
             />
-            {errors.schedule?.message && (
+            {errors.scheduleStart?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.schedule.message}
+                {errors.scheduleStart.message}
               </p>
             )}
           </div>
+
+          <div>
+            <label
+              htmlFor="scheduleEnd"
+              className="block text-sm font-medium text-indigo-300"
+            >
+              Schedule End
+            </label>
+            <input
+              id="scheduleEnd"
+              typeof="text"
+              {...register("scheduleEnd", {
+                minLength: {
+                  value: 3,
+                  message: "Schedule must be at least 3 characters long",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Schedule must be at most 100 characters long",
+                },
+                required: "Schedule is required",
+              })}
+              className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Enter activity schedule"
+            />
+            {errors.scheduleEnd?.message && (
+              <p className="mt-1 text-sm text-red-400">
+                {errors.scheduleEnd.message}
+              </p>
+            )}
+          </div>
+          
+
           <div>
             <button
               type="submit"

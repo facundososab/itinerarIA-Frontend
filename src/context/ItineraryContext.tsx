@@ -15,7 +15,7 @@ import { useAuth } from './AuthContext.tsx'
 
 export const ItineraryContext = createContext({
   itineraries: null as Itinerary[] | null,
-  setItineraries: (_itineraries: Itinerary[]) => {},
+  setItineraries: (_itineraries: Itinerary[] | []) => {},
   createItinerary: (_itinerary: Itinerary) => {},
   createItineraryWithIA: (_itinerary: Itinerary) => {},
   getItineraries: (_userId: ObjectId) => {},
@@ -23,7 +23,7 @@ export const ItineraryContext = createContext({
   updateItinerary: (_itinerary: Itinerary) => {},
   deleteItinerary: (_id: ObjectId) => {},
   CurrentItinerary: null as Itinerary | null,
-  setCurrentItinerary: (_itinerary: Itinerary) => {},
+  setCurrentItinerary: (_itinerary: Itinerary | null) => {},
   handleSelectItinerary: (_id: ObjectId) => {},
   itineraryErrors: [] as string[],
   isLoaded: false || true,

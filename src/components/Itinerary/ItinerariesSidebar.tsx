@@ -1,18 +1,18 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useItinerary } from '../../context/ItineraryContext'
-import { NewItineraryButton } from './NewItineraryButton'
-import { CalendarIcon, TrashIcon } from '@heroicons/react/24/outline'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
-import { createPortal } from 'react-dom'
-import DeleteWarningModal from '../shared/DeleteWarningModal'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { EditIcon, MapPin, Filter } from 'lucide-react'
-import Itinerary from '../../interfaces/Itinerary'
-import UpdateItineraryModal from './UpdateItineraryModal'
-import { usePlace } from '../../context/PlaceContext'
-import { useAuth } from '../../context/AuthContext'
-import SuccessMessage from '../ui/SuccessMessage'
-import DeletedMessage from '../ui/DeletedMessage'
+import { useCallback, useEffect, useState } from "react";
+import { useItinerary } from "../../context/ItineraryContext";
+import { NewItineraryButton } from "./NewItineraryButton";
+import { CalendarIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { createPortal } from "react-dom";
+import DeleteWarningModal from "../shared/DeleteWarningModal";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { EditIcon, MapPin, Filter } from "lucide-react";
+import Itinerary from "../../interfaces/Itinerary";
+import UpdateItineraryModal from "./UpdateItineraryModal";
+import { usePlace } from "../../context/PlaceContext";
+import { useAuth } from "../../context/AuthContext";
+import SuccessMessage from "../ui/SuccessMessage";
+import DeletedMessage from "../ui/DeletedMessage";
 
 export default function ItinerariesSidebar() {
   const {
@@ -26,35 +26,35 @@ export default function ItinerariesSidebar() {
     isDeleted,
     isUpdated,
     CurrentItinerary,
-  } = useItinerary()
-  const { places, getAllPlaces } = usePlace()
-  const { user } = useAuth()
+  } = useItinerary();
+  const { places, getAllPlaces } = usePlace();
+  const { user } = useAuth();
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [showUpdateModal, setShowUpdateModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [itineraryToDelete, setItineraryToDelete] = useState<ObjectId | null>(
     null
-  )
+  );
   const [itineraryToUpdate, setItineraryToUpdate] = useState<
     ObjectId | undefined
-  >(undefined)
-  const [selectedPlace, setSelectedPlace] = useState<string>('')
+  >(undefined);
+  const [selectedPlace, setSelectedPlace] = useState<string>("");
   const [filteredItineraries, setFilteredItineraries] = useState<
     Itinerary[] | null
-  >(itineraries)
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  >(itineraries);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const loadItineraries = useCallback(async () => {
-    if (user) getItineraries(user?.id)
-  }, [getItineraries, user])
+    if (user) getItineraries(user?.id);
+  }, [getItineraries, user]);
 
   useEffect(() => {
     const loadData = async () => {
-      getAllPlaces()
-      if (user) getItineraries(user?.id)
-    }
-    loadData()
-  }, [])
+      getAllPlaces();
+      if (user) getItineraries(user?.id);
+    };
+    loadData();
+  }, []);
 
   useEffect(() => {
     if (itineraries) {
@@ -69,37 +69,37 @@ export default function ItinerariesSidebar() {
                 )
             )
           : itineraries
-      )
+      );
     }
-  }, [itineraries, selectedPlace])
+  }, [itineraries, selectedPlace]);
 
   const onDelete = (itineraryId: ObjectId) => {
-    deleteItinerary(itineraryId)
-    setShowDeleteModal(false)
-  }
+    deleteItinerary(itineraryId);
+    setShowDeleteModal(false);
+  };
 
   const onUpdate = (data: Itinerary) => {
-    updateItinerary(data)
-    setShowUpdateModal(false)
-    loadItineraries()
-  }
+    updateItinerary(data);
+    setShowUpdateModal(false);
+    loadItineraries();
+  };
 
   const handleItinerarySelect = (itineraryId: ObjectId) => {
-    handleSelectItinerary(itineraryId)
-    setIsSidebarOpen(false)
-  }
+    handleSelectItinerary(itineraryId);
+    setIsSidebarOpen(false);
+  };
 
   return (
     <>
       <div
         className={`md:hidden fixed top-20 ${
-          isSidebarOpen ? 'left-64' : 'left-0'
+          isSidebarOpen ? "left-64" : "left-0"
         } z-50 transition-all duration-200 ease-in-out`}
       >
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className={`bg-indigo-600 text-white p-2 ${
-            isSidebarOpen ? 'rounded-r-md' : 'rounded-r-md shadow-lg'
+            isSidebarOpen ? "rounded-r-md" : "rounded-r-md shadow-lg"
           }`}
         >
           {isSidebarOpen ? (
@@ -111,7 +111,7 @@ export default function ItinerariesSidebar() {
       </div>
       <div
         className={`fixed inset-y-0 left-0 transform ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:relative md:translate-x-0 transition duration-200 ease-in-out z-30 md:z-0`}
       >
         <div className="w-64 md:w-72 lg:w-80 bg-onyx h-screen flex flex-col pt-2">
@@ -202,8 +202,8 @@ export default function ItinerariesSidebar() {
                 key={i}
                 className={`p-4 hover:bg-raisin-black-2 cursor-pointer flex justify-between items-center ${
                   CurrentItinerary?.id === itinerary.id
-                    ? 'bg-raisin-black-2'
-                    : ''
+                    ? "bg-raisin-black-2"
+                    : ""
                 }`}
                 onClick={() => handleItinerarySelect(itinerary.id)}
               >
@@ -219,22 +219,22 @@ export default function ItinerariesSidebar() {
                           new Date(itinerary.dayStart).getTime()
                       ) /
                       (1000 * 60 * 60 * 24)
-                    ).toFixed(0)}{' '}
-                    {'days'}
+                    ).toFixed(0)}{" "}
+                    {"days"}
                   </div>
                   <div className="text-sm text-gray-500 flex items-center">
                     <MapPin className="h-4 w-4 mr-2" />
                     {itinerary.place.name}
-                    {' - '}
+                    {" - "}
                     {itinerary.place.country}
                   </div>
                 </div>
                 <div className="flex space-x-2">
                   <button
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setShowUpdateModal(true)
-                      setItineraryToUpdate(itinerary.id)
+                      e.stopPropagation();
+                      setShowUpdateModal(true);
+                      setItineraryToUpdate(itinerary.id);
                     }}
                     className="p-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200 group"
                   >
@@ -242,9 +242,9 @@ export default function ItinerariesSidebar() {
                   </button>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setShowDeleteModal(true)
-                      setItineraryToDelete(itinerary.id)
+                      e.stopPropagation();
+                      setShowDeleteModal(true);
+                      setItineraryToDelete(itinerary.id);
                     }}
                     className="p-1.5 rounded-full bg-red-600 hover:bg-red-700 transition-colors duration-200 group"
                   >
@@ -277,5 +277,5 @@ export default function ItinerariesSidebar() {
           document.body
         )}
     </>
-  )
+  );
 }

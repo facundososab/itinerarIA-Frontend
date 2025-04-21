@@ -40,7 +40,13 @@ export const AuthProvider = ({ children }: any) => {
   const [authErrors, setAuthErrors] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { getItineraries } = useItinerary();
+  const {
+    getItineraries,
+    setCurrentItinerary,
+    setItineraries,
+    CurrentItinerary,
+    itineraries,
+  } = useItinerary();
 
   const signup = async (user: User) => {
     try {
@@ -58,6 +64,7 @@ export const AuthProvider = ({ children }: any) => {
   const signIn = async (user: User) => {
     try {
       const res = await loginRequest(user);
+      console.log(itineraries, "itineraries");
       setUser(res.data.data.user);
       setIsAdmin(res.data.data.user.isAdmin);
       setIsAuthenticated(true);
@@ -75,10 +82,15 @@ export const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     try {
       await logoutRequest();
+      console.log(itineraries, "itineraries");
+      console.log(CurrentItinerary, "CurrentItinerary");
       setUser(null);
       setIsAdmin(false);
       setIsAuthenticated(false);
+      setCurrentItinerary(null);
+      setItineraries([]);
       Cookies.remove("token");
+
       navigate("/login");
     } catch (err: any) {
       const errorData = err.response?.data?.message || "Error";

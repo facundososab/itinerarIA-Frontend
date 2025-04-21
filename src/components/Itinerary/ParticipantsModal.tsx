@@ -1,4 +1,4 @@
-import { X, Calendar, AccessibilityIcon, Tag } from 'lucide-react'
+import { X, Calendar, AccessibilityIcon } from 'lucide-react'
 import Participant from '../../interfaces/Participant'
 
 export default function ParticipantsModal({
