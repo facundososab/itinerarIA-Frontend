@@ -58,7 +58,6 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
 
   const handleSelectItinerary = async (id: ObjectId) => {
     const selectedItinerary = await getItineraryRequest(id)
-    console.log(selectedItinerary.data.data)
     selectedItinerary ? setCurrentItinerary(selectedItinerary.data.data) : null
   }
 
@@ -76,9 +75,7 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       if (res.status === 201) {
         setCurrentItinerary(res.data.data)
         if (itinerary.user) await getItineraries(itinerary.user.id)
-        console.log(itinerary.user)
         setItineraryErrors([])
-        console.log(res.data)
         setIsCreated(true)
       }
     } catch (error: any) {
@@ -107,8 +104,6 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
       setIsCreated(true)
     } catch (error: any) {
       const errorData = error.response.data.message
-      console.log(error)
-      console.log(errorData)
       setItineraryErrors(errorData)
     } finally {
       setIsLoaded(true)
@@ -140,7 +135,6 @@ export function ItineraryProvider({ children }: { children: ReactNode }) {
     setIsUpdated(false)
     setIsDeleted(false)
     const res = await getItinerariesByUserRequest(userId)
-    console.log(res.data.data)
     setItineraries(res.data.data)
   }
 
