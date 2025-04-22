@@ -36,7 +36,7 @@ import DeleteMessage from '../ui/DeletedMessage.tsx'
 import { ActivitiesMap } from './ActivitiesMap.tsx'
 
 export function ItineraryDisplay() {
-  const { setCurrentItinerary, CurrentItinerary, itineraries } = useItinerary()
+  const { CurrentItinerary, itineraries } = useItinerary()
 
   const {
     getAllActivities,
@@ -181,9 +181,6 @@ export function ItineraryDisplay() {
       }
 
       setFilteredActivities(filtered)
-    }
-    return () => {
-      setCurrentItinerary(null)
     }
   }, [
     CurrentItinerary,
