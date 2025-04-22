@@ -8,7 +8,6 @@ import {
 } from "../auth/user.ts";
 import User from "../interfaces/User.ts";
 
-import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useItinerary } from "./ItineraryContext.tsx";
 
@@ -40,21 +39,17 @@ export const AuthProvider = ({ children }: any) => {
   const [authErrors, setAuthErrors] = useState([]);
   const [isLoading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const {
-    getItineraries,
-    setCurrentItinerary,
-    setItineraries,
-    CurrentItinerary,
-    itineraries,
-  } = useItinerary();
+  const { getItineraries, setCurrentItinerary, setItineraries, itineraries } =
+    useItinerary();
 
   const signup = async (user: User) => {
     try {
       const res = await registerRequest(user);
-      setUser(res.data.data);
+      setUser(res.data.data.user);
       setIsAdmin(res.data.data.isAdmin);
       setIsAuthenticated(true);
       setAuthErrors([]);
+      getItineraries(res.data.data.user.id);
     } catch (err: any) {
       console.log(err);
       const errorData = err.response.data.message;
@@ -70,6 +65,7 @@ export const AuthProvider = ({ children }: any) => {
       setIsAuthenticated(true);
       setAuthErrors([]);
       getItineraries(res.data.data.user.id);
+      setCurrentItinerary(null);
     } catch (err: any) {
       console.log(err);
       const errorData = err.response?.data?.message ||
@@ -82,15 +78,11 @@ export const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     try {
       await logoutRequest();
-      console.log(itineraries, "itineraries");
-      console.log(CurrentItinerary, "CurrentItinerary");
       setUser(null);
       setIsAdmin(false);
       setIsAuthenticated(false);
       setCurrentItinerary(null);
       setItineraries([]);
-      Cookies.remove("token");
-
       navigate("/login");
     } catch (err: any) {
       const errorData = err.response?.data?.message || "Error";
