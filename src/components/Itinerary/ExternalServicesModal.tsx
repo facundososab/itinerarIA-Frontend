@@ -15,19 +15,14 @@ export default function ExternalServicesModal({
     useExternalServices()
 
   useEffect(() => {
-    console.log(idLugar)
-
     const loadServices = async (idLugar: ObjectId) => {
       getAllExternalServicesByPlace(idLugar)
-      console.log('Loading external services for place', idLugar)
     }
 
     if (idLugar)
       async () => {
         await loadServices(idLugar)
       }
-
-    console.log('External services', externalServices)
   }, [])
 
   return (
