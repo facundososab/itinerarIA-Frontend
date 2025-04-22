@@ -120,26 +120,22 @@ export const AuthProvider = ({ children }: any) => {
 
   useEffect(() => {
     const checkUser = async () => {
-      const cookies = Cookies.get();
-      if (!cookies.token) {
-        setIsAuthenticated(false);
-        setLoading(false);
-        return;
-      }
       try {
         const res = await verifyTokenRequest();
         if (!res.data) {
-          return setIsAuthenticated(false);
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+          setUser(res.data.data.user);
+          setIsAdmin(res.data.data.user.isAdmin);
         }
-        setIsAuthenticated(true);
-        setUser(res.data.data.user);
-        setIsAdmin(res.data.data.user.isAdmin);
-        setLoading(false);
       } catch (err) {
         setIsAuthenticated(false);
+      } finally {
         setLoading(false);
       }
     };
+
     checkUser();
   }, []);
   //Esto es para que el user no se desloguee al recargar la página, y para las rutas privadas
