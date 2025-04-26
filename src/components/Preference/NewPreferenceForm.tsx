@@ -1,24 +1,24 @@
-import { useForm } from 'react-hook-form'
-import { usePreference } from '../../context/PreferenceContext.tsx'
-import Preference from '../../interfaces/Preference.ts'
-import { X } from 'lucide-react'
+import { useForm } from "react-hook-form";
+import { usePreference } from "../../context/PreferenceContext.tsx";
+import Preference from "../../interfaces/Preference.ts";
+import { X } from "lucide-react";
 
 export default function NewPreferenceForm({
   onClose,
 }: {
-  onClose: () => void
+  onClose: () => void;
 }) {
-  const { createPreference, preferenceErrors } = usePreference()
+  const { createPreference, preferenceErrors } = usePreference();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Preference>()
+  } = useForm<Preference>();
 
   const onCreate = handleSubmit(async (data) => {
-    createPreference(data)
-    onClose()
-  })
+    createPreference(data);
+    onClose();
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-[#131316] bg-opacity-75 z-50 p-2">
@@ -78,19 +78,19 @@ export default function NewPreferenceForm({
             <input
               id="name"
               type="text"
-              {...register('name', {
+              {...register("name", {
                 minLength: {
                   value: 3,
-                  message: 'Name must be at least 3 characters long',
+                  message: "Name must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 20,
-                  message: 'Name must be at most 20 characters long',
+                  message: "Name must be at most 20 characters long",
                 },
-                required: 'Name is required',
+                required: "Name is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter service type"
+              placeholder="Enter preference name"
             />
             {errors.name?.message && (
               <p className="mt-1 text-sm text-red-400">{errors.name.message}</p>
@@ -107,19 +107,19 @@ export default function NewPreferenceForm({
             <input
               id="description"
               type="text"
-              {...register('description', {
+              {...register("description", {
                 minLength: {
                   value: 3,
-                  message: 'Description must be at least 3 characters long',
+                  message: "Description must be at least 3 characters long",
                 },
                 maxLength: {
                   value: 40,
-                  message: 'Description must be at most 40 characters long',
+                  message: "Description must be at most 40 characters long",
                 },
-                required: 'Description is required',
+                required: "Description is required",
               })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Enter service name"
+              placeholder="Enter preference description"
             />
             {errors.description?.message && (
               <p className="mt-1 text-sm text-red-400">
@@ -138,5 +138,5 @@ export default function NewPreferenceForm({
         </form>
       </div>
     </div>
-  )
+  );
 }
