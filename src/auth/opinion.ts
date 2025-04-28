@@ -3,25 +3,25 @@ import Opinion from "../interfaces/Opinion.ts";
 import instance from "./axios.ts";
 
 export const createOpinionRequest = async(opinion: Opinion) => {
-  return instance.post("/opiniones", opinion);
+  return instance.post("/opinions", opinion);
 }
 
 export const getAllOpinionsRequest = async () => {
-  return instance.get("/opiniones");
+  return instance.get("/opinions");
 }
 
 export const getAllOpinionsByActivityRequest = async (activityId: ObjectId) => {
-  return instance.get(`/opiniones/activity/${activityId}`);
+  return instance.get(`/opinions/activity/${activityId}`);
 }
 
 export const getOpinionRequest = async (id: ObjectId) => {
-  return instance.get(`/opiniones/${id}`);
+  return instance.get(`/opinions/${id}`);
 }
 
 export const updateOpinionRequest = async (opinion: Opinion) => {
-  return instance.put(`/opiniones/${opinion.id}`, opinion);
+  return instance.put(`/opinions/${opinion.id}`, opinion);
 }
 
 export const deleteOpinionRequest = async(id: ObjectId) => {
-  return instance.delete(`/opiniones/${id}`);
+  return instance.delete(`/opinions/${id}`);
 }

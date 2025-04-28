@@ -56,10 +56,10 @@ export default function ExternalServiceRow({
     }
 
     // Validation for address
-    if (!editingService?.adress) {
-      newErrors.adress = 'Address is required'
-    } else if (editingService.adress.length < 3) {
-      newErrors.adress = 'The address must have at least 3 characters'
+    if (!editingService?.address) {
+      newErrors.address = 'Address is required'
+    } else if (editingService.address.length < 3) {
+      newErrors.address = 'The address must have at least 3 characters'
     }
 
     // Validation for place
@@ -177,11 +177,11 @@ export default function ExternalServiceRow({
           <>
             <input
               type="text"
-              value={editingService.adress}
+              value={editingService.address}
               onChange={(e) =>
                 setEditingService({
                   ...editingService,
-                  adress: e.target.value,
+                  address: e.target.value,
                 })
               }
               className="bg-[#2f3037] text-indigo-100 p-1 rounded w-full"
@@ -191,7 +191,7 @@ export default function ExternalServiceRow({
             )}
           </>
         ) : (
-          service.adress
+          service.address
         )}
       </td>
       <td className="p-3">

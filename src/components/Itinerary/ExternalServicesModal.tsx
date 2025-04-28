@@ -62,7 +62,7 @@ export default function ExternalServicesModal({
                       <div className="space-y-2 text-sm text-indigo-300">
                         <p className="flex items-center">
                           <MapPin size={16} className="mr-2" />
-                          {service.adress}
+                          {service.address}
                         </p>
                         <p className="flex items-center">
                           <Clock size={16} className="mr-2" />

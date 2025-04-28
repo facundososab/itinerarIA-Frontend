@@ -6,7 +6,7 @@ export default interface ExternalService {
   serviceType: string,
   name: string,
   description: string,
-  adress: string,
+  address: string,
   schedule?: string,
   website?: string,
   phoneNumber?: string,

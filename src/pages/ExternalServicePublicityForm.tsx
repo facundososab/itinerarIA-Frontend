@@ -127,19 +127,19 @@ export default function ExternalServiceAdForm() {
           </div>
 
           <div>
-            <label htmlFor="adress" className="block text-sm font-medium">
+            <label htmlFor="address" className="block text-sm font-medium">
               Address
             </label>
             <input
               type="text"
-              id="adress"
-              {...register('adress', { required: 'Address is required' })}
+              id="address"
+              {...register('address', { required: 'Address is required' })}
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-indigo-600 rounded-md text-indigo-100 placeholder-indigo-400"
               placeholder="Service address"
             />
-            {errors.adress && (
+            {errors.address && (
               <p className="mt-1 text-sm text-red-500">
-                {errors.adress.message}
+                {errors.address.message}
               </p>
             )}
           </div>

@@ -171,15 +171,15 @@ export default function NewExternalServiceForm({
 
           <div>
             <label
-              htmlFor="adress"
+              htmlFor="address"
               className="block text-sm font-medium text-indigo-300"
             >
               Address
             </label>
             <input
-              id="adress"
+              id="address"
               type="text"
-              {...register('adress', {
+              {...register('address', {
                 minLength: {
                   value: 10,
                   message: 'Address must be at least 10 characters long',
@@ -193,9 +193,9 @@ export default function NewExternalServiceForm({
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-[#393a41] rounded-md text-indigo-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Enter external service address"
             />
-            {errors.adress?.message && (
+            {errors.address?.message && (
               <p className="mt-1 text-sm text-red-400">
-                {errors.adress.message}
+                {errors.address.message}
               </p>
             )}
           </div>

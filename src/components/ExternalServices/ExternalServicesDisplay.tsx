@@ -110,7 +110,7 @@ export function ExternalServicesDisplay() {
       searchRegex.test(service.serviceType) ||
       searchRegex.test(service.name) ||
       searchRegex.test(service.description) ||
-      searchRegex.test(service.adress) ||
+      searchRegex.test(service.address) ||
       searchRegex.test(service.place?.name || "");
 
     const matchesStatus =
