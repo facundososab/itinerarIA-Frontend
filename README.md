@@ -20,6 +20,8 @@ You must create a .env file to define the Backend API URL for the application as
 VITE_API_URL = 'http://example:1000'
 ```
 By default, it will be set to http://localhost:3000.
+## Deployment
+The app is depoloyed on https://itinerar-ia-frontend.vercel.app/
 
 ## Usage
 How to run the application in a development environment:
