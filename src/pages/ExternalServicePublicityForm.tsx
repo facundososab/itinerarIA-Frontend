@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ExternalService from '../interfaces/ExternalService.ts'
-import { addPublicityRequest, getAllPlacesRequest } from '../auth/publicity.ts'
+import { addPublicityRequest} from '../auth/publicity.ts'
+import { usePlace } from '../context/PlaceContext.tsx'
 import Place from '../interfaces/Place.ts'
 import Loader from '../components/ui/Loader.tsx'
 
@@ -15,23 +16,14 @@ export default function ExternalServiceAdForm() {
   const [submitErrors, setSubmitErrors] = useState<string[]>([])
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
-  const [places, setPlaces] = useState<Place[]>([])
+  const { places, getAllPlaces } = usePlace();
 
   useEffect(() => {
-    async function loadPlaces() {
-      try {
-        const response = await getAllPlacesRequest()
-        const data = response?.data?.data ?? []
-        console.log("Respuesta lugares:", response)
-        setPlaces(data)
-      } catch (error) {
-        console.error("Error al cargar los lugares", error)
-        setPlaces([]) // fallback seguro
-      }
-    }
-    loadPlaces()
-  }, [])
-  
+    const loadData = async () => {
+      getAllPlaces();
+    };
+    loadData();
+  }, []);
 
   const onCreate = handleSubmit(async (data) => {
     try {
@@ -225,7 +217,7 @@ export default function ExternalServiceAdForm() {
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-indigo-600 rounded-md text-indigo-100"
             >
               <option value="">Select a place</option>
-              {places.map((place) => (
+              {places && places.map((place) => (
                 <option key={place.id.toString()} value={place.id.toString()}>
                   {place.name}
                 </option>
