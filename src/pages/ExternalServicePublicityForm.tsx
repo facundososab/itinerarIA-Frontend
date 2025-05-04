@@ -3,7 +3,6 @@ import { useForm } from 'react-hook-form'
 import ExternalService from '../interfaces/ExternalService.ts'
 import { addPublicityRequest} from '../auth/publicity.ts'
 import { usePlace } from '../context/PlaceContext.tsx'
-import Place from '../interfaces/Place.ts'
 import Loader from '../components/ui/Loader.tsx'
 
 export default function ExternalServiceAdForm() {
