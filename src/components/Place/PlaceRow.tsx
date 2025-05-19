@@ -1,10 +1,7 @@
 import { PencilIcon, TrashIcon } from 'lucide-react'
 import Place from '../../interfaces/Place.ts'
 import { ObjectId } from '@mikro-orm/mongodb'
-import { useState, useEffect } from 'react'
-import { useExternalServices } from '../../context/ExternalServicesContext.tsx'
-import { useItinerary } from '../../context/ItineraryContext.tsx'
-import { useAuth } from '../../context/AuthContext.tsx'
+import { useState} from 'react'
 
 
 export default function PlaceRow({
@@ -14,7 +11,6 @@ export default function PlaceRow({
     handleUpdate,
     handleEdit,
     setShowModalWarning,
-    setShowModalRestriction,
     setPlaceToDelete,
     places,
 }: {
@@ -25,7 +21,6 @@ export default function PlaceRow({
     handleUpdate: () => void
     handleEdit: (place: Place) => void
     setShowModalWarning: (show: boolean) => void
-    setShowModalRestriction: (show: boolean) => void
     setPlaceToDelete: (id: ObjectId) => void
 }) {
   const [editingErrors, setEditingErrors] = useState<{ [key: string]: string }>({});
@@ -146,32 +141,9 @@ const handleSave = () => {
 };
 
 
-  const { externalServices, getAllExternalServices } = useExternalServices();
-  const { itineraries, getItineraries } = useItinerary();
-  const { user } = useAuth();
-
-  useEffect(() => {
-      const loadExternalServicesAndItineraries = async () => {
-          await getAllExternalServices();
-          if (user) {
-              await getItineraries(user.id);
-          }
-      };
-      loadExternalServicesAndItineraries();
-  }, []);
-
   const handleDelete = async (place: Place) => {
-      const idPlace = place.id;
-      const hasAnyService = await externalServices?.some((service) => service.place.id === idPlace);
-      const hasAnyItinerary = await itineraries?.some((itinerary) => itinerary.place.id === idPlace);
-
-      //console.log(hasAnyService,"tiene servicios externos");
-      if (hasAnyService || hasAnyItinerary) {
-          setShowModalRestriction(true);
-      } else {
-          setShowModalWarning(true);
-          setPlaceToDelete(place.id);
-      }
+    setShowModalWarning(true);
+    setPlaceToDelete(place.id);
   };
 
   return (

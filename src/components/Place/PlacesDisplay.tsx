@@ -5,7 +5,6 @@ import { ObjectId } from "@mikro-orm/mongodb";
 import { createPortal } from "react-dom";
 import PlaceRow from "./PlaceRow.tsx";
 import DeleteWarningModal from "../shared/DeleteWarningModal.tsx";
-import TextModal from "../shared/TextModal.tsx";
 import { AlertCircle, Search } from "lucide-react";
 
 export function PlacesDisplay() {
@@ -19,7 +18,6 @@ export function PlacesDisplay() {
   } = usePlace();
 
   const [showModalWarning, setShowModalWarning] = useState(false);
-  const [showModalRestriction, setShowModalRestriction] = useState(false);
   const [editingPlace, setEditingPlace] = useState<Place | null>(null);
   const [placeToDelete, setPlaceToDelete] = useState<ObjectId | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,11 +48,12 @@ export function PlacesDisplay() {
   };
 
   const onDelete = async (id: ObjectId) => {
-    try {
-      deletePlace(id);
+    try{
+      await deletePlace(id);
       setPlaces(places.filter((place) => place.id !== id));
       setShowModalWarning(false);
-    } catch (error: any) {
+    } catch (error) {
+      setShowModalWarning(false);
       console.log(error);
     }
   };
@@ -188,7 +187,6 @@ export function PlacesDisplay() {
                   handleUpdate={handleUpdate}
                   handleEdit={handleEdit}
                   setShowModalWarning={setShowModalWarning}
-                  setShowModalRestriction={setShowModalRestriction}
                   setEditingPlace={setEditingPlace}
                   setPlaceToDelete={setPlaceToDelete}
                   places={places}
@@ -220,14 +218,6 @@ export function PlacesDisplay() {
           document.body
         )}
 
-      {showModalRestriction &&
-        createPortal(
-          <TextModal
-            onClose={() => setShowModalRestriction(false)}
-            text="You cannot delete this place because it has external services or itineraries associated with it."
-          />,
-          document.body
-        )}
     </article>
   );
 }

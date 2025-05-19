@@ -93,8 +93,10 @@ export function PlacesProvider({ children }: { children: ReactNode }) {
       const res = await deletePlaceRequest(id);
       setPlace(res.data.data);
       setPlaceErrors([]);
+      return res;
     } catch (err: any) {
-      setPlaceErrors([err.response.data.message]);
+      setPlaceErrors([err.response?.data?.message]);
+      throw err;
     }
   };
 
