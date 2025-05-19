@@ -1,29 +1,31 @@
-import { useEffect } from 'react'
-import { ObjectId } from '@mikro-orm/mongodb'
-import { useExternalServices } from '../../context/ExternalServicesContext'
-import { X, MapPin, Clock, Globe, Phone } from 'lucide-react'
-import { ExternalServiceStatus } from '../../interfaces/ExternalService.ts'
+import { useEffect } from "react";
+import { ObjectId } from "@mikro-orm/mongodb";
+import { useExternalServices } from "../../context/ExternalServicesContext";
+import { X, MapPin, Clock, Globe, Phone } from "lucide-react";
+import { ExternalServiceStatus } from "../../interfaces/ExternalService.ts";
 
 export default function ExternalServicesModal({
   idLugar,
   onClose,
 }: {
-  idLugar: ObjectId | undefined
-  onClose: () => void
+  idLugar: ObjectId | undefined;
+  onClose: () => void;
 }) {
   const { externalServices, getAllExternalServicesByPlace } =
-    useExternalServices()
-
+    useExternalServices();
+  const loadServices = async (idLugar: ObjectId) => {
+    getAllExternalServicesByPlace(idLugar);
+  };
   useEffect(() => {
-    const loadServices = async (idLugar: ObjectId) => {
-      getAllExternalServicesByPlace(idLugar)
+    if (!idLugar) {
+      return;
     }
-
-    if (idLugar)
-      async () => {
-        await loadServices(idLugar)
-      }
-  }, [])
+    loadServices(idLugar);
+    // async () => {
+    //   console.log("idLugar", idLugar);
+    //   await loadServices(idLugar);
+    // };
+  }, []);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -102,5 +104,5 @@ export default function ExternalServicesModal({
       </div>
       p
     </div>
-  )
+  );
 }

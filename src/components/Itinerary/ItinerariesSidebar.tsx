@@ -63,7 +63,8 @@ export default function ItinerariesSidebar() {
           ? itineraries.filter(
               (itinerary) =>
                 itinerary.place?.id.toString() === selectedPlace.toString() ||
-                itinerary.activities.some(
+              Array.isArray(itinerary.activities) &&
+                itinerary.activities?.some(
                   (activity) =>
                     activity.place?.toString() === selectedPlace.toString()
                 )
