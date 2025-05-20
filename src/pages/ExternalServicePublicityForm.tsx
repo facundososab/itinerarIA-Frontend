@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ExternalService from '../interfaces/ExternalService.ts'
-import { addPublicityRequest} from '../auth/publicity.ts'
+import { addPublicityRequest } from '../auth/publicity.ts'
 import { usePlace } from '../context/PlaceContext.tsx'
 import Loader from '../components/ui/Loader.tsx'
 
@@ -10,24 +10,26 @@ export default function ExternalServiceAdForm() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<ExternalService>()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitErrors, setSubmitErrors] = useState<string[]>([])
   const [submitSuccess, setSubmitSuccess] = useState(false)
 
-  const { places, getAllPlaces } = usePlace();
+  const { places, getAllPlaces } = usePlace()
 
   useEffect(() => {
     const loadData = async () => {
-      getAllPlaces();
-    };
-    loadData();
-  }, []);
+      getAllPlaces()
+    }
+    loadData()
+  }, [])
 
   const onCreate = handleSubmit(async (data) => {
     try {
       await addPublicityRequest(data)
       setSubmitSuccess(true)
+      reset()
     } catch (error: any) {
       setSubmitErrors([error.response.data.message])
       console.log(submitErrors)
@@ -216,11 +218,12 @@ export default function ExternalServiceAdForm() {
               className="mt-1 block w-full px-3 py-2 bg-[#26262c] border border-indigo-600 rounded-md text-indigo-100"
             >
               <option value="">Select a place</option>
-              {places && places.map((place) => (
-                <option key={place.id.toString()} value={place.id.toString()}>
-                  {place.name}
-                </option>
-              ))}
+              {places &&
+                places.map((place) => (
+                  <option key={place.id.toString()} value={place.id.toString()}>
+                    {place.name}
+                  </option>
+                ))}
             </select>
             {errors.place && (
               <p className="mt-1 text-sm text-red-500">
